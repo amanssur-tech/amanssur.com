@@ -1,0 +1,23 @@
+{
+  "name": "Amanullah Manssur",
+  "short_name": "amanssur",
+  "id": "/",
+  "icons": [
+    {
+      "src": "/favicons/AM-Logo-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicons/AM-Logo-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary"
+}

@@ -1,0 +1,10 @@
+name = "mail-queue"
+main = "src/index.ts"
+compatibility_date = "2025-08-14"
+
+kv_namespaces = [
+  { binding = "MAIL_QUEUE", id = "your-kv-namespace-id" }
+]
+
+[triggers]
+crons = ["*/5 * * * *"]

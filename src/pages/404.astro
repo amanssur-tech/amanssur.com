@@ -1,0 +1,16 @@
+---
+export const prerender = false;
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Check props first (if passed explicitly), otherwise guess from URL
+let lang = Astro.props.lang || 'en';
+if (Astro.url.pathname.startsWith('/de/')) {
+  lang = 'de';
+}
+
+const page = '404';
+
+Astro.response.status = 404;
+---
+
+<BaseLayout lang={lang} page={page} noindex={true}/>

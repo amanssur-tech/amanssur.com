@@ -1,0 +1,52 @@
+{
+  "name": "amanssur.com",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "disable:toolbar": "astro preferences disable devToolbar",
+    "dev": "astro dev",
+    "dev:prod": "NODE_ENV=production astro dev -- --production",
+    "build": "astro build",
+    "preview": "astro preview",
+    "retry-pending": "tsx services/retry-pending.ts",
+    "dev:worker": "wrangler dev workers/mail-queue/src/index.ts",
+    "deploy:worker": "wrangler deploy workers/mail-queue/src/index.ts",
+    "digest:slack": "tsx services/digest-slack.ts",
+    "push:notion": "tsx services/push-notion.ts",
+    "quartz": "osascript -e 'set theURL to \"http://localhost:4321/cv\"' -e 'set thePath to POSIX path of (do shell script \"pwd\") & \"/services/safari-quartz-export-button.js\"' -e 'tell application \"Safari\" to open location theURL' -e 'delay 2' -e 'tell application \"Safari\" to do JavaScript \"import(encodeURI(\\\"file://\" & thePath & \"\\\"))\" in document 1'",
+    "quartz:export": "kill -9 $(lsof -ti:4321) 2>/dev/null || true; PUBLIC_QUARTZ_EXPORT=1 astro dev & wait-on http://localhost:4321 && osascript services/quartz-export.applescript; kill $!; astro dev -- --production"
+  },
+  "dependencies": {
+    "@astrojs/cloudflare": "^12.6.9",
+    "@astrojs/mdx": "^4.3.5",
+    "@astrojs/svelte": "^7.1.1",
+    "@notionhq/client": "^5.0.0",
+    "@tailwindcss/postcss": "^4.1.13",
+    "astro": "^5.13.7",
+    "axios": "^1.12.1",
+    "dotenv": "^17.2.2",
+    "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^9.2.0",
+    "nodemailer": "^7.0.6",
+    "zod": "^4.1.8"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250912.0",
+    "@tailwindcss/cli": "^4.1.13",
+    "@tailwindcss/vite": "^4.1.13",
+    "@tsconfig/svelte": "^5.0.5",
+    "@types/markdown-it": "^14.1.2",
+    "@types/node": "^24.3.1",
+    "@types/nodemailer": "^7.0.1",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "svelte": "^5.39.6",
+    "svelte-preprocess": "^6.0.3",
+    "svelte2tsx": "^0.7.44",
+    "tailwindcss": "^4.1.13",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2",
+    "vite": "^7.1.5",
+    "wait-on": "^9.0.1"
+  }
+}

@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /legal
+Disallow: /de/legal
+
+Sitemap: https://amanssur.com/meta/sitemap.xml

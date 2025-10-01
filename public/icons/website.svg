@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   version="1.1"
+   id="svg1"
+   width="21.999329"
+   height="22"
+   viewBox="0 0 21.999329 22"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath17">
+      <path
+         d="M 0,0 H 1071 V 1515 H 0 Z"
+         id="path17" />
+    </clipPath>
+  </defs>
+  <path
+     d="M 73.27,644.645 71.949,643.32 73.27,642 c 1.46,-1.461 1.46,-3.828 0,-5.285 -1.458,-1.461 -3.825,-1.461 -5.286,0 l -1.32,1.32 -1.324,-1.32 1.324,-1.324 c 2.188,-2.188 5.738,-2.188 7.93,0 2.187,2.191 2.187,5.742 0,7.929 z m -2.641,2.64 -1.324,1.324 c -2.188,2.188 -5.739,2.188 -7.93,0 -2.187,-2.191 -2.187,-5.742 0,-7.929 l 1.324,-1.325 1.321,1.325 -1.321,1.32 c -1.461,1.461 -1.461,3.828 0,5.285 1.457,1.461 3.824,1.461 5.285,0 l 1.321,-1.32 z m 0,-9.25 1.32,1.32 -6.609,6.61 -1.32,-1.32 z"
+     style="fill:#0042aa;fill-opacity:1;fill-rule:nonzero;stroke:none"
+     transform="matrix(1.3333333,0,0,1.3333333,-79.646331,-845)"
+     clip-path="url(#clipPath17)"
+     id="path18" />
+</svg>

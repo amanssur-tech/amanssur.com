@@ -1,0 +1,27 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [
+    ".astro/types.d.ts",
+    "src/**/*",
+    "src/**/*.svelte"
+  ],
+  "exclude": ["dist"],
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/lib/*": ["src/lib/*"]
+    },
+    "types": [
+      "svelte"
+    ],
+    "typeRoots": ["./node_modules/@types"],
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": true
+  }
+}
