@@ -125,11 +125,11 @@
       aria-label="Toggle menu"
     >
     {#if menuOpen}
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 nav-hover">
   <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
 </svg>
     {:else}
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6 nav-hover">
   <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
 </svg>
 
@@ -137,7 +137,7 @@
     </button>
     {#if menuOpen}
       <ul
-        class="absolute top-14 left-0 w-full flex flex-col space-y-4 px-8 py-8 pt-4 pb-6 text-xl font-semibold md:hidden {page !== 'home' ? 'bg-white dark:bg-zinc-900' : ''}"
+        class="absolute top-14 left-0 w-full flex flex-col space-y-4 px-8 py-8 pt-4 pb-6 text-xl font-semibold md:hidden {page !== 'home' ? 'bg-white dark:bg-zinc-900' : ''} border-b border-gray-200/70 dark:border-zinc-700/50"
         style={page === 'home' ? `background-color:${bgColor}` : undefined}
       >
         {#each links as link}
@@ -147,7 +147,7 @@
             </a>
           </li>
         {/each}
-        <li class="mt-0 pt-6 mb-0 pb-0 border-t border-gray-400/20 dark:border-gray-600/35 block"><LanguageToggle extraClasses="text-base pl-3 pr-2" /></li>
+        <li class="mt-0 pt-6 mb-0 pb-0 border-t border-gray-200/70 dark:border-zinc-700/50 block"><LanguageToggle extraClasses="text-base pl-3 pr-2" /></li>
       </ul>
     {/if}
   </div>
