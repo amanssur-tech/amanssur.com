@@ -100,7 +100,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     }
 
     // Build notif email with the extracted template
-    const { text: notifText, html: notifHtml } = buildContactNotif({
+    const {subject: notifSubject, text: notifText, html: notifHtml } = buildContactNotif({
       firstName,
       lastName,
       email,
@@ -114,7 +114,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
       websiteNorm: websiteNorm || undefined,
     });
     // Prebuild auto‑reply so we can enqueue it even if notif send fails in DEV
-    const ar = buildAutoReply({ t: getProps(lang as Lang, 'contact').autoreply, firstName, message });
+    const ar = buildAutoReply({ t: getProps(lang as Lang, 'contact').autoreply, firstName, message, reason, reasonLabel, subjectEsc, });
 
     if (!isProd) {
       try {
@@ -124,6 +124,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           email,
           message,
           lang,
+          subject: notifSubject,
           html: notifHtml,
           text: notifText,
         });
@@ -162,6 +163,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           email,
           message,
           lang,
+          subject: notifSubject,
           html: notifHtml,
           text: notifText,
         });
@@ -194,7 +196,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
 
     // --- Best-effort auto-reply (background) ---
     if (!isProd) {
-      void sendAutoReplyMail({
+      await sendAutoReplyMail({
         toEmail: email,
         subject: ar.subject,
         text: ar.text,
@@ -211,7 +213,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         } catch {}
       });
     } else {
-      void sendAutoReplyMail({
+      await sendAutoReplyMail({
         toEmail: email,
         subject: ar.subject,
         text: ar.text,

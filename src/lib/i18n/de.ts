@@ -62,7 +62,7 @@ export default {
       privacy: "Datenschutzerklärung"
     },
     autoreply: {
-      subject: "Danke für deine Nachricht,",
+      subject: "Danke für deine Nachricht!",
       greeting: "Hallo",
       lead: "Danke für deine Nachricht! Ich schätze es sehr, dass du dir die Zeit genommen hast, mir zu schreiben. In der Regel melde ich mich innerhalb von 1–2 Werktagen zurück.",
       yourMessage: "Hier ist, was du mir geschickt hast:",
