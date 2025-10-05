@@ -1,4 +1,5 @@
 // src/pages/api/contact.ts
+// force rebuild 2025-10-05
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
