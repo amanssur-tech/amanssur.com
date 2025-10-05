@@ -1,5 +1,3 @@
-
-
 // src/lib/mail/types.ts
 // Centralized, reusable types for the mail/queue pipeline.
 
@@ -78,6 +76,10 @@ export interface NotificationMailOptions {
   lang: 'en' | 'de';
   html: string;
   text: string;
+  reason?: string;
+  reasonLabel?: string;
+  subjectEsc?: string;
+  subject: string;
 }
 
 // Options for sending an auto-reply email to the user
@@ -86,6 +88,9 @@ export interface AutoReplyMailOptions {
   subject: string;
   text: string;
   html: string;
+  reason?: string;
+  reasonLabel?: string; // same for consistency
+  subjectEsc?: string;  // same for consistency
 }
 
 export interface MailSendOptions {

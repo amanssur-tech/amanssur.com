@@ -8,6 +8,10 @@ import type { NotificationMailOptions, AutoReplyMailOptions } from './types';
 dotenv.config({ path: '.env.production' });
 
 function env(key: string): string | undefined {
+  // Prefer import.meta.env (Cloudflare Pages), fallback to process.env (local/dev)
+  if ((import.meta as any)?.env?.[key] !== undefined) {
+    return (import.meta as any).env[key];
+  }
   return process.env[key];
 }
 
@@ -57,6 +61,7 @@ export async function sendFormNotificationMail(opts: NotificationMailOptions): P
 
   const { firstName, lastName, email, html, text } = opts;
 
+<<<<<<< HEAD
   await transporter.sendMail({
     from: `${firstName} ${lastName} <${email}>`,
     sender: String(env('FORM_SMTP_USER')),
@@ -65,11 +70,59 @@ export async function sendFormNotificationMail(opts: NotificationMailOptions): P
       to: String(env('MAIL_TO')),
     },
     to: String(env('MAIL_TO')),
+=======
+  const relayUrl = env('STELLAR_RELAY_URL');
+  const relayToken = env('STELLAR_RELAY_TOKEN');
+  const hmacSecret = env('STELLAR_HMAC_SECRET');
+
+  console.log('[Local Test] Using relay URL:', relayUrl);
+
+  if (!relayUrl) {
+    throw new Error('STELLAR_RELAY_URL is not defined');
+  }
+  if (!relayToken) {
+    throw new Error('STELLAR_RELAY_TOKEN is not defined');
+  }
+  if (!hmacSecret) {
+    throw new Error('STELLAR_HMAC_SECRET is not defined');
+  }
+
+  const body = {
+    smtpAccount: 'form',
+    to: String(env('MAIL_TO')),
+    from: `${firstName} ${lastName}`,
+>>>>>>> 2554570 (final: complete mail system & env updates for Stellar relay)
     replyTo: `${firstName} ${lastName} <${email}>`,
-    subject: `Contact Form: ${firstName} ${lastName}`,
+    subject: opts.subject,
     text,
     html,
+<<<<<<< HEAD
+=======
+  };
+
+  const bodyString = JSON.stringify(body);
+  const signature = crypto.createHmac('sha256', hmacSecret).update(bodyString).digest('hex');
+
+  console.log('[Relay] Sending to:', relayUrl);
+
+try {
+  const response = await fetch(relayUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Relay-Token': relayToken,
+      'X-Signature': signature,
+    },
+    body: bodyString,
+>>>>>>> 2554570 (final: complete mail system & env updates for Stellar relay)
   });
+
+  console.log('[Relay] Response status:', response.status);
+  const text = await response.text();
+  console.log('[Relay] Response text:', text);
+} catch (err) {
+  console.error('[Relay] Fetch error:', err);
+}
 }
 
 /** Send the auto‑reply to the client using the autoreply@ account. */
@@ -95,7 +148,29 @@ export async function sendAutoReplyMail(opts: AutoReplyMailOptions): Promise<voi
   };
   const transporter = nodemailer.createTransport(smtpOptsAR);
 
+<<<<<<< HEAD
   await transporter.sendMail({
+=======
+  const relayUrl = env('STELLAR_RELAY_URL');
+  const relayToken = env('STELLAR_RELAY_TOKEN');
+  const hmacSecret = env('STELLAR_HMAC_SECRET');
+
+  console.log('[Local Test] Using relay URL:', relayUrl);
+
+  if (!relayUrl) {
+    throw new Error('STELLAR_RELAY_URL is not defined');
+  }
+  if (!relayToken) {
+    throw new Error('STELLAR_RELAY_TOKEN is not defined');
+  }
+  if (!hmacSecret) {
+    throw new Error('STELLAR_HMAC_SECRET is not defined');
+  }
+
+  const body = {
+    smtpAccount: 'autoreply',
+    to: opts.toEmail,
+>>>>>>> 2554570 (final: complete mail system & env updates for Stellar relay)
     from: String(env('MAIL_FROM_AUTOREPLY')),
     envelope: {
       from: String(env('AUTOREPLY_SMTP_USER')),
@@ -106,8 +181,28 @@ export async function sendAutoReplyMail(opts: AutoReplyMailOptions): Promise<voi
     subject: opts.subject,
     text: opts.text,
     html: opts.html,
+<<<<<<< HEAD
+=======
+  };
+
+  const bodyString = JSON.stringify(body);
+  const signature = crypto.createHmac('sha256', hmacSecret).update(bodyString).digest('hex');
+
+  console.log('[Relay] Sending to:', relayUrl);
+
+try {
+  const response = await fetch(relayUrl, {
+    method: 'POST',
+>>>>>>> 2554570 (final: complete mail system & env updates for Stellar relay)
     headers: {
       'Auto-Submitted': 'auto-replied',
     },
   });
+
+  console.log('[Relay] Response status:', response.status);
+  const text = await response.text();
+  console.log('[Relay] Response text:', text);
+} catch (err) {
+  console.error('[Relay] Fetch error:', err);
+}
 }

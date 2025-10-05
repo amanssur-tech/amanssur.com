@@ -60,7 +60,7 @@ export default {
       privacy: "Privacy Policy"
     },
     autoreply: {
-      subject: "Thanks for reaching out,",
+      subject: "Thanks for reaching out!",
       greeting: "Hi",
       lead: "Thanks for your message! I truly appreciate you taking the time to write me. I usually reply within 1–2 business days.",
       yourMessage: "Here’s what you sent me:",

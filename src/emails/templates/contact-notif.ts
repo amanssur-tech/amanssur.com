@@ -65,7 +65,7 @@ export function buildContactNotif(p: ContactNotifParams) {
 
   // Build text body for notification email
   const textLines: string[] = [];
-  textLines.push(`From: ${p.firstName} ${p.lastName} <${p.email}>`);
+  textLines.push(`From: ${p.firstName} ${p.lastName}`);
   if (p.company) textLines.push(`Company: ${p.company}`);
   if (p.phoneNorm) textLines.push(`Phone: ${p.phoneNorm}`);
   if (p.websiteNorm) textLines.push(`Website: ${p.websiteNorm}`);
@@ -84,7 +84,14 @@ export function buildContactNotif(p: ContactNotifParams) {
   textLines.push('Source: amanssur.com – Contact Form');
 
   const text = textLines.join('\n');
-  const subject = `Contact Form: ${p.firstName} ${p.lastName}`;
+  let subject = '';
+
+if (p.reasonLabel) {
+  subject = `Contact Form: ${p.reasonLabel}`;
+  if (p.reason === 'other' && p.subjectEsc) {
+    subject = `Contact Form: ${p.subjectEsc}`;
+  }
+}
 
   return { subject, text, html };
 }

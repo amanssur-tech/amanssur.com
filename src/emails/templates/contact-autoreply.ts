@@ -12,19 +12,25 @@ export interface AutoReplyI18n {
   regards: string;
   separator: string;
   followMe: string;
+  reasonLabel?: string; // localized label, e.g. “Collaboration Request”
+  reason?: string;      // internal reason key, e.g. “collaboration”
+  subjectEsc?: string;  // if reason === “other”, the escaped user subject
 }
 
 export interface AutoReplyParams {
   t: AutoReplyI18n;      // contact.autoreply i18n object
   firstName: string;
   message: string;
+  reasonLabel?: string;  // localized label (e.g., "Collaboration Request")
+  reason?: string;       // internal key (e.g., "collaboration")
+  subjectEsc?: string;   // user subject when reason === "other"
 }
 
 
 export function buildAutoReply(p: AutoReplyParams) {
-  const { t, firstName, message } = p;
-
-  const subject = `${t.subject} ${firstName}!`;
+  const { t, firstName, message, reasonLabel, reason, subjectEsc } = p;
+  
+  const subject = `Re: ${reason === 'other' ? subjectEsc : reasonLabel} — ${t.subject}`;
 
   const text = [
     `${t.greeting} ${firstName},`,
