@@ -6,7 +6,7 @@ import type { APIRoute } from 'astro';
 import { sendSlackMessage } from '../../lib/slack';
 import { getProps, type Lang } from '../../lib/i18n';
 import { normalizeWebsite, normalizePhone, langFullName, mapReasonToLabel, buildSubmissionRecord, sanitize } from '@/lib/contact/transform';
-import { appendSubmission, enqueuePending } from '@/lib/data/store.node';
+import { appendSubmission, enqueuePending } from '@/lib/data/store';
 import { buildAutoReply, buildContactNotif } from '@/emails';
 import { sendFormNotificationMail, sendAutoReplyMail } from '@/lib/mail';
 import type { Reason, ContactFormSubmission, QueuedNotification, QueuedAutoResponder } from '@/lib/mail/types';

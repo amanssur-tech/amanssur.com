@@ -85,7 +85,7 @@
     const start = performance.now();
 
     try {
-      const res = await fetch('/api/contactForm', {
+      const res = await fetch('/api/contact', {
         method: 'POST',
         body: formData,
         headers: { Accept: 'application/json' }
