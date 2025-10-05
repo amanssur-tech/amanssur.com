@@ -1,22 +1,19 @@
 // services/retry-pending.ts
-// This script retries sending pending emails stored in a local JSON file.
-// It reads the queue from 'pending-mails.json', attempts to send each email,
-// and removes successfully sent items from the queue. Remaining items are saved back to the file.
+// This script retries sending pending emails stored in Cloudflare KV.
+// It reads the queue from KV, attempts to send each email,
+// and removes successfully sent items from the queue. Remaining items are saved back.
 // It can be run manually or scheduled as a cron job.
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { sendFormNotificationMail, sendAutoReplyMail } from '../src/lib/mail';
-// Smart dotenv loader: ENV_FILE > NODE_ENV=production -> .env.production > fallback .env
-import { config as loadEnv } from 'dotenv';
-const envPath = process.env.ENV_FILE || '.env.production';
-loadEnv({ path: envPath });
-console.log(`[retry-pending] Loaded env from ${envPath}`);
 
-// Resolve path to the same queue file used by the API
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const pendingMailsPath = path.resolve(__dirname, '../src/data/tmp/pending-mails.json');
+import { sendFormNotificationMail, sendAutoReplyMail } from '../src/lib/mail';
+
+// Cloudflare KV namespace binding
+declare const PENDING_MAILS_KV: KVNamespace;
+
+interface KVNamespace {
+  get(key: string): Promise<string | null>;
+  put(key: string, value: string): Promise<void>;
+  delete(key: string): Promise<void>;
+}
 
 interface QueuedNotification {
   type: 'notification';
@@ -30,6 +27,7 @@ interface QueuedNotification {
     ip?: string;
     text?: string;
     html?: string;
+    subject?: string;
   };
 }
 
@@ -49,17 +47,27 @@ interface QueuedAutoResponder {
 
 type QueueItem = QueuedNotification | QueuedAutoResponder | Record<string, any>;
 
+async function getPendingMails(): Promise<QueueItem[]> {
+  const data = await PENDING_MAILS_KV.get('pending-mails');
+  if (!data) return [];
+  try {
+    return JSON.parse(data);
+  } catch {
+    return [];
+  }
+}
+
+async function setPendingMails(queue: QueueItem[]): Promise<void> {
+  const data = JSON.stringify(queue, null, 2);
+  await PENDING_MAILS_KV.put('pending-mails', data);
+}
+
 async function retryPendingMails() {
   let queue: QueueItem[] = [];
 
   try {
-    const data = fs.readFileSync(pendingMailsPath, 'utf-8');
-    queue = JSON.parse(data);
+    queue = await getPendingMails();
   } catch (err: any) {
-    if (err?.code === 'ENOENT') {
-      console.log('No pending mails file found. Nothing to retry.');
-      return;
-    }
     console.error('Failed to read pending mails:', err);
     return;
   }
@@ -74,7 +82,7 @@ async function retryPendingMails() {
   for (const item of queue) {
     if (item && (item as QueuedNotification).type === 'notification') {
       const q = item as QueuedNotification;
-      const { firstName, lastName, email, message, lang } = q.payload;
+      const { firstName, lastName, email, message, lang, subject } = q.payload;
       const langSafe: 'en' | 'de' = lang === 'de' ? 'de' : 'en';
 
       const text = q.payload.text ?? `From: ${firstName} ${lastName} <${email}>\n\n${message}`;
@@ -94,6 +102,7 @@ async function retryPendingMails() {
             lang: langSafe,
             text,
             html,
+            subject: subject ?? '',
           });
           console.log(`✓ Notification to ${email} relayed successfully on attempt ${attempt}`);
           sent = true;
@@ -135,15 +144,14 @@ async function retryPendingMails() {
   }
 
   try {
-    fs.writeFileSync(pendingMailsPath, JSON.stringify(remaining, null, 2), 'utf-8');
+    await setPendingMails(remaining);
     console.log(`Queue updated. Remaining items: ${remaining.length}`);
   } catch (err) {
-    console.error('Failed to update pending mails file:', err);
+    console.error('Failed to update pending mails:', err);
   }
 }
 
-// Allow running directly via: node/tsx scripts/retry-pending.ts
+// Run retry logic
 retryPendingMails().catch(err => {
   console.error('Unexpected error during retry:', err);
-  process.exit(1);
 });

@@ -1,7 +1,7 @@
-import { defineMiddleware } from 'astro:middleware';
+import type { MiddlewareHandler } from 'astro';
 
 type Lang = 'en' | 'de';
-const DEV = process.env.NODE_ENV !== 'production';
+const DEV = (import.meta.env?.MODE ?? 'production') !== 'production';
 
 function log(...args: any[]) {
   if (DEV) console.log('[mw]', ...args);
@@ -12,7 +12,7 @@ function redirect(to: string, status: 302 = 302) {
   return new Response(null, { status, headers });
 }
 
-export const onRequest = defineMiddleware(async (context, next) => {
+export const onRequest: MiddlewareHandler = async (context, next) => {
   const url = new URL(context.request.url);
   const { pathname, searchParams, search } = url;
 
@@ -112,4 +112,4 @@ if (
 
   // 4) Other routes: continue
   return next();
-});
+};

@@ -3,7 +3,8 @@
   "include": [
     ".astro/types.d.ts",
     "src/**/*",
-    "src/**/*.svelte"
+    "src/**/*.svelte",
+    "src/types/**/*.d.ts"
   ],
   "exclude": ["dist"],
   "compilerOptions": {
@@ -17,9 +18,11 @@
       "@/lib/*": ["src/lib/*"]
     },
     "types": [
-      "svelte"
+      "astro/client",
+      "@cloudflare/workers-types"
     ],
-    "typeRoots": ["./node_modules/@types"],
+    "skipLibCheck": true,
+    "strict": true,
     "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true

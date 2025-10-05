@@ -1,16 +1,11 @@
 // src/lib/mail/index.ts
-import dotenv from 'dotenv';
 import type { NotificationMailOptions, AutoReplyMailOptions } from './types';
 
 // Always load .env.production so we get real creds in dev too
-dotenv.config({ path: '.env.production' });
 
 function env(key: string): string | undefined {
-  // Prefer import.meta.env (Cloudflare Pages), fallback to process.env (local/dev)
-  if ((import.meta as any)?.env?.[key] !== undefined) {
-    return (import.meta as any).env[key];
-  }
-  return process.env[key];
+  // Use only import.meta.env for Cloudflare compatibility
+  return (import.meta as any)?.env?.[key];
 }
 
 function bool(v: unknown): boolean {
@@ -20,7 +15,18 @@ function bool(v: unknown): boolean {
   return false;
 }
 
-import crypto from 'crypto';
+async function hmacSHA256(key: string, message: string): Promise<string> {
+  const enc = new TextEncoder();
+  const keyData = await crypto.subtle.importKey(
+    'raw',
+    enc.encode(key),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  );
+  const signature = await crypto.subtle.sign('HMAC', keyData, enc.encode(message));
+  return Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
 
 export const getEnv = env;
 
@@ -33,7 +39,7 @@ export async function sendFormNotificationMail(opts: NotificationMailOptions): P
   const relayToken = env('STELLAR_RELAY_TOKEN');
   const hmacSecret = env('STELLAR_HMAC_SECRET');
 
-  console.log('[Local Test] Using relay URL:', relayUrl);
+  console.log('[Mail] Using relay URL:', relayUrl);
 
   if (!relayUrl) {
     throw new Error('STELLAR_RELAY_URL is not defined');
@@ -56,9 +62,9 @@ export async function sendFormNotificationMail(opts: NotificationMailOptions): P
   };
 
   const bodyString = JSON.stringify(body);
-  const signature = crypto.createHmac('sha256', hmacSecret).update(bodyString).digest('hex');
+  const signature = await hmacSHA256(hmacSecret, bodyString);
 
-  console.log('[Relay] Sending to:', relayUrl);
+  console.log('[Mail] Sending to relay:', relayUrl);
 
 try {
   const response = await fetch(relayUrl, {
@@ -71,11 +77,11 @@ try {
     body: bodyString,
   });
 
-  console.log('[Relay] Response status:', response.status);
+  console.log('[Mail] Relay response status:', response.status);
   const text = await response.text();
-  console.log('[Relay] Response text:', text);
+  console.log('[Mail] Relay response text:', text);
 } catch (err) {
-  console.error('[Relay] Fetch error:', err);
+  console.error('[Mail] Relay fetch error:', err);
 }
 }
 
@@ -86,7 +92,7 @@ export async function sendAutoReplyMail(opts: AutoReplyMailOptions): Promise<voi
   const relayToken = env('STELLAR_RELAY_TOKEN');
   const hmacSecret = env('STELLAR_HMAC_SECRET');
 
-  console.log('[Local Test] Using relay URL:', relayUrl);
+  console.log('[Mail] Using relay URL:', relayUrl);
 
   if (!relayUrl) {
     throw new Error('STELLAR_RELAY_URL is not defined');
@@ -109,9 +115,9 @@ export async function sendAutoReplyMail(opts: AutoReplyMailOptions): Promise<voi
   };
 
   const bodyString = JSON.stringify(body);
-  const signature = crypto.createHmac('sha256', hmacSecret).update(bodyString).digest('hex');
+  const signature = await hmacSHA256(hmacSecret, bodyString);
 
-  console.log('[Relay] Sending to:', relayUrl);
+  console.log('[Mail] Sending to relay:', relayUrl);
 
 try {
   const response = await fetch(relayUrl, {
@@ -124,10 +130,10 @@ try {
     body: bodyString,
   });
 
-  console.log('[Relay] Response status:', response.status);
+  console.log('[Mail] Relay response status:', response.status);
   const text = await response.text();
-  console.log('[Relay] Response text:', text);
+  console.log('[Mail] Relay response text:', text);
 } catch (err) {
-  console.error('[Relay] Fetch error:', err);
+  console.error('[Mail] Relay fetch error:', err);
 }
 }

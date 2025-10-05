@@ -6,20 +6,19 @@ import type { APIRoute } from 'astro';
 import { sendSlackMessage } from '../../lib/slack';
 import { getProps, type Lang } from '../../lib/i18n';
 import { normalizeWebsite, normalizePhone, langFullName, mapReasonToLabel, buildSubmissionRecord, sanitize } from '@/lib/contact/transform';
-import { appendSubmission, enqueuePending } from '@/lib/data/store';
+import { appendSubmission, enqueuePending } from '@/lib/data/store.ts';
 import { buildAutoReply, buildContactNotif } from '@/emails';
 import { sendFormNotificationMail, sendAutoReplyMail } from '@/lib/mail';
 import type { Reason, ContactFormSubmission, QueuedNotification, QueuedAutoResponder } from '@/lib/mail/types';
 import { parseAndValidate, checkRateLimit, parseDomain, isDisposableDomainWithEnv } from '@/lib/contact/schema';
 
-const isProd = ((import.meta as any)?.env?.MODE === 'production') || process.env.NODE_ENV === 'production';
+const isProd = (import.meta as any)?.env?.MODE === 'production';
 console.log('[ENV DEBUG]', {
   MODE_meta: (import.meta as any)?.env?.MODE,
-  NODE_ENV: process.env.NODE_ENV,
-  SMTP_HOST: process.env.SMTP_HOST,
-  SMTP_PORT: process.env.SMTP_PORT,
-  SMTP_SECURE: process.env.SMTP_SECURE,
-  SMTP_TLS_REJECT_UNAUTHORIZED: process.env.SMTP_TLS_REJECT_UNAUTHORIZED,
+  SMTP_HOST: (import.meta as any)?.env?.SMTP_HOST,
+  SMTP_PORT: (import.meta as any)?.env?.SMTP_PORT,
+  SMTP_SECURE: (import.meta as any)?.env?.SMTP_SECURE,
+  SMTP_TLS_REJECT_UNAUTHORIZED: (import.meta as any)?.env?.SMTP_TLS_REJECT_UNAUTHORIZED,
 });
 
 export const POST: APIRoute = async ({ request, clientAddress }) => {
@@ -51,7 +50,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     // Allowlist bypass: if EMAIL_ALLOWLIST contains this exact email, skip disposable checks
     const allowCsv = (typeof (import.meta as any).env?.EMAIL_ALLOWLIST !== 'undefined')
       ? String((import.meta as any).env.EMAIL_ALLOWLIST)
-      : String(process.env.EMAIL_ALLOWLIST || '');
+      : '';
     const allow = allowCsv.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
     const isAllowlisted = allow.length > 0 && allow.includes(parsedData.email.toLowerCase());
 
@@ -231,7 +230,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     /*
     void (async () => {
       try {
-        const notionConfigured = Boolean((process.env.NOTION_API_KEY || (import.meta as any).env?.NOTION_API_KEY) && (process.env.NOTION_DATABASE_ID || (import.meta as any).env?.NOTION_DATABASE_ID));
+        const notionConfigured = Boolean(((import.meta as any).env.NOTION_API_KEY) && ((import.meta as any).env.NOTION_DATABASE_ID));
         if (!notionConfigured) return;
         await pushLeadToNotion({
           firstName,
