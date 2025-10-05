@@ -1,9 +1,12 @@
-import { defineConfig } from 'astro/config'
+import { defineConfig } from 'astro/config';
 import cloudflare from '@astrojs/cloudflare';
-import svelte from '@astrojs/svelte'
-import mdx from '@astrojs/mdx'
-import tailwindcss from '@tailwindcss/vite'
-import path from 'path'
+import svelte from '@astrojs/svelte';
+import mdx from '@astrojs/mdx';
+import tailwindcss from '@tailwindcss/vite';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
   adapter: cloudflare(),
@@ -12,13 +15,13 @@ export default defineConfig({
     plugins: [tailwindcss()],
     resolve: {
       alias: {
-        '@': path.resolve('./src'),
-        '@/lib': path.resolve('./src/lib'),
+        '@': path.resolve(__dirname, './src'),
+        '@/lib': path.resolve(__dirname, './src/lib'),
       },
     },
     server: {
       host: true,
-      allowedHosts: ['theola-unmappable-yousef.ngrok-free.dev']
-    }
+      allowedHosts: ['theola-unmappable-yousef.ngrok-free.dev'],
+    },
   },
-})
+});

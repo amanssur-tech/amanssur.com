@@ -5,14 +5,20 @@ import { z } from 'zod';
 import { isDisposableDomain } from '@/lib/antispam/disposable';
 import type { Reason } from '@/lib/mail/types';
 
-/** Read env from Vite (import.meta.env) or Node (process.env) safely */
+/** Read env from Vite (import.meta.env) or Cloudflare (browser-safe). No Node.js fallback. */
 function env(key: string): string | undefined {
-  const metaEnv = (typeof import.meta !== 'undefined' ? (import.meta as any).env : undefined) as
-    | Record<string, string | undefined>
-    | undefined;
-  if (metaEnv && Object.prototype.hasOwnProperty.call(metaEnv, key)) return metaEnv[key];
-    // '@ts-expect-error' process may not exist in Workers during type time
-  return typeof process !== 'undefined' ? (process.env as Record<string, string | undefined>)[key] : undefined;
+  const metaEnv =
+    typeof import.meta !== 'undefined' && (import.meta as any)?.env
+      ? ((import.meta as any).env as Record<string, string | undefined>)
+      : undefined;
+
+  if (metaEnv && Object.prototype.hasOwnProperty.call(metaEnv, key)) {
+    return metaEnv[key];
+  }
+
+  // Warn if not found
+  console.warn('[schema.env] Key not found:', key);
+  return undefined;
 }
 
 /** Extract domain from an email address; returns null if not parseable */

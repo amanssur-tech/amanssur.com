@@ -8,15 +8,15 @@
 //   ENV_FILE=.env.production npm run digest:slack -- --since=2025-08-10T00:00:00Z
 //   ENV_FILE=.env.production npm run digest:slack -- --dry
 
-import { config as loadEnv } from 'dotenv';
-import fs from 'fs';
-import path from 'path';
-import { sendSlackMessage } from 'src/lib/slack.ts';
+import { sendSlackMessage } from '../src/lib/slack.ts';
 
-// Smart dotenv loader: default to .env.production unless ENV_FILE is set
-const envPath = process.env.ENV_FILE || '.env.production';
-loadEnv({ path: envPath });
-console.log(`[digest-slack] Loaded env from ${envPath}`);
+// In Cloudflare Workers, we don't have access to Node's 'fs' or 'path' modules,
+// nor 'process' global. Environment variables are injected via the 'env' object passed
+// to the Worker. For dotenv support, environment variables should be set in the
+// Worker environment or via Wrangler configuration.
+
+// We expect the following KV namespace binding to be passed as 'env.SUBMISSIONS'
+// which stores the submissions JSON string.
 
 // Basic shape we expect to store for each submission
 // (We keep it flexible to tolerate older entries.)
@@ -33,34 +33,49 @@ interface Submission {
   ip?: string;
 }
 
-function parseArgs() {
-  const args = process.argv.slice(2);
+// In Workers, we cannot access process.argv.
+// Instead, we accept options as an object parameter or via URLSearchParams.
+// Here, we define a helper to parse options from a URLSearchParams or a plain object.
+function parseArgsFromParams(params: URLSearchParams | Record<string, string | undefined>) {
   const out: { hours?: number; since?: Date; dry?: boolean } = {};
-  for (const a of args) {
-    const [k, v] = a.split('=');
-    if (k === '--hours') out.hours = Number(v);
-    if (k === '--since') out.since = new Date(String(v));
-    if (k === '--dry' || k === '--dry-run') out.dry = true;
+  if (params instanceof URLSearchParams) {
+    if (params.has('hours')) out.hours = Number(params.get('hours'));
+    if (params.has('since')) out.since = new Date(params.get('since')!);
+    if (params.has('dry') || params.has('dry-run')) out.dry = true;
+  } else {
+    if (params['hours']) out.hours = Number(params['hours']);
+    if (params['since']) out.since = new Date(params['since']!);
+    if (params['dry'] === 'true' || params['dry-run'] === 'true') out.dry = true;
   }
   return out;
 }
 
-function loadSubmissions(): Submission[] {
-  const file = path.resolve(process.cwd(), 'src/data/tmp/submissions.json');
-  if (!fs.existsSync(file)) {
-    console.warn(`[digest-slack] No submissions file found at ${file}.`);
-    return [];
-  }
+// Load submissions from KV namespace.
+// Expects env.SUBMISSIONS KV namespace binding.
+async function loadSubmissions(env: any): Promise<Submission[]> {
   try {
-    const raw = fs.readFileSync(file, 'utf-8').trim();
-    if (!raw) return [];
+    const raw = await env.SUBMISSIONS.get('submissions.json');
+    if (!raw) {
+      console.warn('[digest-slack] No submissions data found in KV.');
+      return [];
+    }
     const data = JSON.parse(raw);
     if (Array.isArray(data)) return data as Submission[];
     console.warn('[digest-slack] submissions.json is not an array; ignoring.');
     return [];
   } catch (e) {
-    console.error('[digest-slack] Failed to read submissions.json:', e);
+    console.error('[digest-slack] Failed to read submissions from KV:', e);
     return [];
+  }
+}
+
+// Save submissions array back to KV.
+// This is used to clear the submissions after posting.
+async function saveSubmissions(env: any, subs: Submission[]) {
+  try {
+    await env.SUBMISSIONS.put('submissions.json', JSON.stringify(subs));
+  } catch (e) {
+    console.warn('[digest-slack] Failed to save submissions to KV:', e);
   }
 }
 
@@ -134,12 +149,14 @@ function summarize(subs: Submission[], since: Date) {
   return text;
 }
 
-async function main() {
-  const args = parseArgs();
+// The main function adapted for Cloudflare Workers environment.
+// Accepts 'env' which includes KV namespace bindings and optionally 'params' for args.
+export async function main(env: any, params?: URLSearchParams | Record<string, string | undefined>) {
+  const args = parseArgsFromParams(params || {});
   const since =
     args.since ?? new Date(Date.now() - (args.hours && args.hours > 0 ? args.hours : 24) * 60 * 60 * 1000);
 
-  const all = loadSubmissions();
+  const all = await loadSubmissions(env);
   const recent = all.filter(s => withinRange(s, since));
 
   const msg = summarize(recent, since);
@@ -151,20 +168,11 @@ async function main() {
   }
 
   await sendSlackMessage(msg);
-  // After successful post, clear the submissions file so it doesn't grow forever
-  try {
-    const file = path.resolve(process.cwd(), 'src/data/tmp/submissions.json');
-    if (fs.existsSync(file)) {
-      fs.writeFileSync(file, '[]');
-      console.log('[digest-slack] Cleared src/data/tmp/submissions.json');
-    }
-  } catch (e) {
-    console.warn('[digest-slack] Failed to clear submissions.json:', e);
-  }
+
+  // After successful post, clear the submissions so it doesn't grow forever
+  await saveSubmissions(env, []);
   console.log('[digest-slack] Posted to Slack successfully.');
 }
 
-main().catch(err => {
-  console.error('[digest-slack] Error:', err);
-  process.exit(1);
-});
+// For compatibility with Node.js for local testing, we can export a wrapper.
+// But in Cloudflare Worker, main() should be called with env and params from the request context.
