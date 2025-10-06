@@ -12,17 +12,10 @@ import { sendFormNotificationMail, sendAutoReplyMail } from '@/lib/mail';
 import type { Reason, ContactFormSubmission, QueuedNotification, QueuedAutoResponder } from '@/lib/mail/types';
 import { parseAndValidate, checkRateLimit, parseDomain, isDisposableDomainWithEnv } from '@/lib/contact/schema';
 
-const isProd = (import.meta as any)?.env?.MODE === 'production';
-console.log('[ENV DEBUG]', {
-  MODE_meta: (import.meta as any)?.env?.MODE,
-  SMTP_HOST: (import.meta as any)?.env?.SMTP_HOST,
-  SMTP_PORT: (import.meta as any)?.env?.SMTP_PORT,
-  SMTP_SECURE: (import.meta as any)?.env?.SMTP_SECURE,
-  SMTP_TLS_REJECT_UNAUTHORIZED: (import.meta as any)?.env?.SMTP_TLS_REJECT_UNAUTHORIZED,
-});
-
-export const POST: APIRoute = async ({ request, clientAddress }) => {
+export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
   try {
+    const env = (locals as any).runtime?.env ?? (locals as any).env;
+    const isProd = env.MODE === 'production';
     const ip = clientAddress || 'unknown';
     const t0 = Date.now();
 
@@ -48,8 +41,8 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     let t2 = t1; // will be updated right after notification send succeeds
 
     // Allowlist bypass: if EMAIL_ALLOWLIST contains this exact email, skip disposable checks
-    const allowCsv = (typeof (import.meta as any).env?.EMAIL_ALLOWLIST !== 'undefined')
-      ? String((import.meta as any).env.EMAIL_ALLOWLIST)
+    const allowCsv = (typeof env.EMAIL_ALLOWLIST !== 'undefined')
+      ? String(env.EMAIL_ALLOWLIST)
       : '';
     const allow = allowCsv.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
     const isAllowlisted = allow.length > 0 && allow.includes(parsedData.email.toLowerCase());
@@ -57,7 +50,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     if (!isAllowlisted) {
       const domain = parseDomain(parsedData.email);
       if (!domain || isDisposableDomainWithEnv(domain)) {
-        if (String((import.meta as any).env?.MODE) !== 'production') {
+        if (env.MODE !== 'production') {
           console.warn(`[DISPOSABLE-EMAIL] Blocked submission from ${parsedData.email} (domain: ${domain || 'n/a'}, ip: ${ip})`);
         }
         return new Response(formI18n.invalid, { status: 400 });
@@ -127,12 +120,12 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           subject: notifSubject,
           html: notifHtml,
           text: notifText,
-        });
+        }, env);
         t2 = Date.now();
       } catch (err) {
         console.error('[MAIL-ERROR] DEV notification failed:', err);
         try {
-          await sendSlackMessage(`[MAIL-FAIL][DEV] notif: ${err instanceof Error ? err.message : String(err)}\n${slackCtx}`);
+          await sendSlackMessage(`[MAIL-FAIL][DEV] notif: ${err instanceof Error ? err.message : String(err)}\n${slackCtx}`, env);
         } catch {}
         // DEV: also enqueue so you can test retry flow
         try {
@@ -140,14 +133,14 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
             type: 'notification',
             queuedAt: new Date().toISOString(),
             payload: { firstName, lastName, email, message, lang, ip, text: notifText, html: notifHtml },
-          } as QueuedNotification);
+          } as QueuedNotification, env);
         } catch {}
         try {
           await enqueuePending({
             type: 'autoresponder',
             queuedAt: new Date().toISOString(),
             payload: { toEmail: email, subject: ar.subject, text: ar.text, html: ar.html, firstName, lastName, lang },
-          } as QueuedAutoResponder);
+          } as QueuedAutoResponder, env);
         } catch {}
         // Since we queued the work, tell the client it succeeded to avoid duplicate submissions
         return new Response(JSON.stringify({ ok: true, queued: true }), {
@@ -166,26 +159,26 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
           subject: notifSubject,
           html: notifHtml,
           text: notifText,
-        });
+        }, env);
         t2 = Date.now();
       } catch (err) {
         console.error('[MAIL-ERROR] PROD notification failed:', err);
         try {
-          await sendSlackMessage(`[MAIL-FAIL][PROD] notif: ${err instanceof Error ? err.message : String(err)}\n${slackCtx}`);
+          await sendSlackMessage(`[MAIL-FAIL][PROD] notif: ${err instanceof Error ? err.message : String(err)}\n${slackCtx}`, env);
         } catch {}
         try {
           await enqueuePending({
             type: 'notification',
             queuedAt: new Date().toISOString(),
             payload: { firstName, lastName, email, message, lang, ip, text: notifText, html: notifHtml },
-          } as QueuedNotification);
+          } as QueuedNotification, env);
         } catch {}
         try {
           await enqueuePending({
             type: 'autoresponder',
             queuedAt: new Date().toISOString(),
             payload: { toEmail: email, subject: ar.subject, text: ar.text, html: ar.html, firstName, lastName, lang },
-          } as QueuedAutoResponder);
+          } as QueuedAutoResponder, env);
         } catch {}
         return new Response(JSON.stringify({ ok: true, queued: true }), {
           status: 200,
@@ -201,15 +194,15 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         subject: ar.subject,
         text: ar.text,
         html: ar.html,
-      }).catch(async (e) => {
+      }, env).catch(async (e) => {
         console.warn('[MAIL-FAIL][DEV] autoresponder:', e);
-        try { await sendSlackMessage(`[MAIL-FAIL][DEV] autoresponder: ${e instanceof Error ? e.message : String(e)}\n${slackCtx}`); } catch {}
+        try { await sendSlackMessage(`[MAIL-FAIL][DEV] autoresponder: ${e instanceof Error ? e.message : String(e)}\n${slackCtx}`, env); } catch {}
         try {
           await enqueuePending({
             type: 'autoresponder',
             queuedAt: new Date().toISOString(),
             payload: { toEmail: email, subject: ar.subject, text: ar.text, html: ar.html, firstName, lastName, lang },
-          } as QueuedAutoResponder);
+          } as QueuedAutoResponder, env);
         } catch {}
       });
     } else {
@@ -218,10 +211,10 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         subject: ar.subject,
         text: ar.text,
         html: ar.html,
-      }).catch(async (e) => {
+      }, env).catch(async (e) => {
         console.warn('[MAIL-FAIL][PROD] autoresponder:', e);
         try {
-          await sendSlackMessage(`[MAIL-FAIL][PROD] autoresponder: ${e instanceof Error ? e.message : String(e)}\n${slackCtx}`);
+          await sendSlackMessage(`[MAIL-FAIL][PROD] autoresponder: ${e instanceof Error ? e.message : String(e)}\n${slackCtx}`, env);
         } catch {}
       });
     }
@@ -230,7 +223,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     /*
     void (async () => {
       try {
-        const notionConfigured = Boolean(((import.meta as any).env.NOTION_API_KEY) && ((import.meta as any).env.NOTION_DATABASE_ID));
+        const notionConfigured = Boolean((env.NOTION_API_KEY) && (env.NOTION_DATABASE_ID));
         if (!notionConfigured) return;
         await pushLeadToNotion({
           firstName,
@@ -247,7 +240,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
         });
       } catch (e) {
         try {
-          await sendSlackMessage(`[NOTION-FAIL] bg push failed\n${slackCtx}`);
+          await sendSlackMessage(`[NOTION-FAIL] bg push failed\n${slackCtx}`, env);
         } catch {}
       }
     })();

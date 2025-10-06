@@ -1,10 +1,9 @@
 import type { MiddlewareHandler } from 'astro';
 
 type Lang = 'en' | 'de';
-const DEV = (import.meta.env?.MODE ?? 'production') !== 'production';
 
 function log(...args: any[]) {
-  if (DEV) console.log('[mw]', ...args);
+  console.log('[mw]', ...args);
 }
 
 function redirect(to: string, status: 302 = 302) {

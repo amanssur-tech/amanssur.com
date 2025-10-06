@@ -1,11 +1,9 @@
 // src/lib/mail/index.ts
 import type { NotificationMailOptions, AutoReplyMailOptions } from './types';
 
-// Always load .env.production so we get real creds in dev too
-
-function env(key: string): string | undefined {
-  // Use only import.meta.env for Cloudflare compatibility
-  return (import.meta as any)?.env?.[key];
+// Cloudflare-native env function reading from provided env object
+function env(key: string, cfEnv: Record<string, string>): string | undefined {
+  return cfEnv[key];
 }
 
 function bool(v: unknown): boolean {
@@ -31,15 +29,15 @@ async function hmacSHA256(key: string, message: string): Promise<string> {
 export const getEnv = env;
 
 /** Send the notification email to you (MAIL_TO) using the form@ account. */
-export async function sendFormNotificationMail(opts: NotificationMailOptions): Promise<void> {
+export async function sendFormNotificationMail(opts: NotificationMailOptions, cfEnv: Record<string, string>): Promise<void> {
 
   const { firstName, lastName, email, html, text } = opts;
 
-  const relayUrl = env('STELLAR_RELAY_URL');
-  const relayToken = env('STELLAR_RELAY_TOKEN');
-  const hmacSecret = env('STELLAR_HMAC_SECRET');
+  const relayUrl = env('STELLAR_RELAY_URL', cfEnv);
+  const relayToken = env('STELLAR_RELAY_TOKEN', cfEnv);
+  const hmacSecret = env('STELLAR_HMAC_SECRET', cfEnv);
 
-  console.log('[Mail] Using relay URL:', relayUrl);
+  console.log('[Mail] Using relay URL:', relayUrl ? '[REDACTED]' : 'undefined');
 
   if (!relayUrl) {
     throw new Error('STELLAR_RELAY_URL is not defined');
@@ -53,7 +51,7 @@ export async function sendFormNotificationMail(opts: NotificationMailOptions): P
 
   const body = {
     smtpAccount: 'form',
-    to: String(env('MAIL_TO')),
+    to: String(env('MAIL_TO', cfEnv)),
     from: `${firstName} ${lastName}`,
     replyTo: `${firstName} ${lastName} <${email}>`,
     subject: opts.subject,
@@ -64,7 +62,7 @@ export async function sendFormNotificationMail(opts: NotificationMailOptions): P
   const bodyString = JSON.stringify(body);
   const signature = await hmacSHA256(hmacSecret, bodyString);
 
-  console.log('[Mail] Sending to relay:', relayUrl);
+  console.log('[Mail] Sending to relay: [REDACTED]');
 
 try {
   const response = await fetch(relayUrl, {
@@ -86,13 +84,13 @@ try {
 }
 
 /** Send the auto‑reply to the client using the autoreply@ account. */
-export async function sendAutoReplyMail(opts: AutoReplyMailOptions): Promise<void> {
+export async function sendAutoReplyMail(opts: AutoReplyMailOptions, cfEnv: Record<string, string>): Promise<void> {
 
-  const relayUrl = env('STELLAR_RELAY_URL');
-  const relayToken = env('STELLAR_RELAY_TOKEN');
-  const hmacSecret = env('STELLAR_HMAC_SECRET');
+  const relayUrl = env('STELLAR_RELAY_URL', cfEnv);
+  const relayToken = env('STELLAR_RELAY_TOKEN', cfEnv);
+  const hmacSecret = env('STELLAR_HMAC_SECRET', cfEnv);
 
-  console.log('[Mail] Using relay URL:', relayUrl);
+  console.log('[Mail] Using relay URL:', relayUrl ? '[REDACTED]' : 'undefined');
 
   if (!relayUrl) {
     throw new Error('STELLAR_RELAY_URL is not defined');
@@ -107,8 +105,8 @@ export async function sendAutoReplyMail(opts: AutoReplyMailOptions): Promise<voi
   const body = {
     smtpAccount: 'autoreply',
     to: opts.toEmail,
-    from: String(env('MAIL_FROM_AUTOREPLY')),
-    replyTo: String(env('MAIL_TO')),
+    from: String(env('MAIL_FROM_AUTOREPLY', cfEnv)),
+    replyTo: String(env('MAIL_TO', cfEnv)),
     subject: opts.subject,
     text: opts.text,
     html: opts.html,
@@ -117,7 +115,7 @@ export async function sendAutoReplyMail(opts: AutoReplyMailOptions): Promise<voi
   const bodyString = JSON.stringify(body);
   const signature = await hmacSHA256(hmacSecret, bodyString);
 
-  console.log('[Mail] Sending to relay:', relayUrl);
+  console.log('[Mail] Sending to relay: [REDACTED]');
 
 try {
   const response = await fetch(relayUrl, {

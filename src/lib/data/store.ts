@@ -9,10 +9,8 @@ export async function appendSubmission(_: Partial<ContactFormSubmission> & { ts:
 }
 
 /** Enqueue a mail job (uses remote queue if MAIL_QUEUE_URL is set, otherwise logs). */
-export async function enqueuePending(item: QueueItem): Promise<void> {
-  const remote = (typeof import.meta !== 'undefined'
-    ? (import.meta as any).env?.MAIL_QUEUE_URL
-    : undefined) as string | undefined
+export async function enqueuePending(item: QueueItem, env: Record<string, string>): Promise<void> {
+  const remote = env.MAIL_QUEUE_URL
 
   if (remote) {
     try {

@@ -3,8 +3,11 @@
  * @param messageOrPayload - A string message or a full Slack JSON payload.
  * @returns Promise<void>
  */
-export async function sendSlackMessage(messageOrPayload: string | Record<string, any>): Promise<void> {
-  const webhookUrl = (import.meta as any)?.env?.SLACK_WEBHOOK_URL;
+export async function sendSlackMessage(
+  messageOrPayload: string | Record<string, any>,
+  env: Record<string, string>
+): Promise<void> {
+  const webhookUrl = env.SLACK_WEBHOOK_URL;
   if (!webhookUrl) {
     throw new Error('Slack webhook URL not configured in SLACK_WEBHOOK_URL');
   }
