@@ -1,5 +1,5 @@
 import { defineConfig } from 'astro/config';
-import staticAdapter from "@astrojs/static";
+import cloudflare from '@astrojs/cloudflare';
 import svelte from '@astrojs/svelte';
 import mdx from '@astrojs/mdx';
 import tailwindcss from '@tailwindcss/vite';
@@ -9,7 +9,8 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-  adapter: staticAdapter(),
+  output: "server",
+  adapter: cloudflare(),
   integrations: [svelte(), mdx()],
   vite: {
     plugins: [tailwindcss()],

@@ -1,9 +1,15 @@
-export async function onRequestGet(context: { env?: Record<string, unknown> }) {
-  const envVars = Object.fromEntries(
-    Object.entries(context.env || {}).slice(0, 10) // show a few only
-  );
+interface Env {
+  [key: string]: unknown;
+}
 
-  return new Response(JSON.stringify(envVars, null, 2), {
-    headers: { 'Content-Type': 'application/json' },
+interface Context {
+  env: Env;
+}
+
+export async function onRequestGet(context: Context): Promise<Response> {
+  return new Response(JSON.stringify({
+    env: Object.keys(context.env),
+  }, null, 2), {
+    headers: { "content-type": "application/json" },
   });
 }
