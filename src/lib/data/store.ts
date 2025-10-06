@@ -15,10 +15,16 @@ function env(key: string): string | undefined {
   return typeof process !== 'undefined' ? (process.env as Record<string, string | undefined>)[key] : undefined;
 }
 
+<<<<<<< HEAD
 // -------- file paths (kept under src/data/tmp for dev) --------
 const DATA_DIR = path.resolve(process.cwd(), 'src/data/tmp');
 export const submissionsPath = path.join(DATA_DIR, 'submissions.json');
 export const pendingMailsPath = path.join(DATA_DIR, 'pending-mails.json');
+=======
+/** Enqueue a mail job (uses remote queue if MAIL_QUEUE_URL is set, otherwise logs). */
+export async function enqueuePending(item: QueueItem, env: Record<string, string>): Promise<void> {
+  const remote = env.MAIL_QUEUE_URL
+>>>>>>> 2eec07f (🧹 Wiped old repo + added clean amanssurfix project)
 
 function ensureDirFor(filePath: string) {
   const dir = path.dirname(filePath);

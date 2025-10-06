@@ -5,18 +5,9 @@ import { z } from 'zod';
 import { isDisposableDomain } from '@/lib/antispam/disposable';
 import type { Reason } from '@/lib/mail/types';
 
-/** Read env from Vite (import.meta.env) or Cloudflare (browser-safe). No Node.js fallback. */
-function env(key: string): string | undefined {
-  const metaEnv =
-    typeof import.meta !== 'undefined' && (import.meta as any)?.env
-      ? ((import.meta as any).env as Record<string, string | undefined>)
-      : undefined;
-
-  if (metaEnv && Object.prototype.hasOwnProperty.call(metaEnv, key)) {
-    return metaEnv[key];
-  }
-
-  // Warn if not found
+/** Read env from Cloudflare-compatible env, with fallback. */
+function env(key: string, cfEnv?: Record<string, string>): string | undefined {
+  if (cfEnv && key in cfEnv) return cfEnv[key];
   console.warn('[schema.env] Key not found:', key);
   return undefined;
 }
@@ -33,7 +24,7 @@ export function isDisposableDomainWithEnv(domain: string): boolean {
   // Base disposable list
   if (isDisposableDomain(domain)) return true;
   // Optional extra comma-separated list from env (e.g., "yopmail.com,trashmail.com")
-  const extra = env('DISPOSABLE_EXTRA');
+  const extra = env('DISPOSABLE_EXTRA', typeof globalThis !== 'undefined' ? (globalThis as any).env : undefined);
   if (extra) {
     const set = new Set(
       extra

@@ -1,5 +1,6 @@
 # build output
 dist/
+
 # generated types
 .astro/
 .cache/  # Astro cache
@@ -19,8 +20,8 @@ trace.log
 # environment variables
 .env
 .env.*
-.env.production
 .envrc
+.env.production
 
 # VS Code settings
 .vscode/
@@ -64,8 +65,12 @@ tsconfig.tsbuildinfo
 coverage/
 .nyc_output/
 
-# cloudflare wrangler cache
+# wrangler files
 .wrangler/
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
 
 # transient automation buffers
 src/data/tmp/*.json

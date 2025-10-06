@@ -167,7 +167,7 @@ export async function main(env: any, params?: URLSearchParams | Record<string, s
     return;
   }
 
-  await sendSlackMessage(msg);
+  await sendSlackMessage(msg, env);
 
   // After successful post, clear the submissions so it doesn't grow forever
   await saveSubmissions(env, []);
