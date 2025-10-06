@@ -1,3 +1,6 @@
-name = "amanssur-com"
-compatibility_date = "2025-10-04"
-compatibility_flags = ["nodejs_compat"]
+name = "amanssur"
+compatibility_date = "2024-10-01"
+
+[pages]
+pages_build_output_dir = "./dist"
+functions = "./functions"
