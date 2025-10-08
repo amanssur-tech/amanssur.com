@@ -30,7 +30,7 @@ Although they are not registered trademarks yet, I reserve full rights over them
 They may not be copied, redistributed, or reused without my permission.  
 
 ### 🔗 Live site  
-👉 [amanssur.com](https://amanssur.com) (link will work once published).  
+👉 [amanssur.com](https://amanssur.com)
 
 ### 📬 Contact  
 If you want to get in touch, the best way is through the [contact form](https://amanssur.com/#contact) on the site.  
