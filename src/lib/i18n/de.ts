@@ -1,5 +1,3 @@
-import { no } from "zod/locales";
-
 export default {
   meta: {
     title: "Amanullah Manssur | IT Solutions Consultant · Web, Cloud & Automation",

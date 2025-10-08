@@ -4,13 +4,9 @@
  */
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "amanssurfix",
-	"main": "./dist/_worker.js",
+	"name": "amanssur-com",
 	"compatibility_date": "2025-10-04",
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
-	"pages_build_output_dir": "./dist",
+	"pages_build_output_dir": "dist",
 
 	// Enables logging, metrics, and better debugging in Cloudflare dashboard	
 	"observability": {

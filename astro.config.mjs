@@ -12,9 +12,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // https://astro.build/config
 export default defineConfig({
-<<<<<<< HEAD
-  adapter: cloudflare(),
-=======
   output: "server",
   adapter: cloudflare({
     platformProxy: {
@@ -22,7 +19,6 @@ export default defineConfig({
     },
     imageService: "cloudflare"
   }),
->>>>>>> 2eec07f (🧹 Wiped old repo + added clean amanssurfix project)
   integrations: [svelte(), mdx()],
   vite: {
     ...viteConfig,

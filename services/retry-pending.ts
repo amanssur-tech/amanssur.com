@@ -103,7 +103,7 @@ async function retryPendingMails() {
             text,
             html,
             subject: subject ?? '',
-          });
+          }, {});
           console.log(`✓ Notification to ${email} relayed successfully on attempt ${attempt}`);
           sent = true;
           break;
@@ -123,7 +123,7 @@ async function retryPendingMails() {
       let sent = false;
       for (let attempt = 1; attempt <= 3; attempt++) {
         try {
-          await sendAutoReplyMail({ toEmail, subject, text, html });
+          await sendAutoReplyMail({ toEmail, subject, text, html }, {});
           console.log(`✓ Auto-reply to ${toEmail} sent successfully on attempt ${attempt}`);
           sent = true;
           break;
