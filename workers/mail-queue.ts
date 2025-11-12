@@ -1,5 +1,5 @@
 /// <reference types="@cloudflare/workers-types" />
-import { sendFormNotificationMail, sendAutoReplyMail } from '../../src/lib/mail';
+import { sendFormNotificationMail, sendAutoReplyMail } from '../src/lib/mail';
 
 declare const MAIL_QUEUE: KVNamespace;
 

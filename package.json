@@ -12,11 +12,12 @@
 		"cf-typegen": "wrangler types",
 		"dev:worker": "wrangler dev workers/mail-queue/src/index.ts",
 		"deploy:worker": "wrangler deploy workers/mail-queue/src/index.ts",
-		"retry-pending": "tsx services/retry-pending.ts",
-		"digest:slack": "tsx services/digest-slack.ts",
-		"push:notion": "tsx services/push-notion.ts"
+		"retry-pending": "tsx workers/retry-pending.ts",
+		"digest:slack": "tsx workers/digest-slack.ts",
+		"push:notion": "tsx workers/push-notion.ts"
 	},
 	"dependencies": {
+		"@astrojs/check": "^0.9.5",
 		"@astrojs/cloudflare": "^12.6.9",
 		"@astrojs/mdx": "^4.3.6",
 		"@astrojs/svelte": "^7.2.0",
@@ -32,6 +33,7 @@
 		"svelte2tsx": "^0.7.44"
 	},
 	"devDependencies": {
+		"@astrojs/node": "^9.5.0",
 		"@cloudflare/workers-types": "^4.20251004.0",
 		"@tsconfig/svelte": "^5.0.5",
 		"@types/node": "^24.7.0",
@@ -40,9 +42,9 @@
 		"tailwindcss": "^4.1.14",
 		"typescript": "^5.9.3"
 	},
-"overrides": {
-  "zod": "3.25.76",
-  "miniflare": "4.20251001.0",
-  "wrangler": "4.42.0"
-}
+	"overrides": {
+		"zod": "3.25.76",
+		"miniflare": "4.20251001.0",
+		"wrangler": "4.42.0"
+	}
 }

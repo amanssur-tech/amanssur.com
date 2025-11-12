@@ -1,0 +1,9 @@
+# robots.txt for https://amanssur.com
+# Last updated: 2025-11-12
+
+User-agent: *
+Allow: /
+Disallow: /legal
+Disallow: /de/legal
+
+Sitemap: https://amanssur.com/sitemap.xml

@@ -74,3 +74,6 @@ coverage/
 
 # transient automation buffers
 src/data/tmp/*.json
+
+# local project inspection dumps
+project_contents.txt

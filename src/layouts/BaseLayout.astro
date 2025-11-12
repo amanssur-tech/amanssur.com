@@ -18,20 +18,29 @@ const { title, description } = translations[lang].meta ?? { title: '', descripti
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {!noindex && <meta name="robots" content="index, follow" />}
     <!-- in BaseLayout.astro head -->
     <link rel="canonical" href={`https://amanssur.com${Astro.url.pathname}`} />
-    <link rel="alternate" href="https://amanssur.com/" hreflang="en" />
-    <link rel="alternate" href="https://amanssur.com/de/" hreflang="de" />
-    <link rel="alternate" href="https://amanssur.com/" hreflang="x-default" />
+    <link rel="alternate" href={`https://amanssur.com${page === 'home' ? '/' : `/${page}`}`} hreflang="en" />
+    <link rel="alternate" href={`https://amanssur.com/de${page === 'home' ? '/' : `/${page}`}`} hreflang="de" />
+    <link rel="alternate" href={`https://amanssur.com${page === 'home' ? '/' : `/${page}`}`} hreflang="x-default" />
 
     <link rel="icon" type="image/svg+xml" href="/favicons/AM-Logo.svg">
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicons/AM-Logo-512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicons/AM-Logo-192.png">
     <link rel="icon" href="/favicons/AM-Logo.ico" type="image/x-icon" sizes="any">
     <link rel="apple-touch-icon" href="/favicons/AM-Logo-180.png">
     <link rel="mask-icon" href="/favicons/AM-Logo.svg" color="#000000">
-    <link rel="manifest" href="/meta/manifest.webmanifest">
+    <link rel="manifest" href="/manifest.webmanifest">
 
     <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
     <meta name="theme-color" content="#18181B" media="(prefers-color-scheme: dark)">
+    <meta name="color-scheme" content="light dark">
+
+    {page === 'cv' && (
+      <link rel="preload" href="/fonts/Syne-Variable.woff2" as="font" type="font/woff2" crossorigin />
+    )}
+    <link rel="preload" href="/images/hero-photo.avif" as="image" />
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -40,16 +49,20 @@ const { title, description } = translations[lang].meta ?? { title: '', descripti
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://amanssur.com" />
+    <meta property="og:url" content={`https://amanssur.com${Astro.url.pathname}`} />
     <meta property="og:site_name" content="Amanullah Manssur" />
     <meta property="og:image" content="https://amanssur.com/images/og-banner.jpg" />
+    <meta property="og:image:alt" content="Portrait of Amanullah Manssur, IT Solutions Consultant" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content={lang === 'de' ? 'de_DE' : 'en_US'} />
+    <meta property="og:locale:alternate" content={lang === 'de' ? 'en_US' : 'de_DE'} />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content="https://amanssur.com/images/og-banner.jpg" />
+    <meta name="twitter:image:alt" content="Portrait of Amanullah Manssur, IT Solutions Consultant" />
     <meta name="twitter:site" content="@ManssurMedia" />
     <style is:global>
       @import '../styles/global.css';
@@ -57,6 +70,60 @@ const { title, description } = translations[lang].meta ?? { title: '', descripti
     {page === 'cv' && (
       <link rel="stylesheet" href="/fonts/Syne.css" />
     )}
+    <script is:inline type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Amanullah Manssur",
+        "url": "https://amanssur.com",
+        "image": "https://amanssur.com/images/hero-photo.avif",
+        "jobTitle": "IT Solutions Consultant",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Manssur Media"
+        },
+        "sameAs": [
+          "https://github.com/amanssur-tech",
+          "https://linkedin.com/in/amanssur"
+        ],
+        "description": "IT solutions consultant specializing in web, SaaS, and automation. Bilingual site, downloadable CVs, and project portfolio.",
+        "knowsAbout": [
+          "Web Development",
+          "SaaS",
+          "Automation",
+          "IT Consulting",
+          "APIs",
+          "CRM"
+        ],
+        "alumniOf": {
+          "@type": "CollegeOrUniversity",
+          "name": "University of Cologne"
+        }
+      }
+    </script>
+
+    <script is:inline type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "amanssur.com",
+        "url": "https://amanssur.com"
+      }
+    </script>
+
+    <script is:inline type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Manssur Media",
+        "url": "https://manssurmedia.com",
+        "logo": "https://manssurmedia.com/favicons/MM-Logo.svg",
+        "sameAs": [
+          "https://linkedin.com/company/manssurmedia"
+        ],
+        "description": "Manssur Media is a web, SaaS, and automation consulting brand founded by Amanullah Manssur."
+      }
+    </script>
   </head>
   <body class={`${page}`}>
     <HR lang={lang} page={page} client:load />

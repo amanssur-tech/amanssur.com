@@ -1,4 +1,4 @@
-// scripts/push-notion.ts
+// workers/push-notion.ts
 // Reads submissions from Cloudflare KV and pushes them to Notion CRM
 
 interface KVNamespace {

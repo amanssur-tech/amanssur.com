@@ -1,36 +1,74 @@
 
-# amanssur.com  
+# amanssur.com
 
-### ✨ What is this?  
-This is my **personal website & portfolio**. It’s the place where I introduce myself as an IT solutions consultant, showcase my projects, and give people a way to connect with me.  
+Personal website, portfolio, and contact hub of **Amanullah Manssur**.
 
-### 🌍 Who is it for?  
-- Businesses looking for **web, cloud, or automation solutions**  
-- Recruiters and clients who want to **see my CV and portfolio**  
-- Anyone curious about the work I do and the tools I use  
+## ✨ Overview
+amanssur.com is my central place on the web where I present myself as an **IT solutions consultant**, show selected projects, and make it easy for businesses and recruiters to contact me.
 
-### 🛠️ How is it built? *(non-techie version)*  
-The site is made with modern web tools that help it load fast, stay flexible, and scale well:  
-- **Astro** → Think of it as the “builder” that puts the whole website together. It handles things like HTML, meta tags, and how pages are structured.  
-- **Svelte** → This is what makes the site interactive (like forms, buttons, and navigation). You can imagine it as the “moving parts” inside the site.  
-- **Cloudflare Pages** → This is where the site lives on the internet. It’s a service that delivers the site quickly to people anywhere in the world.  
+## 🌍 Who is this site for?
+- Businesses that need **web, cloud, or automation solutions**
+- Recruiters who want to quickly **scan my profile and CV**
+- People who are curious about my **tech stack, projects, and workflows**
 
-### 📂 What’s inside this repo?  
-- `/public` → Images, CV PDFs, fonts, icons, and other files that visitors can download or see directly.  
-- `/src` → The actual code that defines how the site looks and behaves.  
-  - `pages` → The different pages (Home, CV, Legal, etc.)  
-  - `components` → Reusable parts (navigation bar, footer, contact form, etc.)  
-  - `wrappers` → Page-level containers for layouts  
-  - `lib` → Helper logic (translations, form validation, etc.)  
-- `/services` → Scripts and automations (e.g. sending contact form submissions, Slack digests).  
+## 🧱 Tech stack
+Non fluffy version, just the essentials:
 
-### 🎨 Brand & Assets  
-All logos, icons, and branding elements in this repository were created by me, Amanullah Manssur.  
-Although they are not registered trademarks yet, I reserve full rights over them.  
-They may not be copied, redistributed, or reused without my permission.  
+- **Astro**: Handles routing, layouts, HTML, and meta data.
+- **Svelte**: Powers interactive bits like forms and UI components.
+- **Tailwind CSS**: Utility first styling for fast, consistent layouts.
+- **Cloudflare Pages**: Static hosting with a global CDN for fast delivery.
+- **Cloudflare Functions / services**: For background tasks and automations.
 
-### 🔗 Live site  
-👉 [amanssur.com](https://amanssur.com) (link will work once published).  
+## 💡 Key features
+- **Bilingual site (EN / DE)** with clean URLs and language aware navigation.
+- **Portfolio and CV section** that highlights my background, skills, and experience.
+- **Downloadable CV** in multiple variants, optimized for sharing and printing.
+- **Contact form** with validation and a human friendly design.
+- **Service and automation scripts** under `/services` for things like mail handling or digests.
 
-### 📬 Contact  
-If you want to get in touch, the best way is through the [contact form](https://amanssur.com/#contact) on the site.  
+*(Some of these features are work in progress, the repository evolves together with my CV and portfolio.)*
+
+## 📂 Repository structure
+
+- **`/public`**: Static assets
+  - Images, favicons, fonts
+  - CV PDFs and other downloadable documents
+- **`/src`**: Main application code
+  - **`pages`**: Route level pages (Home, CV, Legal, etc.)
+  - **`components`**: Reusable UI parts (navigation, footer, contact form, etc.)
+  - **`wrappers`**: Layout and page wrappers
+  - **`lib`**: Shared utilities such as translations and validation helpers
+- **`/services`**: Automation and integration scripts
+
+## 🚀 Local development
+
+```bash
+# install dependencies
+npm install
+
+# start dev server
+npm run dev
+
+# build for production
+npm run build
+```
+
+Adjust commands if you prefer `pnpm` or `yarn`.
+
+## 🎨 Brand and assets
+All logos, icons, photos, and branding elements in this repository were created by **Amanullah Manssur**.
+
+They are **not** open for reuse. You may not copy, redistribute, or reuse them in other projects without my explicit permission, even if you fork this repository.
+
+## 🔗 Live site
+The live version of this project is available at:
+
+👉 **https://amanssur.com**
+
+## 📬 Contact
+The easiest way to reach me is through the contact form on the site:
+
+👉 **https://amanssur.com/#contact**
+
+You can also find my other links and contact channels directly on the homepage.

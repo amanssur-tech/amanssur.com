@@ -1,4 +1,4 @@
-// src/emails/contact-notif.ts
+// src/lib/mail/templates/contact-notif.ts
 // Builds the notification email (to you) for a new contact submission.
 // Returns { subject, text, html }.
 

@@ -1,16 +1,21 @@
 // src/lib/mail/index.ts
+
 import type { NotificationMailOptions, AutoReplyMailOptions } from './types';
+
+export {
+  buildAutoReply,
+  type AutoReplyParams,
+  type AutoReplyI18n,
+} from './templates/contact-autoreply';
+
+export {
+  buildContactNotif,
+  type ContactNotifParams,
+} from './templates/contact-notif';
 
 // Cloudflare-native env function reading from provided env object
 function env(key: string, cfEnv: Record<string, string>): string | undefined {
   return cfEnv[key];
-}
-
-function bool(v: unknown): boolean {
-  if (typeof v === 'boolean') return v;
-  if (typeof v === 'string') return v === 'true' || v === '1' || v.toLowerCase() === 'yes';
-  if (typeof v === 'number') return v !== 0;
-  return false;
 }
 
 async function hmacSHA256(key: string, message: string): Promise<string> {

@@ -3,14 +3,13 @@
 export const prerender = false;
 
 import type { APIRoute } from 'astro';
-import { sendSlackMessage } from '../../lib/slack';
 import { getProps, type Lang } from '../../lib/i18n';
 import { normalizeWebsite, normalizePhone, langFullName, mapReasonToLabel, buildSubmissionRecord, sanitize } from '@/lib/contact/transform';
-import { appendSubmission, enqueuePending } from '@/lib/data/store.ts';
-import { buildAutoReply, buildContactNotif } from '@/emails';
-import { sendFormNotificationMail, sendAutoReplyMail } from '@/lib/mail';
-import type { Reason, ContactFormSubmission, QueuedNotification, QueuedAutoResponder } from '@/lib/mail/types';
+import { appendSubmission } from '@/lib/data/store.ts';
+import { buildAutoReply, buildContactNotif } from '@/lib/mail';
+import type { Reason, ContactFormSubmission } from '@/lib/mail/types';
 import { parseAndValidate, checkRateLimit, parseDomain, isDisposableDomainWithEnv } from '@/lib/contact/schema';
+import { handleContactMailFlow } from '@/lib/mail/mailer';
 
 export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
   try {
@@ -109,113 +108,28 @@ export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
     // Prebuild auto‑reply so we can enqueue it even if notif send fails in DEV
     const ar = buildAutoReply({ t: getProps(lang as Lang, 'contact').autoreply, firstName, message, reason, reasonLabel, subjectEsc, });
 
-    if (!isProd) {
-      try {
-        await sendFormNotificationMail({
-          firstName,
-          lastName,
-          email,
-          message,
-          lang,
-          subject: notifSubject,
-          html: notifHtml,
-          text: notifText,
-        }, env);
-        t2 = Date.now();
-      } catch (err) {
-        console.error('[MAIL-ERROR] DEV notification failed:', err);
-        try {
-          await sendSlackMessage(`[MAIL-FAIL][DEV] notif: ${err instanceof Error ? err.message : String(err)}\n${slackCtx}`, env);
-        } catch {}
-        // DEV: also enqueue so you can test retry flow
-        try {
-          await enqueuePending({
-            type: 'notification',
-            queuedAt: new Date().toISOString(),
-            payload: { firstName, lastName, email, message, lang, ip, text: notifText, html: notifHtml },
-          } as QueuedNotification, env);
-        } catch {}
-        try {
-          await enqueuePending({
-            type: 'autoresponder',
-            queuedAt: new Date().toISOString(),
-            payload: { toEmail: email, subject: ar.subject, text: ar.text, html: ar.html, firstName, lastName, lang },
-          } as QueuedAutoResponder, env);
-        } catch {}
-        // Since we queued the work, tell the client it succeeded to avoid duplicate submissions
-        return new Response(JSON.stringify({ ok: true, queued: true }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-    } else {
-      try {
-        await sendFormNotificationMail({
-          firstName,
-          lastName,
-          email,
-          message,
-          lang,
-          subject: notifSubject,
-          html: notifHtml,
-          text: notifText,
-        }, env);
-        t2 = Date.now();
-      } catch (err) {
-        console.error('[MAIL-ERROR] PROD notification failed:', err);
-        try {
-          await sendSlackMessage(`[MAIL-FAIL][PROD] notif: ${err instanceof Error ? err.message : String(err)}\n${slackCtx}`, env);
-        } catch {}
-        try {
-          await enqueuePending({
-            type: 'notification',
-            queuedAt: new Date().toISOString(),
-            payload: { firstName, lastName, email, message, lang, ip, text: notifText, html: notifHtml },
-          } as QueuedNotification, env);
-        } catch {}
-        try {
-          await enqueuePending({
-            type: 'autoresponder',
-            queuedAt: new Date().toISOString(),
-            payload: { toEmail: email, subject: ar.subject, text: ar.text, html: ar.html, firstName, lastName, lang },
-          } as QueuedAutoResponder, env);
-        } catch {}
-        return new Response(JSON.stringify({ ok: true, queued: true }), {
-          status: 200,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-    }
+    const result = await handleContactMailFlow({
+      firstName,
+      lastName,
+      email,
+      message,
+      lang,
+      ip,
+      notifText,
+      notifHtml,
+      notifSubject,
+      ar,
+      slackCtx,
+      env,
+      isProd,
+    });
 
-    // --- Best-effort auto-reply (background) ---
-    if (!isProd) {
-      await sendAutoReplyMail({
-        toEmail: email,
-        subject: ar.subject,
-        text: ar.text,
-        html: ar.html,
-      }, env).catch(async (e) => {
-        console.warn('[MAIL-FAIL][DEV] autoresponder:', e);
-        try { await sendSlackMessage(`[MAIL-FAIL][DEV] autoresponder: ${e instanceof Error ? e.message : String(e)}\n${slackCtx}`, env); } catch {}
-        try {
-          await enqueuePending({
-            type: 'autoresponder',
-            queuedAt: new Date().toISOString(),
-            payload: { toEmail: email, subject: ar.subject, text: ar.text, html: ar.html, firstName, lastName, lang },
-          } as QueuedAutoResponder, env);
-        } catch {}
-      });
-    } else {
-      await sendAutoReplyMail({
-        toEmail: email,
-        subject: ar.subject,
-        text: ar.text,
-        html: ar.html,
-      }, env).catch(async (e) => {
-        console.warn('[MAIL-FAIL][PROD] autoresponder:', e);
-        try {
-          await sendSlackMessage(`[MAIL-FAIL][PROD] autoresponder: ${e instanceof Error ? e.message : String(e)}\n${slackCtx}`, env);
-        } catch {}
+    t2 = result.t2;
+
+    if (result.queued) {
+      return new Response(JSON.stringify({ ok: true, queued: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 

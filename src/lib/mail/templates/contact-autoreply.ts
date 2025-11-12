@@ -1,4 +1,4 @@
-// src/emails/contact-autoreply.ts
+// src/lib/mail/templates/contact-autoreply.ts
 // Builds the auto-reply email content (to the sender) from i18n + form data.
 // Returns { subject, text, html }.
 import { escapeHtml } from '@/lib/contact/transform';

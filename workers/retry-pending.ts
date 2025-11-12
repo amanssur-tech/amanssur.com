@@ -1,4 +1,4 @@
-// services/retry-pending.ts
+// workers/retry-pending.ts
 // This script retries sending pending emails stored in Cloudflare KV.
 // It reads the queue from KV, attempts to send each email,
 // and removes successfully sent items from the queue. Remaining items are saved back.
