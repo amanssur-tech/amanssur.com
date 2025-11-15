@@ -1,8 +1,8 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
-  import { getProps } from '../lib/i18n';
+  import { getProps, type Lang } from '../lib/i18n';
   import { getContext, tick, onMount } from 'svelte';
-  import type { Lang } from '../lib/i18n';
+  import { logDev } from '../lib/contact/dev-log';
 
   const lang = getContext('lang') as Lang;
   const { heading, paragraph, form } = getProps(lang, 'contact');
@@ -15,54 +15,6 @@
 
   let formWrapper: HTMLDivElement | null = null;
   let hasPulsed = false;
-
-  // -- helpers ---------------------------------------------------------------
-  function maskToken(s: string | undefined): string {
-    if (!s) return '';
-    if (s.length <= 2) return s.charAt(0) ?? '';
-    const first = s.charAt(0);
-    const last = s.charAt(s.length - 1);
-    return first + '*'.repeat(s.length - 2) + last;
-  }
-  function maskEmail(email: unknown): string {
-    if (typeof email !== 'string') return '';
-    const [userRaw, domainFull] = email.split('@');
-    const user = userRaw ?? '';
-    if (!domainFull) return email;
-    const parts = domainFull.split('.');
-    const domain = parts.shift() ?? '';
-    const tld = parts.join('.') || '';
-    const u = maskToken(user);
-    const d = maskToken(domain);
-    return `${u}@${d}${tld ? '.' + tld : ''}`;
-  }
-  function summarizeMessage(msg: unknown, maxPreview = 0): string {
-    if (typeof msg !== 'string') return '';
-    const len = msg.length;
-    if (maxPreview <= 0) return `(message: ${len} chars)`;
-    const preview = msg.slice(0, maxPreview).replace(/\s+/g, ' ').trim();
-    return `${preview}${len > maxPreview ? `… (${len} chars)` : ''}`;
-  }
-  function maybeMask(data: Record<string, unknown>, mask: boolean): Record<string, unknown> {
-    if (!mask) return data;
-    return {
-      ...data,
-      email: maskEmail(data.email),
-      message: summarizeMessage(data.message, 0), // just length info
-    };
-  }
-  function logDev(message: string, data?: Record<string, unknown>, duration?: number) {
-    // Always log for now, regardless of env
-    const ts = `[${new Date().toLocaleTimeString()}]`;
-    const isSlow = duration !== undefined && duration > 1000;
-    const payload = data ? maybeMask(data, isSlow) : undefined;
-    if (isSlow) {
-      console.warn(`${ts} ⚠️ ${message}${duration ? ` (${duration} ms)` : ''}`, payload ?? '');
-    } else {
-      console.log(`${ts} ${message}${duration ? ` (${duration} ms)` : ''}`, payload ?? '');
-    }
-  }
-  // --------------------------------------------------------------------------
 
   async function handleSubmit(e: SubmitEvent) {
     e.preventDefault();

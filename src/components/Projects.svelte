@@ -1,7 +1,6 @@
 <script lang="ts">
-  import { getContext } from 'svelte';
+  import { getContext, tick, onMount } from 'svelte';
   import { getProps, type Lang, type TranslationSchema } from '../lib/i18n';
-  import { tick, onMount } from 'svelte';
   import ProjectOverlay from './ProjectOverlay.svelte';
   import ProjectCard from './ProjectCard.svelte';
 
