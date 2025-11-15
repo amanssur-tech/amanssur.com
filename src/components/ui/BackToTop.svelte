@@ -2,7 +2,7 @@
   import { onMount } from 'svelte';
   import { fade, fly } from 'svelte/transition';
   import { getContext } from 'svelte';
-  import type { Lang } from '../lib/i18n';
+  import type { Lang } from '../../lib/i18n';
   const lang = getContext('lang') as Lang;
 
   let visible = false;

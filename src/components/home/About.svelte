@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type { TranslationSchema, Lang } from '../lib/i18n';
-  import { getProps } from '../lib/i18n';
+  import type { TranslationSchema, Lang } from '../../lib/i18n';
+  import { getProps } from '../../lib/i18n';
   import { getContext, onMount } from 'svelte';
 
   const lang = getContext('lang') as Lang;

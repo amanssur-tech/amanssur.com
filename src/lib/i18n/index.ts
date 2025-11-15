@@ -20,17 +20,14 @@ export type TranslationSchema = {
   projects: {
     heading: string;
     paragraph: string;
-    highlight1: string;
-    h1p1: string;
-    h1p2: string;
-    highlight2: string;
-    h2p1: string;
-    h2p2: string;
-    highlight3: string;
-    h3p1: string;
-    h3p2: string;
     github: string;
     explore: string;
+    items: {
+      id: number;
+      title: string;
+      bullets: string[];
+      alt: string;
+    }[];
   };
   contact: {
     heading: string;

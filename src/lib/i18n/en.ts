@@ -16,20 +16,40 @@ export default {
     ],
     cta: "View my CV"
   },
-  projects: {
+    projects: {
     heading: "Selected Projects",
-    paragraph: "A few examples of systems and websites I’ve delivered for SMEs — combining clean design with automation, integrations, and business-focused outcomes. For more, visit ",
-    highlight1: "🔧 Automotive Service Platform",
-    h1p1: "CRM-integrated booking & automated email reminders",
-    h1p2: "Mobile-first design for easy access on the go",
-    highlight2: "🛒 E-Commerce Storefront",
-    h2p1: "Streamlined checkout with payment & inventory automation",
-    h2p2: "Custom catalog with simple, conversion-driven navigation",
-    highlight3: "🛎️ Hospitality Booking System",
-    h3p1: "Integrated booking system with availability calendar",
-    h3p2: "Optimized performance for fast, reliable load times",
+    paragraph: "A few examples of systems and websites I’ve delivered for SMEs, combining clean design with automation, integrations, and business-focused outcomes. For more, visit ",
     github: "I also publish guides, code snippets, and automation demos on ",
-    explore: "↕️ Explore site"
+    explore: "↕️ Explore site",
+    items: [
+      {
+        id: 1,
+        title: "🔧 Automotive Service Platform",
+        bullets: [
+          "CRM-integrated booking & automated email reminders",
+          "Mobile-first design for easy access on the go"
+        ],
+        alt: "Automotive service platform website preview"
+      },
+      {
+        id: 2,
+        title: "🛒 E-Commerce Storefront",
+        bullets: [
+          "Streamlined checkout with payment & inventory automation",
+          "Custom catalog with simple, conversion-driven navigation"
+        ],
+        alt: "E-commerce storefront preview"
+      },
+      {
+        id: 3,
+        title: "🛎️ Hospitality Booking System",
+        bullets: [
+          "Integrated booking system with availability calendar",
+          "Optimized performance for fast, reliable load times"
+        ],
+        alt: "Hospitality booking system preview"
+      }
+    ]
   },
   contact: {
     heading: "Let’s Connect",

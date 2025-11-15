@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  import { getProps } from '../lib/i18n';
-  import type { Lang } from '../lib/i18n';
+  import { getProps } from '../../lib/i18n';
+  import type { Lang } from '../../lib/i18n';
 
   const lang = getContext('lang') as Lang;
   const { heading, responsible, email, note, form } = getProps(lang, 'impressum');

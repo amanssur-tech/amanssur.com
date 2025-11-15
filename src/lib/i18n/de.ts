@@ -16,20 +16,40 @@ export default {
   ],
   cta: "Lebenslauf ansehen"
   },
-  projects: {
+    projects: {
     heading: "Ausgewählte Projekte",
-    paragraph: "Einige Beispiele für Systeme und Websites, die ich für KMUs geliefert habe — eine Kombination aus klarem Design, Automatisierung, Integrationen und geschäftsorientierten Ergebnissen. Für mehr, besuche ",
-    highlight1: "🔧 KFZ-Service Plattform",
-    h1p1: "CRM-integrierte Buchung & automatisierte E-Mail-Erinnerungen",
-    h1p2: "Mobil-optimiertes Design für einfachen Zugriff unterwegs",
-    highlight2: "🛒 E-Commerce Shop",
-    h2p1: "Optimierter Checkout mit Zahlungs- & Bestandsautomatisierung",
-    h2p2: "Individueller Katalog mit einfacher, konversionsorientierter Navigation",
-    highlight3: "🛎️ Gaststätte Buchungssystem",
-    h3p1: "Integriertes Buchungssystem mit Verfügbarkeitskalender",
-    h3p2: "Optimierte Leistung für schnelle, zuverlässige Ladezeiten",
+    paragraph: "Einige Beispiele für Systeme und Websites, die ich für KMUs geliefert habe, eine Kombination aus klarem Design, Automatisierung, Integrationen und geschäftsorientierten Ergebnissen. Für mehr, besuche ",
     github: "Ich veröffentliche auch Anleitungen, Code-Snippets und Automatisierungs-Demos auf ",
-    explore: "↕️ Website erkunden"
+    explore: "↕️ Website erkunden",
+    items: [
+      {
+        id: 1,
+        title: "🔧 KFZ-Service Plattform",
+        bullets: [
+          "CRM-integrierte Buchung & automatisierte E-Mail-Erinnerungen",
+          "Mobil-optimiertes Design für einfachen Zugriff unterwegs"
+        ],
+        alt: "Vorschau der KFZ-Service Plattform Website"
+      },
+      {
+        id: 2,
+        title: "🛒 E-Commerce Shop",
+        bullets: [
+          "Optimierter Checkout mit Zahlungs- & Bestandsautomatisierung",
+          "Individueller Katalog mit einfacher, konversionsorientierter Navigation"
+        ],
+        alt: "Vorschau des E-Commerce Shops"
+      },
+      {
+        id: 3,
+        title: "🛎️ Gaststätte Buchungssystem",
+        bullets: [
+          "Integriertes Buchungssystem mit Verfügbarkeitskalender",
+          "Optimierte Leistung für schnelle, zuverlässige Ladezeiten"
+        ],
+        alt: "Vorschau des Gaststätten-Buchungssystems"
+      }
+    ]
   },
   contact: {
     heading: "Lass uns verbinden",

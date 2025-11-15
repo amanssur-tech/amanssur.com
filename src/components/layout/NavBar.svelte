@@ -1,8 +1,8 @@
 <script lang="ts">
   import { getContext, onMount, onDestroy } from 'svelte';
-  import { getProps } from '../lib/i18n/index';
-  import type { Lang } from '../lib/i18n';
-  import LanguageToggle from './LanguageToggle.svelte';
+  import { getProps } from '../../lib/i18n/index';
+  import type { Lang } from '../../lib/i18n';
+  import LanguageToggle from '../ui/LanguageToggle.svelte';
   const page = getContext<string>("page");
   const lang = getContext('lang') as Lang;
   const { sitename, about, projects, contact, cv} = getProps(lang, 'navlinks');

@@ -76,4 +76,4 @@ coverage/
 src/data/tmp/*.json
 
 # local project inspection dumps
-project_contents.txt
+project_contents*.txt
