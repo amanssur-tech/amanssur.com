@@ -1,8 +1,8 @@
 <script lang="ts">
   import { fade } from 'svelte/transition';
-  import { getProps, type Lang } from '../lib/i18n';
+  import { getProps, type Lang } from '../../lib/i18n';
   import { getContext, tick, onMount } from 'svelte';
-  import { logDev } from '../lib/contact/dev-log';
+  import { logDev } from '../../lib/contact/dev-log';
 
   const lang = getContext('lang') as Lang;
   const { heading, paragraph, form } = getProps(lang, 'contact');

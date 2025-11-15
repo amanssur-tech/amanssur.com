@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { TranslationSchema } from '../lib/i18n';
+  import type { TranslationSchema } from '../../../lib/i18n';
 
   type ProjectItem = TranslationSchema['projects']['items'][number];
 
