@@ -265,7 +265,7 @@
         <input
           type="hidden"
           name="lang"
-          value="{lang}"
+          value="{$lang}"
         />
         <!-- Honeypot -->
         <input
