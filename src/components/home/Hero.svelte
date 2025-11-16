@@ -2,10 +2,13 @@
   import { getProps } from '../../lib/i18n';
   import { getContext } from 'svelte';
   import type { Lang } from '../../lib/i18n';
+  import type { Writable } from 'svelte/store';
 
-  const lang = getContext('lang') as Lang;
+  const lang = getContext('lang') as Writable<Lang>;
 
-  const {heading, subheading, cta} = getProps(lang, 'hero');
+  let hero = getProps('en', 'hero');
+
+  $: hero = getProps($lang, 'hero');
 </script>
 
 <section class="min-h-screen flex flex-col items-center justify-center py-24 px-6 text-center hyphens-none">
@@ -14,11 +17,11 @@
     
     <!-- Text -->
     <div class="text-center">
-      <h1 class="text-5xl sm:text-6xl font-bold mb-6">{heading}</h1>
-      <p class="text-2xl max-w-2xl mx-auto md:mx-0">{subheading}</p>
+      <h1 class="text-5xl sm:text-6xl font-bold mb-6">{hero.heading}</h1>
+      <p class="text-2xl max-w-2xl mx-auto md:mx-0">{hero.subheading}</p>
       <div class="mt-8 flex justify-center">
         <a href="#contact" role="button" class="px-6 py-3 rounded-xl font-semibold transition-colors shadow-lg hover:shadow-xl shadow-gray-700/30 bg-black text-white hover:bg-black/80 active:bg-black/70 dark:bg-gray-700 dark:hover:bg-gray-600 dark:active:bg-gray-700/80">
-          {cta}
+          {hero.cta}
         </a>
       </div>
     </div>

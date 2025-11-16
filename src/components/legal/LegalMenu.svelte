@@ -1,12 +1,15 @@
 <script lang="ts">
   import { getContext } from 'svelte';
   import { getProps, type Lang } from '../../lib/i18n';
+  import type { Writable } from 'svelte/store';
 
-  const lang = getContext('lang') as Lang;
+  const lang = getContext('lang') as Writable<Lang>;
 
-  const { menu: menuLabel } = getProps(lang, 'impressum');
-  const { impressum, disclaimer, copyright, privacy } =
-    getProps(lang, 'footer');
+  let menuLabel = getProps('en', 'impressum').menu;
+  let footerLinks = getProps('en', 'footer');
+
+  $: menuLabel = getProps($lang, 'impressum').menu;
+  $: footerLinks = getProps($lang, 'footer');
 
   let open = false;
   let buttonEl: HTMLButtonElement;
@@ -116,49 +119,49 @@
           <li>
             <a
               role="menuitem"
-              href={impressum.href}
+              href={footerLinks.impressum.href}
               class="block no-underline text-inherit hover:bg-gray-100 dark:hover:bg-gray-700 rounded px-2 py-1"
               on:click={(e) => {
                 lastFocusedElement = e.currentTarget as HTMLElement;
               }}
             >
-              {impressum.name}
+              {footerLinks.impressum.name}
             </a>
           </li>
           <li>
             <a
               role="menuitem"
-              href={disclaimer.href}
+              href={footerLinks.disclaimer.href}
               class="block no-underline text-inherit hover:bg-gray-100 dark:hover:bg-gray-700 rounded px-2 py-1"
               on:click={(e) => {
                 lastFocusedElement = e.currentTarget as HTMLElement;
               }}
             >
-              {disclaimer.name}
+              {footerLinks.disclaimer.name}
             </a>
           </li>
           <li>
             <a
               role="menuitem"
-              href={copyright.href}
+              href={footerLinks.copyright.href}
               class="block no-underline text-inherit hover:bg-gray-100 dark:hover:bg-gray-700 rounded px-2 py-1"
               on:click={(e) => {
                 lastFocusedElement = e.currentTarget as HTMLElement;
               }}
             >
-              {copyright.name}
+              {footerLinks.copyright.name}
             </a>
           </li>
           <li>
             <a
               role="menuitem"
-              href={privacy.href}
+              href={footerLinks.privacy.href}
               class="block no-underline text-inherit hover:bg-gray-100 dark:hover:bg-gray-700 rounded px-2 py-1"
               on:click={(e) => {
                 lastFocusedElement = e.currentTarget as HTMLElement;
               }}
             >
-              {privacy.name}
+              {footerLinks.privacy.name}
             </a>
           </li>
         </ul>

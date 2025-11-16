@@ -6,52 +6,48 @@
 --------------------------- */
 
 @layer base {
-
   body {
-
     @apply font-sans antialiased bg-white text-black dark:bg-zinc-900 dark:text-gray-100;
     hyphens: auto;
     overflow-wrap: break-word;
-
-    
-
   }
 
-  h1, h2 {@apply scroll-mt-20;}
+  h1,
+  h2 {
+    @apply scroll-mt-20;
+  }
 
-  input:not([type="checkbox"]):not([type="radio"]), textarea, select {
-
+  input:not([type="checkbox"]):not([type="radio"]),
+  textarea,
+  select {
     @apply appearance-none opacity-100 text-gray-800 dark:text-gray-200 bg-white dark:bg-black/60 placeholder:text-gray-500 dark:placeholder:text-gray-400;
     background-image: none;
-
   }
 
-  input[type="checkbox"] {@apply appearance-none aspect-square opacity-100 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-black/60;}
+  input[type="checkbox"] {
+    @apply appearance-none aspect-square opacity-100 rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-black/60;
+  }
 
   /* Use SVG background to display custom checkmark when checked */
   input[type="checkbox"]:checked {
     @apply border-transparent bg-blue-600;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%23fff' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 13l4 4L19 7'/%3E%3C/svg%3E");
   }
-  
-
 }
 
 @theme {
-
   /* Custom CV brand colors */
-  --color-cvblue: #0042AA;
+  --color-cvblue: #0042aa;
   --color-cvgrey: #101828;
-  --color-cvgreylight: #D2DAEA;
-  --color-cvbluelight: #4E93FF;
-  --color-cvlist: #F5F5F5;
-  --color-cvlistdark: #18181B;
-  --color-cvbar: #E5EBF6;
-  --color-cvbardark: #1D2939;
+  --color-cvgreylight: #d2daea;
+  --color-cvbluelight: #4e93ff;
+  --color-cvlist: #f5f5f5;
+  --color-cvlistdark: #18181b;
+  --color-cvbar: #e5ebf6;
+  --color-cvbardark: #1d2939;
 
   /* Use for undoing the squint on non-text cv elements */
-  --cv-fix-scale: scaleX(calc(10/9));
-
+  --cv-fix-scale: scaleX(calc(10 / 9));
 }
 
 /* ---------------------------
@@ -59,76 +55,115 @@
 --------------------------- */
 
 @layer components {
-
-/* Coloring clickable Texts */
+  /* Coloring clickable Texts */
 
   .nav-hover {
     @apply inline-block transition duration-250 hover:scale-101 focus-visible:scale-101 active:scale-99
          hover:text-sky-950/80 dark:hover:text-sky-100/80;
   }
 
-
-         
-
-/* ---------------------------
+  /* ---------------------------
    Legal Page Styles
 --------------------------- */
 
-.privacy-container, .legal-container, .impressum-container, .disclaimer-container {
+  .privacy-container,
+  .legal-container,
+  .impressum-container,
+  .disclaimer-container {
+    hr {
+      @apply my-8 border-gray-300 dark:border-zinc-600/60;
+    }
+    h1,
+    h2,
+    h3 {
+      @apply mt-8 mb-3 text-black dark:text-gray-100;
+    }
+    h1 {
+      @apply text-3xl font-bold leading-tight;
+    }
+    h2 {
+      @apply text-2xl font-bold leading-snug;
+    }
+    h3 {
+      @apply text-xl font-semibold leading-snug;
+    }
+    p {
+      @apply mb-4;
+    }
+  }
 
-  hr {@apply my-8 border-gray-300 dark:border-zinc-600/60;}
-  h1, h2, h3 { @apply mt-8 mb-3 text-black dark:text-gray-100}
-  h1 {@apply text-3xl font-bold leading-tight;}
-  h2 {@apply text-2xl font-bold leading-snug;}
-  h3 {@apply text-xl font-semibold leading-snug;}
-  p{@apply mb-4;}
+  .privacy-container,
+  .impressum-container,
+  .disclaimer-container {
+    @apply px-0;
+  }
 
+  .privacy-content {
+    ul {
+      @apply list-disc list-inside mb-4;
+    }
+    ol {
+      @apply list-decimal list-inside mb-4;
+    }
+    li {
+      @apply mb-1;
+    }
+    a {
+      @apply underline inline-block transition duration-250 hover:scale-101 focus-visible:scale-101 active:scale-99
+         hover:text-sky-950/80 dark:hover:text-sky-100/80;
+    }
+  }
+
+  .privacy-wrapper {
+    @apply scroll-mt-12;
+  }
+  .impressum-wrapper {
+    @apply scroll-mt-20;
+    .pnote {
+      @apply m-0 leading-[1.4] text-[80%];
+    }
+    .pemail {
+      @apply mb-[0.3rem];
+    }
+  }
 }
-
-.privacy-container, .impressum-container, .disclaimer-container {@apply px-0;}
-
-.privacy-content {
-
-  ul {@apply list-disc list-inside mb-4;}
-  ol {@apply list-decimal list-inside mb-4;}
-  li {@apply mb-1;}
-  a {@apply underline inline-block transition duration-250 hover:scale-101 focus-visible:scale-101 active:scale-99
-         hover:text-sky-950/80 dark:hover:text-sky-100/80;}
-
-}
-
-.privacy-wrapper {@apply scroll-mt-12;}
-.impressum-wrapper { @apply scroll-mt-20;
-.pnote {@apply m-0 leading-[1.4] text-[80%];}
-.pemail {@apply mb-[0.3rem];}
-}
-
-}
-
 
 /* ---------------------------
    Reusable Page Utilities
 --------------------------- */
 
 @layer utilities {
-
   /* Make animations ease and linger longer at the ends */
   @keyframes linger-pulse {
-    0%, 15% { opacity: 1; }
-    40% { opacity: 0; }
-    60% { opacity: 0; }
-    85%, 100% { opacity: 1; }
+    0%,
+    15% {
+      opacity: 1;
+    }
+    40% {
+      opacity: 0;
+    }
+    60% {
+      opacity: 0;
+    }
+    85%,
+    100% {
+      opacity: 1;
+    }
   }
 
-
   @keyframes pulse-once {
-    0%   { transform: scale(1); }
-    40%  { transform: scale(1.05); }
-    100% { transform: scale(1); }
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
   }
 
   .animate-pulse-once {
     animation: pulse-once 600ms ease-out forwards;
   }
-
 }

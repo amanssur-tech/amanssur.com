@@ -1,10 +1,10 @@
 // src/lib/mail/mailer.ts
 // Central mail orchestration used by /api/contactForm.ts
 
-import { sendSlackMessage } from '@/lib/slack';
-import { enqueuePending } from '@/lib/data/store';
-import type { QueuedNotification, QueuedAutoResponder } from '@/lib/mail/types';
-import { sendFormNotificationMail, sendAutoReplyMail } from '@/lib/mail';
+import { sendSlackMessage } from "@/lib/slack";
+import { enqueuePending } from "@/lib/data/store";
+import type { QueuedNotification, QueuedAutoResponder } from "@/lib/mail/types";
+import { sendFormNotificationMail, sendAutoReplyMail } from "@/lib/mail";
 
 /**
  * Handles sending of form notification and autoresponder.
@@ -52,43 +52,56 @@ export async function handleContactMailFlow(params: {
         lastName,
         email,
         message,
-        lang: lang as 'en' | 'de',
+        lang: lang as "en" | "de",
         subject: notifSubject,
         html: notifHtml,
         text: notifText,
       },
-      sendEnv
+      sendEnv,
     );
     t2 = Date.now();
   } catch (err) {
-    const mode = isProd ? 'PROD' : 'DEV';
+    const mode = isProd ? "PROD" : "DEV";
     console.error(`[MAIL-ERROR] ${mode} notification failed:`, err);
     try {
       await sendSlackMessage(
         `[MAIL-FAIL][${mode}] notif: ${
           err instanceof Error ? err.message : String(err)
         }\n${slackCtx}`,
-        sendEnv
+        sendEnv,
       );
-    } catch {}
+    } catch {
+      // intentionally ignored
+    }
 
     // Queue fallback for notification
     try {
       await enqueuePending(
         {
-          type: 'notification',
+          type: "notification",
           queuedAt: new Date().toISOString(),
-          payload: { firstName, lastName, email, message, lang: lang as 'en' | 'de', ip, text: notifText, html: notifHtml },
+          payload: {
+            firstName,
+            lastName,
+            email,
+            message,
+            lang: lang as "en" | "de",
+            ip,
+            text: notifText,
+            html: notifHtml,
+          },
         } as QueuedNotification,
-        sendEnv
+        sendEnv,
       );
-    } catch {}
+    } catch {
+      // intentionally ignored
+    }
 
     // Queue fallback for autoresponder
     try {
       await enqueuePending(
         {
-          type: 'autoresponder',
+          type: "autoresponder",
           queuedAt: new Date().toISOString(),
           payload: {
             toEmail: email,
@@ -97,12 +110,14 @@ export async function handleContactMailFlow(params: {
             html: ar.html,
             firstName,
             lastName,
-            lang: lang as 'en' | 'de',
+            lang: lang as "en" | "de",
           },
         } as QueuedAutoResponder,
-        sendEnv
+        sendEnv,
       );
-    } catch {}
+    } catch {
+      // intentionally ignored
+    }
 
     return { ok: true, queued: true, t2 };
   }
@@ -116,24 +131,26 @@ export async function handleContactMailFlow(params: {
         text: ar.text,
         html: ar.html,
       },
-      sendEnv
+      sendEnv,
     );
   } catch (e) {
-    const mode = isProd ? 'PROD' : 'DEV';
+    const mode = isProd ? "PROD" : "DEV";
     console.warn(`[MAIL-FAIL][${mode}] autoresponder:`, e);
     try {
       await sendSlackMessage(
         `[MAIL-FAIL][${mode}] autoresponder: ${
           e instanceof Error ? e.message : String(e)
         }\n${slackCtx}`,
-        sendEnv
+        sendEnv,
       );
-    } catch {}
+    } catch {
+      // intentionally ignored
+    }
     if (!isProd) {
       try {
         await enqueuePending(
           {
-            type: 'autoresponder',
+            type: "autoresponder",
             queuedAt: new Date().toISOString(),
             payload: {
               toEmail: email,
@@ -142,12 +159,14 @@ export async function handleContactMailFlow(params: {
               html: ar.html,
               firstName,
               lastName,
-              lang: lang as 'en' | 'de',
+              lang: lang as "en" | "de",
             },
           } as QueuedAutoResponder,
-          sendEnv
+          sendEnv,
         );
-      } catch {}
+      } catch {
+        // intentionally ignored
+      }
     }
   }
 

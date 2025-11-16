@@ -2,11 +2,19 @@
   import { getContext, onMount, onDestroy } from 'svelte';
   import { getProps } from '../../lib/i18n/index';
   import type { Lang } from '../../lib/i18n';
+  import type { Writable } from 'svelte/store';
   import LanguageToggle from '../ui/LanguageToggle.svelte';
   const page = getContext<string>("page");
-  const lang = getContext('lang') as Lang;
-  const { sitename, about, projects, contact, cv} = getProps(lang, 'navlinks');
-  let links = [about, projects, contact, cv];
+  const lang = getContext('lang') as Writable<Lang>;
+
+  let sitename = '';
+  let links: { name: string; href: string }[] = [];
+
+  $: {
+    const nav = getProps($lang, 'navlinks');
+    sitename = nav.sitename;
+    links = [nav.about, nav.projects, nav.contact, nav.cv];
+  }
 
   let menuOpen = false;
   function toggleMenu() {

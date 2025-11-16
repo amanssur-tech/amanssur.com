@@ -2,30 +2,33 @@
   import { getContext } from 'svelte';
   import { getProps } from '../../lib/i18n';
   import type { Lang } from '../../lib/i18n';
+  import type { Writable } from 'svelte/store';
 
-  const lang = getContext('lang') as Lang;
-  const { heading, responsible, email, note, form } = getProps(lang, 'impressum');
+  const lang = getContext('lang') as Writable<Lang>;
+  let impressum = getProps('en', 'impressum');
+
+  $: impressum = getProps($lang, 'impressum');
 </script>
 
  <div class="impressum-wrapper" id="impressum">
   <div class="impressum-container">
-    <h2>{heading}</h2>
+    <h2>{impressum.heading}</h2>
 
     <section>
-      <strong>{responsible}</strong>
+      <strong>{impressum.responsible}</strong>
       <p>
         Amanullah Manssur<br />
         Richard-Bertram-Str. 60<br />
         50321 Brühl, Germany
       </p>
       <p class="pemail">
-        {email}: 
+        {impressum.email}: 
         impressum@amanssur.com
       </p>
       <p class="pnote">
       <em>
-          {note}
-          <a class="nav-hover underline" href={form.href}>{form.name}</a>.)
+          {impressum.note}
+          <a class="nav-hover underline" href={impressum.form.href}>{impressum.form.name}</a>.)
       </em></p>
     </section>
   </div>

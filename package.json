@@ -1,50 +1,57 @@
 {
-	"name": "amanssur-com",
-	"type": "module",
-	"version": "0.0.1",
-	"scripts": {
-		"disable:toolbar": "astro preferences disable devToolbar",
-		"dev": "astro dev",
-		"build": "astro build",
-		"preview": "astro build && wrangler pages dev",
-		"astro": "astro",
-		"deploy": "astro build && wrangler pages deploy",
-		"cf-typegen": "wrangler types",
-		"dev:worker": "wrangler dev workers/mail-queue/src/index.ts",
-		"deploy:worker": "wrangler deploy workers/mail-queue/src/index.ts",
-		"retry-pending": "tsx workers/retry-pending.ts",
-		"digest:slack": "tsx workers/digest-slack.ts",
-		"push:notion": "tsx workers/push-notion.ts"
-	},
-	"dependencies": {
-		"@astrojs/check": "^0.9.5",
-		"@astrojs/cloudflare": "^12.6.9",
-		"@astrojs/mdx": "^4.3.6",
-		"@astrojs/svelte": "^7.2.0",
-		"@notionhq/client": "^5.1.0",
-		"@tailwindcss/postcss": "^4.1.14",
-		"@tailwindcss/vite": "^4.1.14",
-		"astro": "^5.14.1",
-		"axios": "^1.12.2",
-		"markdown-it": "^14.1.0",
-		"markdown-it-anchor": "^9.2.0",
-		"svelte": "^5.39.9",
-		"svelte-preprocess": "^6.0.3",
-		"svelte2tsx": "^0.7.44"
-	},
-	"devDependencies": {
-		"@astrojs/node": "^9.5.0",
-		"@cloudflare/workers-types": "^4.20251004.0",
-		"@tsconfig/svelte": "^5.0.5",
-		"@types/node": "^24.7.0",
-		"autoprefixer": "^10.4.21",
-		"postcss": "^8.5.6",
-		"tailwindcss": "^4.1.14",
-		"typescript": "^5.9.3"
-	},
-	"overrides": {
-		"zod": "3.25.76",
-		"miniflare": "4.20251001.0",
-		"wrangler": "4.42.0"
-	}
+  "name": "amanssur-com",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "disable:toolbar": "astro preferences disable devToolbar",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro build && wrangler pages dev",
+    "astro": "astro",
+    "deploy": "astro build && wrangler pages deploy",
+    "cf-typegen": "wrangler types",
+    "dev:worker": "wrangler dev workers/mail-queue/src/index.ts",
+    "deploy:worker": "wrangler deploy workers/mail-queue/src/index.ts",
+    "retry-pending": "tsx workers/retry-pending.ts",
+    "digest:slack": "tsx workers/digest-slack.ts",
+    "push:notion": "tsx workers/push-notion.ts"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.5",
+    "@astrojs/cloudflare": "^12.6.9",
+    "@astrojs/mdx": "^4.3.6",
+    "@astrojs/svelte": "^7.2.0",
+    "@notionhq/client": "^5.1.0",
+    "@tailwindcss/postcss": "^4.1.14",
+    "@tailwindcss/vite": "^4.1.14",
+    "astro": "^5.14.1",
+    "axios": "^1.12.2",
+    "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^9.2.0",
+    "svelte": "^5.39.9",
+    "svelte-preprocess": "^6.0.3",
+    "svelte2tsx": "^0.7.44"
+  },
+  "devDependencies": {
+    "@astrojs/node": "^9.5.0",
+    "@cloudflare/workers-types": "^4.20251004.0",
+    "@eslint/js": "^9.39.1",
+    "@tsconfig/svelte": "^5.0.5",
+    "@types/node": "^24.7.0",
+    "astro-eslint-parser": "^1.2.2",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9.39.1",
+    "eslint-plugin-astro": "^1.5.0",
+    "eslint-plugin-svelte": "^3.13.0",
+    "globals": "^16.5.0",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.14",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.4"
+  },
+  "overrides": {
+    "zod": "3.25.76",
+    "miniflare": "4.20251001.0",
+    "wrangler": "4.42.0"
+  }
 }

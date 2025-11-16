@@ -1,20 +1,22 @@
 // src/lib/contact/schema.ts
 // Validation & guards for the contact API: zod schema, rate limit, email domain checks.
 
-import { z } from 'zod';
-import { isDisposableDomain } from '@/lib/antispam/disposable';
-import type { Reason } from '@/lib/mail/types';
+import { z } from "zod";
+import { isDisposableDomain } from "@/lib/antispam/disposable";
+import type { Reason } from "@/lib/mail/types";
 
 /** Read env from Cloudflare-compatible env, with fallback. */
 function env(key: string, cfEnv?: Record<string, string>): string | undefined {
   if (cfEnv && key in cfEnv) return cfEnv[key];
-  console.warn('[schema.env] Key not found:', key);
+  console.warn("[schema.env] Key not found:", key);
   return undefined;
 }
 
 /** Extract domain from an email address; returns null if not parseable */
 export function parseDomain(addr: string): string | null {
-  const m = String(addr).trim().match(/@([^@>\s]+)$/);
+  const m = String(addr)
+    .trim()
+    .match(/@([^@>\s]+)$/);
   return m?.[1]?.toLowerCase() ?? null;
 }
 
@@ -24,13 +26,20 @@ export function isDisposableDomainWithEnv(domain: string): boolean {
   // Base disposable list
   if (isDisposableDomain(domain)) return true;
   // Optional extra comma-separated list from env (e.g., "yopmail.com,trashmail.com")
-  const extra = env('DISPOSABLE_EXTRA', typeof globalThis !== 'undefined' ? (globalThis as any).env : undefined);
+  const extra = env(
+    "DISPOSABLE_EXTRA",
+    typeof globalThis !== "undefined"
+      ? ((globalThis as Record<string, unknown>).env as
+          | Record<string, string>
+          | undefined)
+      : undefined,
+  );
   if (extra) {
     const set = new Set(
       extra
-        .split(',')
+        .split(",")
         .map((s) => s.trim().toLowerCase())
-        .filter(Boolean)
+        .filter(Boolean),
     );
     if (set.has(domain.toLowerCase())) return true;
   }
@@ -74,35 +83,50 @@ export function checkRateLimit(ip: string): boolean {
 
 export const ContactSchema = z
   .object({
-    firstName: z.string().min(1, 'firstName required'),
-    lastName: z.string().min(1, 'lastName required'),
-    email: z.string().email('invalid email'),
+    firstName: z.string().min(1, "firstName required"),
+    lastName: z.string().min(1, "lastName required"),
+    email: z.string().email("invalid email"),
     phone: z.string().optional(),
     company: z.string().optional(),
     website: z.string().optional(),
-    message: z.string().min(1, 'message required'),
-    reason: z.enum(['recruitment', 'collaboration', 'speaking', 'interview', 'other'] as [Reason, ...Reason[]]),
+    message: z.string().min(1, "message required"),
+    reason: z.enum([
+      "recruitment",
+      "collaboration",
+      "speaking",
+      "interview",
+      "other",
+    ] as [Reason, ...Reason[]]),
     subjectOther: z.string().optional(),
-    lang: z.enum(['en', 'de']),
+    lang: z.enum(["en", "de"]),
     // Honeypot — must be blank
-    middleName: z.string().optional().default(''),
+    middleName: z.string().optional().default(""),
   })
   .superRefine((data, ctx) => {
     // Honeypot trigger
-    if (data.middleName && data.middleName.trim() !== '') {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Bot detected (honeypot).' });
+    if (data.middleName && data.middleName.trim() !== "") {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Bot detected (honeypot).",
+      });
     }
 
     // Disposable / disallowed email domains
     if (!isAllowedEmail(data.email)) {
-      ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Email domain not allowed.' });
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Email domain not allowed.",
+      });
     }
 
     // If reason is 'other', subjectOther should be present (short but non-empty)
-    if (data.reason === 'other') {
-      const s = (data.subjectOther || '').trim();
+    if (data.reason === "other") {
+      const s = (data.subjectOther || "").trim();
       if (!s) {
-        ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Subject required for "Other".' });
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Subject required for "Other".',
+        });
       }
     }
   });
@@ -110,18 +134,27 @@ export const ContactSchema = z
 export type ContactData = z.infer<typeof ContactSchema>;
 
 // Wrap parsing from FormData → typed ContactData.
-export function parseAndValidate(form: FormData): { data: ContactData; lang: 'en' | 'de' } {
+export function parseAndValidate(form: FormData): {
+  data: ContactData;
+  lang: "en" | "de";
+} {
   // Convert FormData to a plain object
-  const obj: Record<string, any> = {};
-  for (const [k, v] of form.entries()) obj[k] = typeof v === 'string' ? v : String(v);
+  const obj: Record<string, string> = {};
+  for (const [k, v] of form.entries())
+    obj[k] = typeof v === "string" ? v : String(v);
 
   // Compatibility: form sends `subject` only when reason === 'other'. Map it to `subjectOther`.
-  const reasonVal = typeof obj.reason === 'string' ? obj.reason : '';
-  if (reasonVal === 'other' && !obj.subjectOther && typeof obj.subject === 'string' && obj.subject.trim()) {
+  const reasonVal = typeof obj.reason === "string" ? obj.reason : "";
+  if (
+    reasonVal === "other" &&
+    !obj.subjectOther &&
+    typeof obj.subject === "string" &&
+    obj.subject.trim()
+  ) {
     obj.subjectOther = obj.subject;
   }
   // If reason is not 'other', drop stray `subject` field so it doesn't interfere downstream.
-  if (reasonVal !== 'other' && 'subject' in obj) {
+  if (reasonVal !== "other" && "subject" in obj) {
     delete obj.subject;
   }
 

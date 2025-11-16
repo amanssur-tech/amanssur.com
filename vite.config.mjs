@@ -1,12 +1,16 @@
-import { defineConfig } from 'vite';
+// vite.config.mjs
+import { defineConfig, mergeConfig } from "vite";
 
-export default defineConfig({
-  ssr: {
-    external: [
-      'zod/locales', // <-- this silences the bogus missing specifier
-    ],
-  },
-  optimizeDeps: {
-    exclude: ['zod/locales'],
-  },
+export default defineConfig(() => {
+  return mergeConfig(
+    {},
+    {
+      ssr: {
+        external: ["zod/locales"],
+      },
+      optimizeDeps: {
+        exclude: ["zod/locales"],
+      },
+    },
+  );
 });

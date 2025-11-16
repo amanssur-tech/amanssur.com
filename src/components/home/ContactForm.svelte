@@ -2,10 +2,24 @@
   import { fade } from 'svelte/transition';
   import { getProps, type Lang } from '../../lib/i18n';
   import { getContext, tick, onMount } from 'svelte';
+  import type { Writable } from 'svelte/store';
   import { logDev } from '../../lib/contact/dev-log';
 
-  const lang = getContext('lang') as Lang;
-  const { heading, paragraph, form } = getProps(lang, 'contact');
+  const lang = getContext('lang') as Writable<Lang>;
+  const defaultContact = getProps('en', 'contact');
+  let heading = defaultContact.heading;
+  let paragraph = defaultContact.paragraph;
+  let form = defaultContact.form;
+  let currentLang: Lang = 'en';
+
+  $: currentLang = $lang;
+
+  $: {
+    const content = getProps(currentLang, 'contact');
+    heading = content.heading;
+    paragraph = content.paragraph;
+    form = content.form;
+  }
 
   let submitted = false;
   let errorMessage = '';
@@ -24,7 +38,7 @@
     const formEl = e.target as HTMLFormElement;
 
     // Trim all text inputs & textareas before sending
-    for (const el of formEl.elements as any) {
+    for (const el of Array.from(formEl.elements) as Array<HTMLInputElement | HTMLTextAreaElement | Element>) {
       if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
         el.value = el.value.trim();
       }
@@ -272,7 +286,7 @@
             required
           />
           <label for="consent" class="text-sm text-gray-600 dark:text-gray-400">            {form.consent1}
-            <a href={lang === 'de' ? '/de/legal#datenschutz' : '/legal#privacy'} target="_blank" class="underline hover:text-gray-900 active:text-black focus-visible:text-gray-800 dark:hover:text-gray-200 dark:focus-visible:text-gray-200 hover:scale-101 focus-visible:scale-101 active:scale-99">
+            <a href={currentLang === 'de' ? '/legal#datenschutz' : '/legal#privacy'} target="_blank" class="underline hover:text-gray-900 active:text-black focus-visible:text-gray-800 dark:hover:text-gray-200 dark:focus-visible:text-gray-200 hover:scale-101 focus-visible:scale-101 active:scale-99">
               {form.privacy}</a>
             {form.consent2}
           </label>

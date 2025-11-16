@@ -1,5 +1,5 @@
-import en from './en';
-import de from './de';
+import en from "./en";
+import de from "./de";
 
 // Define the shape of each translation file
 export type TranslationSchema = {
@@ -101,9 +101,9 @@ export type TranslationSchema = {
     email: string;
     menu: string;
     note: string;
-    form: { name: string; href: string};
+    form: { name: string; href: string };
   };
-  notFound: {heading: string; home: string};
+  notFound: { heading: string; home: string };
   // ... add more sections as needed
   // e.g., blog, services, testimonials, etc.
 };
@@ -120,7 +120,7 @@ export type ComponentKey = keyof TranslationSchema;
 // Helper function to get translated props for a component
 export const getProps = <K extends ComponentKey>(
   lang: Lang,
-  key: K
+  key: K,
 ): TranslationSchema[K] => {
   return translations[lang][key];
 };

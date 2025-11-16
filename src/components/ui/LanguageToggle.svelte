@@ -1,13 +1,17 @@
 <script lang="ts">
-  export let extraClasses: string = "";
   import { getContext } from 'svelte';
+  import type { Writable } from 'svelte/store';
+  import type { Lang } from '../../lib/i18n';
+  import { setLangCookie } from '../../lib/lang';
+  export let extraClasses: string = "";
 
-  // Your context currently provides a plain string, not a store
-  type Lang = 'en' | 'de' | string;
-  const current = (getContext('lang') as Lang) ?? 'en';
+  const lang = getContext('lang') as Writable<Lang>;
+  let current: Lang = 'en';
+
+  $: current = $lang;
 
   // Add more languages here when you want (order = menu order)
-  const LANGS: { code: string; label: string; title: string }[] = [
+  const LANGS: { code: Lang; label: string; title: string }[] = [
     { code: 'en', label: 'EN', title: 'English' },
     { code: 'de', label: 'DE', title: 'Deutsch' },
     // { code: 'fr', label: 'FR', title: 'Français' },
@@ -16,9 +20,6 @@
 
   let open = false;
   let buttonEl: HTMLButtonElement;
-
-  // Keep your current middleware flow: ?setlang=xx
-  const hrefFor = (code: string) => `?setlang=${code}`;
 
   // Close dropdown when clicking outside
   function handleWindowClick(e: MouseEvent) {
@@ -29,7 +30,7 @@
   function handleKeyDown(e: KeyboardEvent) {
   if (!open) return;
 
-  const items = document.querySelectorAll('[data-langtoggle-root] ul a');
+  const items = document.querySelectorAll('[data-langtoggle-root] ul button');
   if (items.length === 0) return;
   const first = items[0] as HTMLElement;
   const last = items[items.length - 1] as HTMLElement;
@@ -61,6 +62,16 @@
     prev.focus();
   }
 }
+
+  function selectLanguage(code: Lang) {
+    if (code === current) {
+      open = false;
+      return;
+    }
+    lang.set(code);
+    setLangCookie(code);
+    open = false;
+  }
 </script>
 
 <div class="relative inline-block text-sm " data-langtoggle-root>
@@ -117,13 +128,13 @@
     >
       {#each LANGS as l}
         <li>
-          <a
-            href={hrefFor(l.code)}
-            class="flex items-center justify-between px-3 py-2 hover:bg-neutral-50
-                   dark:hover:bg-neutral-900"
+          <button
+            type="button"
+            class="flex w-full items-center justify-between px-3 py-2 hover:bg-neutral-50
+                   dark:hover:bg-neutral-900 text-left"
             role="option"
             aria-selected={l.code === current}
-            on:click={() => (open = false)}
+            on:click={() => selectLanguage(l.code)}
           >
             <span class="font-medium">{l.title}</span>
             {#if l.code === current}
@@ -141,7 +152,7 @@
                 <path d="M20 6L9 17l-5-5" />
               </svg>
             {/if}
-          </a>
+          </button>
         </li>
       {/each}
     </ul>

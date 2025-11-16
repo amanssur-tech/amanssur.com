@@ -1,12 +1,12 @@
 ---
 export const prerender = false;
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { resolveLang } from '../lib/lang';
+import type { Lang } from '../lib/i18n';
 
-// Check props first (if passed explicitly), otherwise guess from URL
-let lang = Astro.props.lang || 'en';
-if (Astro.url.pathname.startsWith('/de/')) {
-  lang = 'de';
-}
+const lang =
+  ((Astro.locals as Record<string, unknown>).lang as Lang | undefined) ??
+  resolveLang({ cookies: Astro.cookies, acceptLanguage: Astro.request.headers.get('accept-language') });
 
 const page = '404';
 

@@ -22,7 +22,6 @@ const { title, description } = translations[lang].meta ?? { title: '', descripti
     <!-- in BaseLayout.astro head -->
     <link rel="canonical" href={`https://amanssur.com${Astro.url.pathname}`} />
     <link rel="alternate" href={`https://amanssur.com${page === 'home' ? '/' : `/${page}`}`} hreflang="en" />
-    <link rel="alternate" href={`https://amanssur.com/de${page === 'home' ? '/' : `/${page}`}`} hreflang="de" />
     <link rel="alternate" href={`https://amanssur.com${page === 'home' ? '/' : `/${page}`}`} hreflang="x-default" />
 
     <link rel="icon" type="image/svg+xml" href="/favicons/AM-Logo.svg">

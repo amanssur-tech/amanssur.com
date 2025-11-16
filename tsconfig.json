@@ -1,15 +1,14 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", 
-  "**/*",
-  "src/**/*",
-  "src/**/*.svelte",
-  "src/types/**/*.d.ts"
+  "include": [
+    ".astro/types.d.ts",
+    "**/*",
+    "src/**/*",
+    "src/**/*.svelte",
+    "src/types/**/*.d.ts"
   ],
-"exclude": [
-    "dist"
-],
-"compilerOptions": {
+  "exclude": ["dist"],
+  "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "allowJs": true,
@@ -20,15 +19,15 @@
       "@/lib/*": ["src/lib/*"]
     },
     "types": [
-        "astro/client",
-        "@cloudflare/workers-types",
-        "./worker-configuration.d.ts",
-        "node"
+      "astro/client",
+      "@cloudflare/workers-types",
+      "./worker-configuration.d.ts",
+      "node"
     ],
     "skipLibCheck": true,
     "strict": true,
     "noUncheckedIndexedAccess": true,
     "forceConsistentCasingInFileNames": true,
     "strictNullChecks": true
-}
+  }
 }

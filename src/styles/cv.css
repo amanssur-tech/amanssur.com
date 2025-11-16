@@ -10,107 +10,142 @@
     margin: 0;
   }
 
-  body.cv {@apply m-0 p-0;}
-  body.cv footer, body.cv nav.sticky, body.cv .cv-controls {@apply hidden;}
+  body.cv {
+    @apply m-0 p-0;
+  }
+  body.cv footer,
+  body.cv nav.sticky,
+  body.cv .cv-controls {
+    @apply hidden;
+  }
 
   body.cv .cv-container {
     @apply block;
-    width: 1055px;       /* raw, no print:w-[...] support */
-    height: auto;        /* raw */
+    width: 1055px; /* raw, no print:w-[...] support */
+    height: auto; /* raw */
     container-type: inline-size; /* raw */
-    margin: 0;           /* raw */
-    max-width: none;     /* raw */
-    min-width: 0;        /* raw */
-    box-shadow: none;    /* raw */
+    margin: 0; /* raw */
+    max-width: none; /* raw */
+    min-width: 0; /* raw */
+    box-shadow: none; /* raw */
   }
 }
 
 @layer components {
-
-/* ---------------------------
+  /* ---------------------------
    CV container sizing
 --------------------------- */
 
-/* New scale wrapper to handle scaling and centering */
-.cv-scale-wrapper {@apply flex justify-center;}
+  /* New scale wrapper to handle scaling and centering */
+  .cv-scale-wrapper {
+    @apply flex justify-center;
+  }
 
-.cv-container {
-  @apply shadow-md shadow-gray-300/70 dark:shadow-gray-600 border border-gray-200/60 dark:border-zinc-600/25;
-  @apply w-[1055px] aspect-[1/1.4142857143] max-w-[97%] min-w-[50%] my-[2em] mx-auto px-[.5em] py-[3.6em];
-  @apply flex flex-col justify-start overflow-x-auto;
-  container-type: inline-size;
-  container-name: cv;
-}
+  .cv-container {
+    @apply shadow-md shadow-gray-300/70 dark:shadow-gray-600 border border-gray-200/60 dark:border-zinc-600/25;
+    @apply w-[1055px] aspect-[1/1.4142857143] max-w-[97%] min-w-[50%] my-[2em] mx-auto px-[.5em] py-[3.6em];
+    @apply flex flex-col justify-start overflow-x-auto;
+    container-type: inline-size;
+    container-name: cv;
+  }
 
-/* Dynamically scale size for the container spacings and cv-inner elements */
+  /* Dynamically scale size for the container spacings and cv-inner elements */
   /* IMPORTANT:
      The font-size rule is intentionally duplicated here (Wrapper + Inner).
      Because `.cv-container` uses `container-type: inline-size`, it breaks font-size inheritance.
      Without redefining the base here, child elements lose the scaling and proportions explode.
      Do NOT remove this duplication — both `.cv-scale-wrapper` and `.cv-inner` need the same font-size rule. */
-.cv-scale-wrapper, .cv-inner {font-size: calc(16 * 100cqw / 1055);}
+  .cv-scale-wrapper,
+  .cv-inner {
+    font-size: calc(16 * 100cqw / 1055);
+  }
 
-/* ---------------------------
+  /* ---------------------------
    CV-specific typography
 --------------------------- */
 
   .cv-fonts {
-
     @apply hyphens-none text-cvgrey dark:text-cvgreylight;
     font-family: "Syne", sans-serif;
-    transform: scaleX(.9);
-    h1 {@apply font-bold text-cvblue dark:text-cvbluelight text-[3.45em] leading-[1] mb-[-.1em];}
-    h2 {@apply uppercase font-bold text-[1.03em] my-[.625em];}
-    h2:first-of-type {@apply mb-[.5em] mt-[.9em];}
-    h2:has(+ h3) {@apply relative mb-[.9em];}
-    h2:has(+ h3) ~ *:not(h2):not(ul) {@apply ml-[1.8em];}
-    h3 {@apply font-bold text-cvblue dark:text-cvbluelight text-[1.03em] relative mb-[.5em];}
+    transform: scaleX(0.9);
+    h1 {
+      @apply font-bold text-cvblue dark:text-cvbluelight text-[3.45em] leading-none mb-[-.1em];
+    }
+    h2 {
+      @apply uppercase font-bold text-[1.03em] my-[.625em];
+    }
+    h2:first-of-type {
+      @apply mb-[.5em] mt-[.9em];
+    }
+    h2:has(+ h3) {
+      @apply relative mb-[.9em];
+    }
+    h2:has(+ h3) ~ *:not(h2):not(ul) {
+      @apply ml-[1.8em];
+    }
+    h3 {
+      @apply font-bold text-cvblue dark:text-cvbluelight text-[1.03em] relative mb-[.5em];
+    }
 
     h3:first-of-type::after {
-      @apply absolute left-[-1.48em] top-[1em] bottom-[-26.39em] w-[.19em] z-[1] bg-cvbar dark:bg-cvbardark;
+      @apply absolute left-[-1.48em] top-[1em] bottom-[-26.39em] w-[.19em] z-1 bg-cvbar dark:bg-cvbardark;
       content: "";
       transform: var(--cv-fix-scale);
     }
 
     h3::before {
-      @apply bg-cvblue dark:bg-cvbluelight absolute left-[-1.7em] top-[.5em] w-[.63em] h-[.63em] rounded-full z-[2];
+      @apply bg-cvblue dark:bg-cvbluelight absolute left-[-1.7em] top-[.5em] w-[.63em] h-[.63em] rounded-full z-2;
       content: "";
       transform: var(--cv-fix-scale);
     }
 
-    p {@apply font-medium text-[1.035em] leading-[1.4];}
+    p {
+      @apply font-medium text-[1.035em] leading-[1.4];
+    }
 
-    a {@apply no-underline hover:text-blue-900;}
+    a {
+      @apply no-underline hover:text-blue-900;
+    }
 
-    strong {@apply uppercase font-bold;}
+    strong {
+      @apply uppercase font-bold;
+    }
 
     ul {
       @apply list-none p-0 my-[.6em] mx-[-.45em] grid gap-[.7em];
-      grid-template-columns: repeat(auto-fill, minmax(15.1em, .95fr));
+      grid-template-columns: repeat(auto-fill, minmax(15.1em, 0.95fr));
     }
 
-    ul li {@apply bg-cvlist dark:bg-zinc-800 font-medium px-[.41em] py-[.09em] leading-[1.6] rounded-[.25em] text-[1.03em] whitespace-nowrap;}
+    ul li {
+      @apply bg-cvlist dark:bg-zinc-800 font-medium px-[.41em] py-[.09em] leading-[1.6] rounded-[.25em] text-[1.03em] whitespace-nowrap;
+    }
 
     .cv-icon {
       @apply inline-block align-middle w-[.9em] h-[2.35em] mr-[.4em];
       transform: var(--cv-fix-scale);
     }
-
   }
 
-/* ---------------------------
+  /* ---------------------------
    CV intro header (photo + H1 + top H2)
 --------------------------- */
 
   .cv-intro {
     @apply grid gap-y-[.4em] mb-[.5em];
-    h1 { margin-top: 0; }
-    h2:first-of-type { margin: 0; }
-    
+    h1 {
+      margin-top: 0;
+    }
+    h2:first-of-type {
+      margin: 0;
+    }
   }
 
-  .cv-intro:has(.cv-headshot) {@apply grid-cols-[auto_1fr] gap-x-[3.3em] items-center -ml-[.45em] -mt-[.2em];}
-  .cv-intro-text {@apply flex flex-col justify-start gap-[.9em];}
+  .cv-intro:has(.cv-headshot) {
+    @apply grid-cols-[auto_1fr] gap-x-[3.3em] items-center -ml-[.45em] -mt-[.2em];
+  }
+  .cv-intro-text {
+    @apply flex flex-col justify-start gap-[.9em];
+  }
 
   .cv-headshot {
     @apply w-[15em] h-[15em] rounded-full object-cover;
@@ -118,32 +153,48 @@
     transform-origin: left center;
   }
 
-/* ---------------------------
+  /* ---------------------------
    Column-specific layout
 --------------------------- */
 
-.cv-grid {@apply grid grid-cols-[24.2%_75.8%] gap-0;}
-
-.cv-left {
-  p {@apply mb-[2.75em];}
-  h2:last-of-type {@apply mt-[2.25em];}
-}
-
-.cv-right {
-
-  @apply pl-[2em] pr-[.1em];
-  p {@apply mb-[1em];}
-  p strong:has(+ em) {@apply inline-block mb-[.5em];}
-  p strong:has(+ em:last-child) {@apply mb-0;}
-  p strong:not(:first-of-type) {@apply normal-case mr-[.4em];}
-  h2:not(:first-of-type) {@apply mt-[2.6em];}
-  h3:first-of-type {@apply mt-[.8em];}
-
-  /* word-spacing stays raw since Tailwind has no utility */
-  p em {
-    @apply float-right not-italic;
-    word-spacing: .1em;
+  .cv-grid {
+    @apply grid grid-cols-[24.2%_75.8%] gap-0;
   }
 
-}
+  .cv-left {
+    p {
+      @apply mb-[2.75em];
+    }
+    h2:last-of-type {
+      @apply mt-[2.25em];
+    }
+  }
+
+  .cv-right {
+    @apply pl-[2em] pr-[.1em];
+    p {
+      @apply mb-[1em];
+    }
+    p strong:has(+ em) {
+      @apply inline-block mb-[.5em];
+    }
+    p strong:has(+ em:last-child) {
+      @apply mb-0;
+    }
+    p strong:not(:first-of-type) {
+      @apply normal-case mr-[.4em];
+    }
+    h2:not(:first-of-type) {
+      @apply mt-[2.6em];
+    }
+    h3:first-of-type {
+      @apply mt-[.8em];
+    }
+
+    /* word-spacing stays raw since Tailwind has no utility */
+    p em {
+      @apply float-right not-italic;
+      word-spacing: 0.1em;
+    }
+  }
 }

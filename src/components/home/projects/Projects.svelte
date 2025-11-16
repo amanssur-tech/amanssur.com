@@ -3,21 +3,21 @@
   import { getProps, type Lang, type TranslationSchema } from '../../../lib/i18n';
   import ProjectOverlay from './ProjectOverlay.svelte';
   import ProjectCard from './ProjectCard.svelte';
+  import type { Writable } from 'svelte/store';
 
-  const lang = getContext('lang') as Lang;
+  const lang = getContext('lang') as Writable<Lang>;
   type ProjectItem = TranslationSchema['projects']['items'][number];
-  const {
-    heading,
-    paragraph,
-    github,
-    explore,
-    items
-  } = getProps(lang, 'projects');
+  let projectContent = getProps('en', 'projects');
+
+  let projects: ProjectItem[] = projectContent.items;
+
+  $: {
+    projectContent = getProps($lang, 'projects');
+    projects = projectContent.items;
+  }
 
   let selected: { id: number; label: string } | null = null;
   let lastTrigger: HTMLElement | null = null;
-
-  const projects: ProjectItem[] = items;
 
   function openOverlay(id: number, label: string, event: MouseEvent) {
     lastTrigger = event.currentTarget as HTMLElement;
@@ -112,8 +112,8 @@
 
 <div class="bg-linear-to-b from-slate-100 to-white dark:from-gray-950 dark:to-zinc-900">
 <section class="py-22 px-6 max-w-5xl mx-auto text-center rounded-t-3xl" id="projects">
-  <h2 class="text-4xl font-bold mb-6">{ heading }</h2>
-    <p class="text-lg text-gray-800 dark:text-gray-300 mt-4">{paragraph}<a class=" underline nav-hover" href ="https://manssurmedia.com" target="_blank">Manssur Media</a>.</p>
+  <h2 class="text-4xl font-bold mb-6">{ projectContent.heading }</h2>
+    <p class="text-lg text-gray-800 dark:text-gray-300 mt-4">{projectContent.paragraph}<a class=" underline nav-hover" href ="https://manssurmedia.com" target="_blank">Manssur Media</a>.</p>
 
 
   <div class="grid gap-6 grid-cols-[repeat(auto-fit,minmax(250px,1fr))] my-8">
@@ -121,7 +121,7 @@
       <ProjectCard
         title={p.title}
         bullets={p.bullets}
-        explore={explore}
+        explore={projectContent.explore}
         imageWebp={`/images/thumb${p.id}-600.webp`}
         imageAvif={`/images/thumb${p.id}-600.avif`}
         alt={p.alt}
@@ -133,7 +133,7 @@
 <ProjectOverlay {selected} onClose={closeOverlay} />
 
 <p class="text-base italic mt-0 pt-0 text-gray-700 dark:text-gray-300">
-  {github} 
+  {projectContent.github} 
   <a 
     href="https://github.com/amanssur-tech" 
     target="_blank" 

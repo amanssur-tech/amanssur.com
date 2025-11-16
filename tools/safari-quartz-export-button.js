@@ -1,4 +1,6 @@
-(function() {
+/* eslint-env browser */
+/* global document */
+(function () {
   if (document.getElementById("cv-clean-btn")) return;
 
   const btn = document.createElement("button");
@@ -20,7 +22,9 @@
 
   btn.onclick = () => {
     // Remove unwanted elements
-    document.querySelectorAll("footer, nav.sticky, .cv-actions, .cv-controls").forEach(el => el.remove());
+    document
+      .querySelectorAll("footer, nav.sticky, .cv-actions, .cv-controls")
+      .forEach((el) => el.remove());
 
     // Reset body
     document.body.style.margin = "0";
@@ -34,7 +38,7 @@
         margin: "0",
         padding: "0",
         width: "100vw",
-        maxWidth: "100vw"
+        maxWidth: "100vw",
       });
     }
 
@@ -43,14 +47,14 @@
     if (cv) {
       Object.assign(cv.style, {
         display: "block",
-        width: "100vw",    // stretch full viewport width
+        width: "100vw", // stretch full viewport width
         height: "auto",
         margin: "0",
         maxWidth: "100vw",
         minWidth: "0",
         boxShadow: "none",
         border: "none",
-        containerType: "inline-size"
+        containerType: "inline-size",
       });
     }
 

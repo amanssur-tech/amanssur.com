@@ -2,27 +2,50 @@
 // force rebuild 2025-10-05
 export const prerender = false;
 
-import type { APIRoute } from 'astro';
-import { getProps, type Lang } from '../../lib/i18n';
-import { normalizeWebsite, normalizePhone, langFullName, mapReasonToLabel, buildSubmissionRecord, sanitize } from '@/lib/contact/transform';
-import { appendSubmission } from '@/lib/data/store.ts';
-import { buildAutoReply, buildContactNotif } from '@/lib/mail';
-import type { Reason, ContactFormSubmission } from '@/lib/mail/types';
-import { parseAndValidate, checkRateLimit, parseDomain, isDisposableDomainWithEnv } from '@/lib/contact/schema';
-import { handleContactMailFlow } from '@/lib/mail/mailer';
+import type { APIRoute } from "astro";
+import { getProps, type Lang } from "../../lib/i18n";
+import {
+  normalizeWebsite,
+  normalizePhone,
+  langFullName,
+  mapReasonToLabel,
+  buildSubmissionRecord,
+  sanitize,
+} from "@/lib/contact/transform";
+import { appendSubmission } from "@/lib/data/store.ts";
+import { buildAutoReply, buildContactNotif } from "@/lib/mail";
+import type { Reason, ContactFormSubmission } from "@/lib/mail/types";
+import {
+  parseAndValidate,
+  checkRateLimit,
+  parseDomain,
+  isDisposableDomainWithEnv,
+} from "@/lib/contact/schema";
+import { handleContactMailFlow } from "@/lib/mail/mailer";
 
 export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
   try {
-    const env = (locals as any).runtime?.env ?? (locals as any).env;
-    const isProd = env.MODE === 'production';
-    const ip = clientAddress || 'unknown';
+    const env: Record<string, string> = {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(typeof (locals as any)?.runtime?.env === "object"
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (locals as any).runtime.env
+        : {}),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ...(typeof (locals as any)?.env === "object"
+        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (locals as any).env
+        : {}),
+    };
+    const isProd = env.MODE === "production";
+    const ip = clientAddress || "unknown";
     const t0 = Date.now();
 
     // Validate data early to determine language for i18n errors
     const formData = await request.formData();
     const data = Object.fromEntries(formData) as Record<string, string>;
-    const parsedLang = data.lang === 'de' ? 'de' : 'en';
-    const formI18n = getProps(parsedLang as Lang, 'contact').form;
+    const parsedLang = data.lang === "de" ? "de" : "en";
+    const formI18n = getProps(parsedLang as Lang, "contact").form;
 
     // Rate limit check
     if (!checkRateLimit(ip)) {
@@ -40,35 +63,54 @@ export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
     let t2 = t1; // will be updated right after notification send succeeds
 
     // Allowlist bypass: if EMAIL_ALLOWLIST contains this exact email, skip disposable checks
-    const allowCsv = (typeof env.EMAIL_ALLOWLIST !== 'undefined')
-      ? String(env.EMAIL_ALLOWLIST)
-      : '';
-    const allow = allowCsv.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
-    const isAllowlisted = allow.length > 0 && allow.includes(parsedData.email.toLowerCase());
+    const allowCsv =
+      typeof env.EMAIL_ALLOWLIST !== "undefined"
+        ? String(env.EMAIL_ALLOWLIST)
+        : "";
+    const allow = allowCsv
+      .split(",")
+      .map((s) => s.trim().toLowerCase())
+      .filter(Boolean);
+    const isAllowlisted =
+      allow.length > 0 && allow.includes(parsedData.email.toLowerCase());
 
     if (!isAllowlisted) {
       const domain = parseDomain(parsedData.email);
       if (!domain || isDisposableDomainWithEnv(domain)) {
-        if (env.MODE !== 'production') {
-          console.warn(`[DISPOSABLE-EMAIL] Blocked submission from ${parsedData.email} (domain: ${domain || 'n/a'}, ip: ${ip})`);
+        if (env.MODE !== "production") {
+          console.warn(
+            `[DISPOSABLE-EMAIL] Blocked submission from ${parsedData.email} (domain: ${domain || "n/a"}, ip: ${ip})`,
+          );
         }
         return new Response(formI18n.invalid, { status: 400 });
       }
     }
 
-    const { firstName, lastName, email, message, lang: submittedLang, company, website, phone, reason, subjectOther } = parsedData;
-    const lang = submittedLang === 'de' ? 'de' : 'en';
+    const {
+      firstName,
+      lastName,
+      email,
+      message,
+      lang: submittedLang,
+      company,
+      website,
+      phone,
+      reason,
+      subjectOther,
+    } = parsedData;
+    const lang = submittedLang === "de" ? "de" : "en";
 
     const langFull = langFullName(lang as Lang);
 
-    const reasonLabel = mapReasonToLabel(lang as Lang, reason as Reason | undefined) || '';
+    const reasonLabel =
+      mapReasonToLabel(lang as Lang, reason as Reason | undefined) || "";
 
     const websiteNorm = normalizeWebsite(website);
     const phoneNorm = normalizePhone(phone);
-    const subjectEsc = sanitize(subjectOther) || '';
+    const subjectEsc = sanitize(subjectOther) || "";
 
-    const msgPreview = message.replace(/\s+/g, ' ').slice(0, 300);
-    const slackCtx = `From: ${firstName} ${lastName} <${email}>\nReason: ${reason || '-'}${subjectEsc ? ` (${subjectEsc})` : ''}\nLang: ${lang} | IP: ${ip}\nMsg: ${msgPreview}`;
+    const msgPreview = message.replace(/\s+/g, " ").slice(0, 300);
+    const slackCtx = `From: ${firstName} ${lastName} <${email}>\nReason: ${reason || "-"}${subjectEsc ? ` (${subjectEsc})` : ""}\nLang: ${lang} | IP: ${ip}\nMsg: ${msgPreview}`;
 
     // Log submission for daily digest (non-blocking)
     try {
@@ -79,20 +121,24 @@ export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
           email,
           message,
           lang,
-          reason,
-          subjectOther,
-          company,
-          website,
-          phone,
+          company: company || undefined,
+          website: website || undefined,
+          phone: phone || undefined,
           ip,
-        })
+          ...(subjectOther ? { subjectOther } : {}),
+          ...(reason ? { reason } : {}),
+        }),
       );
-    } catch (_) {
+    } catch {
       // ignore logging errors
     }
 
     // Build notif email with the extracted template
-    const {subject: notifSubject, text: notifText, html: notifHtml } = buildContactNotif({
+    const {
+      subject: notifSubject,
+      text: notifText,
+      html: notifHtml,
+    } = buildContactNotif({
       firstName,
       lastName,
       email,
@@ -106,7 +152,15 @@ export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
       websiteNorm: websiteNorm || undefined,
     });
     // Prebuild auto‑reply so we can enqueue it even if notif send fails in DEV
-    const ar = buildAutoReply({ t: getProps(lang as Lang, 'contact').autoreply, firstName, message, reason, reasonLabel, subjectEsc, });
+    const ar = buildAutoReply({
+      t: getProps(lang as Lang, "contact").autoreply,
+      firstName,
+      message,
+      reasonLabel,
+      subjectEsc,
+      ...(subjectOther ? { subjectOther } : {}),
+      ...(reason ? { reason } : {}),
+    });
 
     const result = await handleContactMailFlow({
       firstName,
@@ -129,7 +183,7 @@ export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
     if (result.queued) {
       return new Response(JSON.stringify({ ok: true, queued: true }), {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { "Content-Type": "application/json" },
       });
     }
 
@@ -162,16 +216,18 @@ export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
 
     const t3 = Date.now();
     if (!isProd) {
-      console.log(`[contact] validate=${t1 - t0}ms notif=${t2 - t1}ms bg=${t3 - t2}ms total=${t3 - t0}ms`);
+      console.log(
+        `[contact] validate=${t1 - t0}ms notif=${t2 - t1}ms bg=${t3 - t2}ms total=${t3 - t0}ms`,
+      );
     }
 
     return new Response(JSON.stringify({ ok: true }), {
       status: 200,
-      headers: { 'Content-Type': 'application/json' },
+      headers: { "Content-Type": "application/json" },
     });
   } catch (err) {
-    const formI18n = getProps('en', 'contact').form; // fallback to English
-    console.error('Contact form error:', err);
+    const formI18n = getProps("en", "contact").form; // fallback to English
+    console.error("Contact form error:", err);
     return new Response(formI18n.error, { status: 500 });
   }
 };

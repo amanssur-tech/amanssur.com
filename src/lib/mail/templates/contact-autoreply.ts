@@ -1,7 +1,7 @@
 // src/lib/mail/templates/contact-autoreply.ts
 // Builds the auto-reply email content (to the sender) from i18n + form data.
 // Returns { subject, text, html }.
-import { escapeHtml } from '@/lib/contact/transform';
+import { escapeHtml } from "@/lib/contact/transform";
 
 export interface AutoReplyI18n {
   subject: string;
@@ -13,49 +13,48 @@ export interface AutoReplyI18n {
   separator: string;
   followMe: string;
   reasonLabel?: string; // localized label, e.g. “Collaboration Request”
-  reason?: string;      // internal reason key, e.g. “collaboration”
-  subjectEsc?: string;  // if reason === “other”, the escaped user subject
+  reason?: string; // internal reason key, e.g. “collaboration”
+  subjectEsc?: string; // if reason === “other”, the escaped user subject
 }
 
 export interface AutoReplyParams {
-  t: AutoReplyI18n;      // contact.autoreply i18n object
+  t: AutoReplyI18n; // contact.autoreply i18n object
   firstName: string;
   message: string;
-  reasonLabel?: string;  // localized label (e.g., "Collaboration Request")
-  reason?: string;       // internal key (e.g., "collaboration")
-  subjectEsc?: string;   // user subject when reason === "other"
+  reasonLabel?: string; // localized label (e.g., "Collaboration Request")
+  reason?: string; // internal key (e.g., "collaboration")
+  subjectEsc?: string; // user subject when reason === "other"
 }
-
 
 export function buildAutoReply(p: AutoReplyParams) {
   const { t, firstName, message, reasonLabel, reason, subjectEsc } = p;
-  
-  const subject = `Re: ${reason === 'other' ? subjectEsc : reasonLabel} — ${t.subject}`;
+
+  const subject = `Re: ${reason === "other" ? subjectEsc : reasonLabel} — ${t.subject}`;
 
   const text = [
     `${t.greeting} ${firstName},`,
-    '',
+    "",
     t.lead,
-    '',
+    "",
     t.yourMessage,
     t.separator,
     message,
     t.separator,
-    '',
+    "",
     t.closing,
-    '',
+    "",
     t.regards,
-    '',
-    'Amanullah Manssur',
-    'IT & Web Solutions Consultant',
-    '',
-    '📧 hi@amanssur.com',
-    '🌐 amanssur.com',
-    '',
+    "",
+    "Amanullah Manssur",
+    "IT & Web Solutions Consultant",
+    "",
+    "📧 hi@amanssur.com",
+    "🌐 amanssur.com",
+    "",
     t.followMe,
-    'LinkedIn: linkedin.com/in/amanssur',
-    'GitHub: github.com/amanssur-tech'
-  ].join('\n');
+    "LinkedIn: linkedin.com/in/amanssur",
+    "GitHub: github.com/amanssur-tech",
+  ].join("\n");
 
   const html = `
   <style>
@@ -78,7 +77,7 @@ export function buildAutoReply(p: AutoReplyParams) {
     <p style="margin:0 0 16px 0;">${t.lead}</p>
     <p style="margin:0 0 16px 0;">${t.yourMessage}<br>
       <blockquote style="margin:0; padding:10px 0 10px 10px; border-left:3px solid #ccc;">
-        <em class="dm-muted" style="color:#555;">“${escapeHtml(message).replace(/\n/g, '<br>')}”</em>
+        <em class="dm-muted" style="color:#555;">“${escapeHtml(message).replace(/\n/g, "<br>")}”</em>
       </blockquote>
     </p>
     <p style="margin:0 0 16px 0;">${t.closing}</p>

@@ -2,7 +2,7 @@
 // Builds the notification email (to you) for a new contact submission.
 // Returns { subject, text, html }.
 
-import { escapeHtml } from '@/lib/contact/transform';
+import { escapeHtml } from "@/lib/contact/transform";
 
 export interface ContactNotifParams {
   firstName: string;
@@ -10,38 +10,44 @@ export interface ContactNotifParams {
   email: string;
   message: string;
   langFull: string; // e.g., 'English' | 'German'
-  reasonLabel?: string; // localized label from i18n (e.g., 'Job Opportunity')
-  company?: string;
-  phoneNorm?: string;
-  websiteNorm?: string;
-  receivedAt?: string; // optional; if missing, computed here
-  reason?: string; // internal enum key (e.g., 'recruitment' | 'collaboration' | 'speaking' | 'interview' | 'other')
-  subjectEsc?: string; // if reason === 'other', include this
+  reasonLabel?: string | undefined; // localized label from i18n (e.g., 'Job Opportunity')
+  company?: string | undefined;
+  phoneNorm?: string | undefined;
+  websiteNorm?: string | undefined;
+  receivedAt?: string | undefined; // optional; if missing, computed here
+  reason?: string | undefined; // internal enum key (e.g., 'recruitment' | 'collaboration' | 'speaking' | 'interview' | 'other')
+  subjectEsc?: string | undefined; // if reason === 'other', include this
 }
 
 export function buildContactNotif(p: ContactNotifParams) {
-  const fullNameEscaped = `${escapeHtml(p.firstName)} ${escapeHtml(p.lastName)}`.trim();
-  const receivedAt = p.receivedAt ?? new Date().toLocaleString('en-GB', {
-    day: '2-digit', month: 'short', year: 'numeric',
-    hour: '2-digit', minute: '2-digit'
-  });
+  const fullNameEscaped =
+    `${escapeHtml(p.firstName)} ${escapeHtml(p.lastName)}`.trim();
+  const receivedAt =
+    p.receivedAt ??
+    new Date().toLocaleString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   // Optional rows for HTML
-  let optionalRowsHtml = '';
+  let optionalRowsHtml = "";
   if (p.company) {
     optionalRowsHtml += `<p style="margin:0 0 16px 0;"><strong>Company:</strong> ${escapeHtml(p.company)}</p>\n`;
   }
   if (p.phoneNorm) {
-    optionalRowsHtml += `<p style=\"margin:0 0 16px 0;\"><strong>Phone:</strong> ${escapeHtml(p.phoneNorm)}</p>\n`;
+    optionalRowsHtml += `<p style="margin:0 0 16px 0;"><strong>Phone:</strong> ${escapeHtml(p.phoneNorm)}</p>\n`;
   }
   if (p.websiteNorm) {
     const safeUrl = escapeHtml(p.websiteNorm);
-    optionalRowsHtml += `<p style=\"margin:0 0 16px 0;\"><strong>Website:</strong> <a href=\"${safeUrl}\">${safeUrl}</a></p>\n`;
+    optionalRowsHtml += `<p style="margin:0 0 16px 0;"><strong>Website:</strong> <a href="${safeUrl}">${safeUrl}</a></p>\n`;
   }
   if (p.reasonLabel) {
-    optionalRowsHtml += `<p style=\"margin:0 0 16px 0;\"><strong>Reason:</strong> ${escapeHtml(p.reasonLabel)}</p>\n`;
-    if (p.reason === 'other' && p.subjectEsc) {
-      optionalRowsHtml += `<p style=\"margin:0 0 16px 0;\"><strong>Subject:</strong> ${escapeHtml(p.subjectEsc)}</p>\n`;
+    optionalRowsHtml += `<p style="margin:0 0 16px 0;"><strong>Reason:</strong> ${escapeHtml(p.reasonLabel)}</p>\n`;
+    if (p.reason === "other" && p.subjectEsc) {
+      optionalRowsHtml += `<p style="margin:0 0 16px 0;"><strong>Subject:</strong> ${escapeHtml(p.subjectEsc)}</p>\n`;
     }
   }
 
@@ -54,7 +60,7 @@ export function buildContactNotif(p: ContactNotifParams) {
         ${optionalRowsHtml}
         <p style="margin:0 0 8px 0;"><strong>Message:</strong></p>
         <blockquote style="margin:0 0 16px 0; padding:10px 0 10px 10px; border-left:3px solid #ccc;">
-          <em style="color: #555;">“${escapeHtml(p.message).replace(/\n/g, '<br>')}”</em>
+          <em style="color: #555;">“${escapeHtml(p.message).replace(/\n/g, "<br>")}”</em>
         </blockquote>
         <p style="margin:0 0 16px 0;"><strong>Received:</strong> ${receivedAt}</p>
         <p style="margin:0 0 16px 0;"><strong>Language:</strong> ${escapeHtml(p.langFull)}</p>
@@ -71,27 +77,27 @@ export function buildContactNotif(p: ContactNotifParams) {
   if (p.websiteNorm) textLines.push(`Website: ${p.websiteNorm}`);
   if (p.reasonLabel) {
     textLines.push(`Reason: ${p.reasonLabel}`);
-    if (p.reason === 'other' && p.subjectEsc) {
+    if (p.reason === "other" && p.subjectEsc) {
       textLines.push(`Subject: ${p.subjectEsc}`);
     }
   }
-  textLines.push('');
-  textLines.push('Message:');
+  textLines.push("");
+  textLines.push("Message:");
   textLines.push(p.message);
-  textLines.push('');
+  textLines.push("");
   textLines.push(`Received: ${receivedAt}`);
   textLines.push(`Language: ${p.langFull}`);
-  textLines.push('Source: amanssur.com – Contact Form');
+  textLines.push("Source: amanssur.com – Contact Form");
 
-  const text = textLines.join('\n');
-  let subject = '';
+  const text = textLines.join("\n");
+  let subject = "";
 
-if (p.reasonLabel) {
-  subject = `Contact Form: ${p.reasonLabel}`;
-  if (p.reason === 'other' && p.subjectEsc) {
-    subject = `Contact Form: ${p.subjectEsc}`;
+  if (p.reasonLabel) {
+    subject = `Contact Form: ${p.reasonLabel}`;
+    if (p.reason === "other" && p.subjectEsc) {
+      subject = `Contact Form: ${p.subjectEsc}`;
+    }
   }
-}
 
   return { subject, text, html };
 }

@@ -3,11 +3,11 @@
 
 // Form reasons used across email templates, API, and CRM mapping
 export type Reason =
-  | 'recruitment'
-  | 'collaboration'
-  | 'speaking'
-  | 'interview'
-  | 'other';
+  | "recruitment"
+  | "collaboration"
+  | "speaking"
+  | "interview"
+  | "other";
 
 // Minimal payload we accept from the contact form (API layer)
 export interface ContactFormSubmission {
@@ -15,14 +15,14 @@ export interface ContactFormSubmission {
   lastName: string;
   email: string;
   message: string;
-  lang: 'en' | 'de';
-  reason?: Reason;
-  subjectOther?: string; // free text if reason === 'other'
-  company?: string;
-  phone?: string;
-  website?: string;
-  ip?: string; // captured server-side
-  ts?: string; // ISO timestamp at submission time
+  lang: "en" | "de";
+  reason?: Reason | undefined;
+  subjectOther?: string | undefined; // free text if reason === 'other'
+  company?: string | undefined;
+  phone?: string | undefined;
+  website?: string | undefined;
+  ip?: string | undefined; // captured server-side
+  ts?: string | undefined; // ISO timestamp at submission time
 }
 
 // Common return shape for any email template builder
@@ -34,36 +34,39 @@ export interface MailContent {
 
 // Queue item types for retry logic (file-based dev fallback or KV)
 export interface QueuedNotification {
-  type: 'notification';
+  type: "notification";
   queuedAt: string; // ISO timestamp when queued
   payload: {
     firstName: string;
     lastName: string;
     email: string; // sender’s email
     message: string;
-    lang?: 'en' | 'de';
-    ip?: string;
+    lang?: ("en" | "de") | undefined;
+    ip?: string | undefined;
     // Optional prebuilt bodies so the retrier doesn’t need templates
-    text?: string;
-    html?: string;
+    text?: string | undefined;
+    html?: string | undefined;
   };
 }
 
 export interface QueuedAutoResponder {
-  type: 'autoresponder';
+  type: "autoresponder";
   queuedAt: string; // ISO timestamp when queued
   payload: {
     toEmail: string;
     subject: string;
     text: string;
     html: string;
-    firstName?: string;
-    lastName?: string;
-    lang?: 'en' | 'de';
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    lang?: ("en" | "de") | undefined;
   };
 }
 
-export type QueueItem = QueuedNotification | QueuedAutoResponder | Record<string, any>;
+export type QueueItem =
+  | QueuedNotification
+  | QueuedAutoResponder
+  | Record<string, unknown>;
 
 // Lightweight helper type for mail sending fns
 
@@ -73,12 +76,12 @@ export interface NotificationMailOptions {
   lastName: string;
   email: string;
   message: string;
-  lang: 'en' | 'de';
+  lang: "en" | "de";
   html: string;
   text: string;
-  reason?: string;
-  reasonLabel?: string;
-  subjectEsc?: string;
+  reason?: string | undefined;
+  reasonLabel?: string | undefined;
+  subjectEsc?: string | undefined;
   subject: string;
 }
 
@@ -88,9 +91,9 @@ export interface AutoReplyMailOptions {
   subject: string;
   text: string;
   html: string;
-  reason?: string;
-  reasonLabel?: string; // same for consistency
-  subjectEsc?: string;  // same for consistency
+  reason?: string | undefined;
+  reasonLabel?: string | undefined; // same for consistency
+  subjectEsc?: string | undefined; // same for consistency
 }
 
 export interface MailSendOptions {

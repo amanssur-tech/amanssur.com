@@ -7,11 +7,12 @@
   import { getContext } from 'svelte';
   import { getProps } from '../lib/i18n';
   import type { Lang } from '../lib/i18n';
+  import type { Writable } from 'svelte/store';
 
-  const lang = getContext('lang') as Lang;
-  const { title, menu } = getProps(lang, 'impressum');
-  const { impressum, disclaimer, copyright, privacy } =
-    getProps(lang, 'footer');
+  const lang = getContext('lang') as Writable<Lang>;
+  let title = getProps('en', 'impressum').title;
+
+  $: title = getProps($lang, 'impressum').title;
 </script>
 
 <div class="relative mx-auto">

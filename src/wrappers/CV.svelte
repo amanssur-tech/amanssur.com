@@ -1,11 +1,13 @@
 <script lang="ts">
   import { getContext } from 'svelte';
-  // @ts-ignore
   import MarkdownIt from 'markdown-it';
   import { getProps } from '../lib/i18n';
   import type { Lang } from '../lib/i18n';
-  const lang = getContext('lang') as Lang;
-  const {photoUnselected, photoSelected, download, fileNoPhoto, fileWithPhoto} = getProps(lang, 'cv');
+  import type { Writable } from 'svelte/store';
+  const lang = getContext('lang') as Writable<Lang>;
+  const defaultCv = getProps('en', 'cv');
+  let cvContent = defaultCv;
+  $: cvContent = getProps($lang, 'cv');
   import CV_EN from '../content/cv.md?raw';
   import CV_DE from '../content/cv-de.md?raw';
 
@@ -19,56 +21,63 @@
     '**GitHub:**': '/icons/github.svg',
   };
 
-  let mdRaw: string = lang === 'de' ? (CV_DE as string) : (CV_EN as string);
-
-  // Replace the bold labels with img tags in the markdown source before parsing
-  for (const [label, iconPath] of Object.entries(iconMap)) {
-    // Use a global regex to replace all occurrences, escaping special characters
-    const labelRegex = new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
-    mdRaw = mdRaw.replace(
-      labelRegex,
-      `<img src="${iconPath}" alt="${label.replace(/\*\*/g, '').replace(':', '')}" class="cv-icon" />`
-    );
-  }
-
   const md = new MarkdownIt({ html: true, linkify: false, breaks: false });
 
-  let introParts: string[] = [];
-  let leftParts: string[] = [];
-  let rightParts: string[] = [];
-  let current: 'intro' | 'left' | 'right' = 'intro';
+  function buildCvHtml(language: Lang) {
+    let mdRaw: string = language === 'de' ? (CV_DE as string) : (CV_EN as string);
 
-  let buffer: string[] = [];
-
-  const flush = () => {
-    if (buffer.length === 0) return;
-    const html = md.render(buffer.join('\n'));
-    if (current === 'intro') introParts.push(html);
-    else if (current === 'left') leftParts.push(html);
-    else rightParts.push(html);
-    buffer = [];
-  };
-
-  const lines = mdRaw.split('\n');
-  for (const line of lines) {
-    const trimmed = line.trim().toLowerCase();
-    if (trimmed === '<!-- col:left -->') {
-      flush();
-      current = 'left';
-      continue;
+    for (const [label, iconPath] of Object.entries(iconMap)) {
+      const labelRegex = new RegExp(label.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+      mdRaw = mdRaw.replace(
+        labelRegex,
+        `<img src="${iconPath}" alt="${label.replace(/\*\*/g, '').replace(':', '')}" class="cv-icon" />`
+      );
     }
-    if (trimmed === '<!-- col:right -->') {
-      flush();
-      current = 'right';
-      continue;
+
+    const introParts: string[] = [];
+    const leftParts: string[] = [];
+    const rightParts: string[] = [];
+    let current: 'intro' | 'left' | 'right' = 'intro';
+
+    let buffer: string[] = [];
+
+    const flush = () => {
+      if (buffer.length === 0) return;
+      const html = md.render(buffer.join('\n'));
+      if (current === 'intro') introParts.push(html);
+      else if (current === 'left') leftParts.push(html);
+      else rightParts.push(html);
+      buffer = [];
+    };
+
+    for (const line of mdRaw.split('\n')) {
+      const trimmed = line.trim().toLowerCase();
+      if (trimmed === '<!-- col:left -->') {
+        flush();
+        current = 'left';
+        continue;
+      }
+      if (trimmed === '<!-- col:right -->') {
+        flush();
+        current = 'right';
+        continue;
+      }
+      buffer.push(line);
     }
-    buffer.push(line);
+    flush();
+
+    return {
+      introHtml: introParts.join('\n'),
+      leftHtml: leftParts.join('\n'),
+      rightHtml: rightParts.join('\n'),
+    };
   }
-  flush();
 
-  const introHtml = introParts.join('\n');
-  const leftHtml = leftParts.join('\n');
-  const rightHtml = rightParts.join('\n');
+  let introHtml = '';
+  let leftHtml = '';
+  let rightHtml = '';
+
+  $: ({ introHtml, leftHtml, rightHtml } = buildCvHtml($lang));
 
   let showPhoto = false;
 
@@ -83,7 +92,7 @@
       localStorage.setItem('cv:showPhoto', showPhoto ? '1' : '0');
     }
   }
-  $: cvFile = showPhoto ? fileWithPhoto : fileNoPhoto;
+  $: cvFile = showPhoto ? cvContent.fileWithPhoto : cvContent.fileNoPhoto;
   $: cvHref = `/docs/${cvFile}`;
 
 </script>
@@ -107,7 +116,7 @@
       class:opacity-0={!showPhoto}
     ></span>
   </span>
-  <span>{showPhoto ? photoSelected : photoUnselected}</span>
+  <span>{showPhoto ? cvContent.photoSelected : cvContent.photoUnselected}</span>
   </button>
 
   <!-- New: Download button -->
@@ -116,14 +125,14 @@
     download={cvFile}
     class="inline-flex items-center px-4 py-2 gap-2 rounded-lg text-sm font-medium 
     shadow-sm dark:hover:shadow-white/10 transition-colors bg-black text-white hover:bg-black/75 active:bg-black/65 dark:bg-gray-700 dark:hover:bg-gray-600 dark:active:bg-gray-700/80"
-    aria-label={`${download} PDF`}
-    title={download}
+    aria-label={`${cvContent.download} PDF`}
+    title={cvContent.download}
   >
     <!-- minimal download glyph -->
     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
       <path d="M12 15l4-4h-3V4h-2v7H8l4 4z"/><path d="M5 19h14v2H5z"/>
     </svg>
-    <span>{download}</span>
+    <span>{cvContent.download}</span>
   </a>
 </div>
 

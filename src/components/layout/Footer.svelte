@@ -2,10 +2,13 @@
   import { getProps } from '../../lib/i18n';
   import { getContext } from 'svelte';
   import type { Lang } from '../../lib/i18n';
+  import type { Writable } from 'svelte/store';
 
-  const lang = getContext('lang') as Lang;
+  const lang = getContext('lang') as Writable<Lang>;
 
-  const { paragraph1, paragraph2, follow, mywork, notice, legal } = getProps(lang, 'footer');
+  let footer = getProps('en', 'footer');
+
+  $: footer = getProps($lang, 'footer');
 </script>
 
 <footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200/70 dark:border-zinc-700/50 mt-16">
@@ -14,7 +17,7 @@
 
     <!-- Column 1: Follow me on -->
     <div class="inline-flex items-center gap-4 justify-start">
-      <span class=" text-gray-700 dark:text-gray-300">{follow}</span>
+      <span class=" text-gray-700 dark:text-gray-300">{footer.follow}</span>
       <a href="https://github.com/amanssur-tech" target="_blank" rel="noopener" aria-label="GitHub" class="hover:text-gray-800 dark:hover:text-gray-200">
         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path fill-rule="evenodd" d="M12 .297a12 12 0 00-3.79 23.4c.6.113.82-.26.82-.577v-2.234c-3.338.726-4.042-1.61-4.042-1.61-.546-1.387-1.333-1.757-1.333-1.757-1.089-.745.083-.73.083-.73 1.205.084 1.84 1.238 1.84 1.238 1.07 1.834 2.809 1.304 3.495.997.108-.776.418-1.305.762-1.605-2.665-.305-5.466-1.334-5.466-5.932 0-1.311.469-2.381 1.236-3.22-.124-.303-.536-1.527.117-3.176 0 0 1.008-.322 3.3 1.23a11.52 11.52 0 016.004 0c2.292-1.552 3.298-1.23 3.298-1.23.655 1.649.243 2.873.12 3.176.77.839 1.235 1.909 1.235 3.22 0 4.61-2.804 5.624-5.475 5.921.43.372.823 1.103.823 2.222v3.293c0 .319.22.694.825.576A12.003 12.003 0 0012 .297z" clip-rule="evenodd"/>
@@ -34,7 +37,7 @@
 
     <!-- Column 2: Manssur Media -->
     <div class="inline-flex items-center gap-2 justify-end">
-      <span class=" text-gray-700 dark:text-gray-300">{mywork}</span>
+      <span class=" text-gray-700 dark:text-gray-300">{footer.mywork}</span>
       <a href="https://manssurmedia.com" aria-label="Manssur Media" target="_blank" rel="noopener" class="inline-flex items-center hover:text-gray-800 dark:hover:text-gray-200">
         <svg class="w-5 h-5" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg" aria-label="Manssur Media logo">
           <path d="M502.353 100C585.195 100 652.353 167.157 652.353 250V700H562.353V250.5C562.353 218.744 536.609 193 504.853 193C473.096 193 447.353 218.744 447.353 250.5V700H357.353V250.5C357.353 218.744 331.609 193 299.853 193C268.096 193 242.353 218.744 242.353 250.5V700H152.353V250C152.353 167.157 219.51 100 302.353 100C340.771 100 375.815 114.445 402.353 138.197C428.891 114.445 463.934 100 502.353 100Z" fill="currentColor"/>
@@ -53,14 +56,14 @@
 
       <!-- Legal -->
     <div class="font-semibold inline-flex gap-2 mt-4 justify-center items-center md:justify-end">
-      <span class=" text-gray-700 dark:text-gray-300">{notice}</span>
-      <a href={legal.href} class="hover:text-gray-800 dark:hover:text-gray-200 transition-colors">{legal.name}</a>
+      <span class=" text-gray-700 dark:text-gray-300">{footer.notice}</span>
+      <a href={footer.legal.href} class="hover:text-gray-800 dark:hover:text-gray-200 transition-colors">{footer.legal.name}</a>
     </div>
 
   <div class="space-y-1 mt-2 mb-2 max-w-xl mx-auto">
     
-    <p>{paragraph1}</p>
-    <p>{paragraph2}</p>
+    <p>{footer.paragraph1}</p>
+    <p>{footer.paragraph2}</p>
   </div>
 
 </footer>

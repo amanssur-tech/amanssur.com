@@ -1,12 +1,12 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
-import cloudflare from '@astrojs/cloudflare';
-import svelte from '@astrojs/svelte';
-import mdx from '@astrojs/mdx';
-import tailwindcss from '@tailwindcss/vite';
-import viteConfig from './vite.config.mjs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { defineConfig } from "astro/config";
+import cloudflare from "@astrojs/cloudflare";
+import svelte from "@astrojs/svelte";
+import mdx from "@astrojs/mdx";
+import tailwindcss from "@tailwindcss/vite";
+import viteConfig from "./vite.config.mjs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,9 +15,9 @@ export default defineConfig({
   output: "server",
   adapter: cloudflare({
     platformProxy: {
-      enabled: true
+      enabled: true,
     },
-    imageService: "cloudflare"
+    imageService: "cloudflare",
   }),
   integrations: [svelte(), mdx()],
   vite: {
@@ -25,21 +25,24 @@ export default defineConfig({
     plugins: [tailwindcss()],
     resolve: {
       alias: {
-        '@': path.resolve(__dirname, './src'),
-        '@/lib': path.resolve(__dirname, './src/lib'),
-        'zod/locales': path.resolve(__dirname, './node_modules/zod/lib/locales/index.js'),
+        "@": path.resolve(__dirname, "./src"),
+        "@/lib": path.resolve(__dirname, "./src/lib"),
+        "zod/locales": path.resolve(
+          __dirname,
+          "./node_modules/zod/lib/locales/index.js",
+        ),
       },
     },
     optimizeDeps: {
-      exclude: ['zod'],
+      exclude: ["zod"],
     },
     ssr: {
-      noExternal: ['zod'],
-      external: ['zod/locales']
+      noExternal: ["zod"],
+      external: ["zod/locales"],
     },
     server: {
       host: true,
-      allowedHosts: ['theola-unmappable-yousef.ngrok-free.dev'],
+      allowedHosts: ["theola-unmappable-yousef.ngrok-free.dev"],
     },
-  }, 
+  },
 });

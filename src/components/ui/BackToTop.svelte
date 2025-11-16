@@ -1,9 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { fade, fly } from 'svelte/transition';
+  import { fly } from 'svelte/transition';
   import { getContext } from 'svelte';
   import type { Lang } from '../../lib/i18n';
-  const lang = getContext('lang') as Lang;
+  import type { Writable } from 'svelte/store';
+  const lang = getContext('lang') as Writable<Lang>;
 
   let visible = false;
   let ticking = false;
@@ -31,7 +32,8 @@
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   });
-  const bttID = lang === 'de' ? 'Zurück zum Anfang' : 'Back to top';
+  let bttID = 'Back to top';
+  $: bttID = $lang === 'de' ? 'Zurück zum Anfang' : 'Back to top';
 </script>
 
 {#if visible}

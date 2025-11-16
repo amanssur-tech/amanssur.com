@@ -2,9 +2,12 @@
   import type { TranslationSchema, Lang } from '../../lib/i18n';
   import { getProps } from '../../lib/i18n';
   import { getContext, onMount } from 'svelte';
+  import type { Writable } from 'svelte/store';
 
-  const lang = getContext('lang') as Lang;
-  const { heading, paragraphs, cta } = getProps(lang, 'about') as TranslationSchema['about'];
+  const lang = getContext('lang') as Writable<Lang>;
+  let about = getProps('en', 'about') as TranslationSchema['about'];
+
+  $: about = getProps($lang, 'about') as TranslationSchema['about'];
 
   let scrollX = 0;
   let hasAnimated = false;
@@ -50,7 +53,7 @@
 
 <section id="about" aria-labelledby="about-heading"
   class="w-full scroll-mt-28 pb-5 
-         bg-gradient-to-b from-white to-slate-100 
+         bg-linear-to-b from-white to-slate-100 
          dark:from-zinc-900 dark:to-gray-950">
   <div
   bind:this={cardEl}
@@ -59,17 +62,17 @@
     <div class="mx-auto max-w-5xl px-5 py-10 md:py-12 lg:py-24 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 lg:gap-12 items-center">
       <!-- Image -->
       <div class="relative flex justify-center lg:justify-start">
-        <div aria-hidden="true" role="presentation" class="relative w-60 md:w-70 aspect-[1/1] bg-gradient-to-r from-black to-blue-600 dark:from-white dark:to-blue-400
-          [mask:url('/images/about.svg')] [mask-repeat:no-repeat] [mask-size:contain] [mask-position:center]">
+        <div aria-hidden="true" role="presentation" class="relative w-60 md:w-70 aspect-square bg-linear-to-r from-black to-blue-600 dark:from-white dark:to-blue-400
+          [mask:url('/images/about.svg')] mask-no-repeat mask-contain mask-center">
         </div>
       </div>
       <!-- Text Content -->
       <div class="text-center">
-        <h2 id="about-heading" class="text-4xl font-bold mb-6">{heading}</h2>
-        {#each paragraphs as p} <p class="text-lg mt-4 dark:text-gray-300">{p}</p> {/each}
-        <a href={lang === 'en' ? '/cv' : `/${lang}/cv`} class="mt-8 inline-block px-6 py-3 rounded-xl font-medium shadow-sm transition-colors
+        <h2 id="about-heading" class="text-4xl font-bold mb-6">{about.heading}</h2>
+        {#each about.paragraphs as p} <p class="text-lg mt-4 dark:text-gray-300">{p}</p> {/each}
+        <a href="/cv" class="mt-8 inline-block px-6 py-3 rounded-xl font-medium shadow-sm transition-colors
         bg-black text-white hover:bg-black/80 active:bg-black/70 dark:bg-gray-700 dark:hover:bg-gray-600 dark:active:bg-gray-700/80">
-          {cta}
+          {about.cta}
         </a>
       </div>
     </div>
