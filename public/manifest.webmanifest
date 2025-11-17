@@ -1,11 +1,24 @@
 {
   "name": "Amanullah Manssur",
   "short_name": "amanssur",
+  "description": "Personal portfolio of Amanullah Manssur, showcasing solutions architecture, IT consulting, projects, and contact information.",
+  "lang": "en",
+  "dir": "ltr",
   "id": "/",
   "icons": [
     {
       "src": "/favicons/AM-Logo-192.png",
       "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicons/AM-Logo-256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicons/AM-Logo-384.png",
+      "sizes": "384x384",
       "type": "image/png"
     },
     {
@@ -16,8 +29,44 @@
     }
   ],
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#ffffff",
-  "orientation": "portrait-primary"
+  "theme_color": "#18181B",
+  "orientation": "portrait-primary",
+  "categories": ["productivity", "business", "portfolio"],
+  "screenshots": [
+    {
+      "src": "/favicons/og-banner.jpg",
+      "sizes": "1080x1920",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "About",
+      "short_name": "About",
+      "url": "/#about",
+      "icons": [{ "src": "/favicons/AM-Logo-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Portfolio",
+      "short_name": "Portfolio",
+      "url": "/portfolio",
+      "icons": [{ "src": "/favicons/AM-Logo-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Contact",
+      "short_name": "Contact",
+      "url": "/#contact",
+      "icons": [{ "src": "/favicons/AM-Logo-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "CV",
+      "short_name": "CV",
+      "url": "/cv",
+      "icons": [{ "src": "/favicons/AM-Logo-192.png", "sizes": "192x192" }]
+    }
+  ]
 }

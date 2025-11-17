@@ -3,36 +3,23 @@
   xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
 
-  <!-- English pages -->
   <url>
     <loc>https://amanssur.com/</loc>
     <lastmod>2025-11-12</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="de" href="https://amanssur.com/de/"/>
   </url>
   <url>
     <loc>https://amanssur.com/cv</loc>
     <lastmod>2025-11-12</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.3</priority>
-    <xhtml:link rel="alternate" hreflang="de" href="https://amanssur.com/de/cv"/>
   </url>
-
-  <!-- German pages -->
   <url>
-    <loc>https://amanssur.com/de/</loc>
-    <lastmod>2025-11-12</lastmod>
+    <loc>https://amanssur.com/portfolio</loc>
+    <lastmod>2025-11-16</lastmod>
     <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://amanssur.com/"/>
-  </url>
-  <url>
-    <loc>https://amanssur.com/de/cv</loc>
-    <lastmod>2025-11-12</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.3</priority>
-    <xhtml:link rel="alternate" hreflang="en" href="https://amanssur.com/cv"/>
+    <priority>0.8</priority>
   </url>
 
 </urlset>

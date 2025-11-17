@@ -1,16 +1,35 @@
 ---
 import HR from '../roots/HR.svelte';
 import { translations } from '../lib/i18n';
+import type { CollectionEntry } from 'astro:content';
 
 type LangKey = keyof typeof translations;
+type ProjectEntry = CollectionEntry<'projects'>;
 
 const {
   lang = 'en',
   page = 'home',
   noindex = false,
-} = Astro.props as { lang?: LangKey; page?: string; noindex?: boolean };
+  projects = [],
+  projectEntry = null,
+  metaTitle,
+  metaDescription,
+  ogImage,
+} = Astro.props as {
+  lang?: LangKey;
+  page?: string;
+  noindex?: boolean;
+  projects?: ProjectEntry[];
+  projectEntry?: ProjectEntry | null;
+  metaTitle?: string;
+  metaDescription?: string;
+  ogImage?: string;
+};
 
-const { title, description } = translations[lang].meta ?? { title: '', description: '' };
+const defaultMeta = translations[lang].meta ?? { title: '', description: '' };
+const title = metaTitle ?? defaultMeta.title;
+const description = metaDescription ?? defaultMeta.description;
+const ogImageUrl = ogImage ?? 'https://amanssur.com/images/og-banner.jpg';
 ---
 <!DOCTYPE html>
 <html lang={lang} class="scroll-smooth">
@@ -21,8 +40,6 @@ const { title, description } = translations[lang].meta ?? { title: '', descripti
     {!noindex && <meta name="robots" content="index, follow" />}
     <!-- in BaseLayout.astro head -->
     <link rel="canonical" href={`https://amanssur.com${Astro.url.pathname}`} />
-    <link rel="alternate" href={`https://amanssur.com${page === 'home' ? '/' : `/${page}`}`} hreflang="en" />
-    <link rel="alternate" href={`https://amanssur.com${page === 'home' ? '/' : `/${page}`}`} hreflang="x-default" />
 
     <link rel="icon" type="image/svg+xml" href="/favicons/AM-Logo.svg">
     <link rel="icon" type="image/png" sizes="512x512" href="/favicons/AM-Logo-512.png">
@@ -43,6 +60,7 @@ const { title, description } = translations[lang].meta ?? { title: '', descripti
 
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="language" content={lang === 'de' ? 'de' : 'en'} />
     <meta name="author" content="Amanullah Manssur" />
 
     <meta property="og:title" content={title} />
@@ -50,8 +68,8 @@ const { title, description } = translations[lang].meta ?? { title: '', descripti
     <meta property="og:type" content="website" />
     <meta property="og:url" content={`https://amanssur.com${Astro.url.pathname}`} />
     <meta property="og:site_name" content="Amanullah Manssur" />
-    <meta property="og:image" content="https://amanssur.com/images/og-banner.jpg" />
-    <meta property="og:image:alt" content="Portrait of Amanullah Manssur, IT Solutions Consultant" />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:alt" content="Amanullah Manssur, IT Solutions Consultant" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content={lang === 'de' ? 'de_DE' : 'en_US'} />
@@ -60,9 +78,10 @@ const { title, description } = translations[lang].meta ?? { title: '', descripti
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content="https://amanssur.com/images/og-banner.jpg" />
-    <meta name="twitter:image:alt" content="Portrait of Amanullah Manssur, IT Solutions Consultant" />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content="Amanullah Manssur, IT Solutions Consultant" />
     <meta name="twitter:site" content="@ManssurMedia" />
+    <meta name="twitter:creator" content="@ManssurMedia" />
     <style is:global>
       @import '../styles/global.css';
     </style>
@@ -83,7 +102,8 @@ const { title, description } = translations[lang].meta ?? { title: '', descripti
         },
         "sameAs": [
           "https://github.com/amanssur-tech",
-          "https://linkedin.com/in/amanssur"
+          "https://linkedin.com/in/amanssur",
+          "https://x.com/manssurmedia"
         ],
         "description": "IT solutions consultant specializing in web, SaaS, and automation. Bilingual site, downloadable CVs, and project portfolio.",
         "knowsAbout": [
@@ -97,6 +117,15 @@ const { title, description } = translations[lang].meta ?? { title: '', descripti
         "alumniOf": {
           "@type": "CollegeOrUniversity",
           "name": "University of Cologne"
+        }
+        ,
+        "knowsLanguage": ["English", "German", "Persian (Dari)"],
+        "subjectOf": "https://amanssur.com/portfolio",
+        "about": "IT solutions consulting, portfolio case studies, automation systems, SaaS integrations",
+        "worksFor": {
+          "@type": "Organization",
+          "name": "Manssur Media",
+          "url": "https://manssurmedia.com"
         }
       }
     </script>
@@ -123,8 +152,97 @@ const { title, description } = translations[lang].meta ?? { title: '', descripti
         "description": "Manssur Media is a web, SaaS, and automation consulting brand founded by Amanullah Manssur."
       }
     </script>
+
+    <script is:inline type="application/ld+json">
+      {{
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://amanssur.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": page === "portfolio" ? "Portfolio" : page.charAt(0).toUpperCase() + page.slice(1),
+            "item": `https://amanssur.com/${page === "home" ? "" : page}`
+          }
+        ]
+      }}
+    </script>
+
+    <script is:inline type="application/ld+json">
+      {{
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "name": "Portfolio Projects",
+        "description": "Projects and case studies by Amanullah Manssur.",
+        "url": "https://amanssur.com/portfolio",
+        "numberOfItems": {projects.length},
+        "itemListElement": projects.map((p, i) => ({
+          "@type": "ListItem",
+          "position": i + 1,
+          "url": "https://amanssur.com/portfolio/" + p.slug
+        }))
+      }}
+    </script>
+
+    <script is:inline type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SpeakableSpecification",
+        "cssSelector": [
+          "h1",
+          "meta[name='description']"
+        ]
+      }
+    </script>
+
+    <script is:inline type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SiteNavigationElement",
+        "name": ["About", "Portfolio", "Contact", "CV"],
+        "url": [
+          "https://amanssur.com/#about",
+          "https://amanssur.com/portfolio",
+          "https://amanssur.com/#contact",
+          "https://amanssur.com/cv"
+        ]
+      }
+    </script>
+
+    <script is:inline type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "url": "https://amanssur.com",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://amanssur.com/?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    </script>
+
+    <script is:inline type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebPage",
+        "name": "Amanullah Manssur — IT Solutions Consultant",
+        "url": "https://amanssur.com",
+        "primaryEntity": {
+          "@type": "Person",
+          "name": "Amanullah Manssur",
+          "url": "https://amanssur.com"
+        }
+      }
+    </script>
   </head>
   <body class={`${page}`}>
-    <HR lang={lang} page={page} client:load />
+    <HR lang={lang} page={page} projects={projects} projectEntry={projectEntry} client:load />
   </body>
 </html>

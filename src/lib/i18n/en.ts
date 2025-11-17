@@ -20,40 +20,30 @@ export default {
     cta: "View my CV",
   },
   projects: {
-    heading: "Selected Projects",
+    heading: "Selected Work",
     paragraph:
       "A few examples of systems and websites I’ve delivered for SMEs, combining clean design with automation, integrations, and business-focused outcomes. For more, visit ",
     github: "I also publish guides, code snippets, and automation demos on ",
-    explore: "↕️ Explore site",
-    items: [
-      {
-        id: 1,
-        title: "🔧 Automotive Service Platform",
-        bullets: [
-          "CRM-integrated booking & automated email reminders",
-          "Mobile-first design for easy access on the go",
-        ],
-        alt: "Automotive service platform website preview",
-      },
-      {
-        id: 2,
-        title: "🛒 E-Commerce Storefront",
-        bullets: [
-          "Streamlined checkout with payment & inventory automation",
-          "Custom catalog with simple, conversion-driven navigation",
-        ],
-        alt: "E-commerce storefront preview",
-      },
-      {
-        id: 3,
-        title: "🛎️ Hospitality Booking System",
-        bullets: [
-          "Integrated booking system with availability calendar",
-          "Optimized performance for fast, reliable load times",
-        ],
-        alt: "Hospitality booking system preview",
-      },
-    ],
+    viewAll: "See all work",
+    empty: "New projects are on the way — stay tuned.",
+  },
+  work: {
+    metaTitle: "Portfolio | Amanullah Manssur",
+    metaDescription:
+      "Bespoke web platforms, dashboards, and automation systems delivered for SMEs and partners.",
+    heading: "Portfolio",
+    tagline: "Case Studies",
+    paragraph:
+      "Every build blends consulting rigor with hands-on engineering. These case studies highlight the tools I deploy for fast iteration, automation, and multilingual delivery.",
+    empty: "No published projects yet. Check back soon.",
+    detail: {
+      label: "Case Study",
+      features: "Highlights",
+      tech: "Tech Stack",
+      live: "Launch live demo",
+      repo: "View source on GitHub",
+      back: "← Back to all work",
+    },
   },
   contact: {
     heading: "Let’s Connect",
@@ -113,7 +103,7 @@ export default {
   navlinks: {
     sitename: "Amanullah Manssur",
     about: { name: "About", href: "/#about" },
-    projects: { name: "Projects", href: "/#projects" },
+    projects: { name: "Portfolio", href: "/portfolio" },
     contact: { name: "Contact", href: "/#contact" },
     cv: { name: "CV", href: "/cv" },
   },

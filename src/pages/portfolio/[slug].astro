@@ -1,0 +1,37 @@
+---
+export const prerender = false;
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { resolveLang } from '../../lib/lang';
+import type { Lang } from '../../lib/i18n';
+import { translations } from '../../lib/i18n';
+import { getCollection, type CollectionEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects
+    .filter((project) => project.data.published)
+    .map((project) => ({
+      params: { slug: project.data.slug || project.slug },
+      props: { project },
+    }));
+}
+
+const { project } = Astro.props as { project: CollectionEntry<'projects'> };
+
+const lang =
+  ((Astro.locals as Record<string, unknown>).lang as Lang | undefined) ??
+  resolveLang({ cookies: Astro.cookies, acceptLanguage: Astro.request.headers.get('accept-language') });
+
+const localizedTitle = lang === 'de' ? project.data.title_de : project.data.title_en;
+const localizedDescription = lang === 'de' ? project.data.description_de : project.data.description_en;
+const workMeta = translations[lang].work;
+const metaTitle = `${localizedTitle} | ${workMeta.metaTitle}`;
+---
+<BaseLayout
+  lang={lang}
+  page="workdetail"
+  projectEntry={project}
+  metaTitle={metaTitle}
+  metaDescription={localizedDescription}
+  ogImage={project.data.heroImage}
+/>

@@ -25,36 +25,26 @@ export default {
       "Einige Beispiele für Systeme und Websites, die ich für KMUs geliefert habe, eine Kombination aus klarem Design, Automatisierung, Integrationen und geschäftsorientierten Ergebnissen. Für mehr, besuche ",
     github:
       "Ich veröffentliche auch Anleitungen, Code-Snippets und Automatisierungs-Demos auf ",
-    explore: "↕️ Website erkunden",
-    items: [
-      {
-        id: 1,
-        title: "🔧 KFZ-Service Plattform",
-        bullets: [
-          "CRM-integrierte Buchung & automatisierte E-Mail-Erinnerungen",
-          "Mobil-optimiertes Design für einfachen Zugriff unterwegs",
-        ],
-        alt: "Vorschau der KFZ-Service Plattform Website",
-      },
-      {
-        id: 2,
-        title: "🛒 E-Commerce Shop",
-        bullets: [
-          "Optimierter Checkout mit Zahlungs- & Bestandsautomatisierung",
-          "Individueller Katalog mit einfacher, konversionsorientierter Navigation",
-        ],
-        alt: "Vorschau des E-Commerce Shops",
-      },
-      {
-        id: 3,
-        title: "🛎️ Gaststätte Buchungssystem",
-        bullets: [
-          "Integriertes Buchungssystem mit Verfügbarkeitskalender",
-          "Optimierte Leistung für schnelle, zuverlässige Ladezeiten",
-        ],
-        alt: "Vorschau des Gaststätten-Buchungssystems",
-      },
-    ],
+    viewAll: "Alle Arbeiten ansehen",
+    empty: "Neue Projekte sind in Vorbereitung – bald mehr.",
+  },
+  work: {
+    metaTitle: "Portfolio | Amanullah Manssur",
+    metaDescription:
+      "Maßgeschneiderte Webplattformen, Dashboards und Automatisierungssysteme für KMUs und Partner.",
+    heading: "Portfolio",
+    tagline: "Fallstudien",
+    paragraph:
+      "Jedes Projekt verbindet Beratungsdenken mit hands-on Engineering. Diese Fallstudien zeigen, welche Werkzeuge ich für schnelle Iterationen, Automatisierung und zweisprachige Auslieferung einsetze.",
+    empty: "Noch keine veröffentlichten Projekte. Schau bald wieder vorbei.",
+    detail: {
+      label: "Fallstudie",
+      features: "Highlights",
+      tech: "Tech-Stack",
+      live: "Live-Demo öffnen",
+      repo: "Quellcode auf GitHub",
+      back: "← Zurück zur Übersicht",
+    },
   },
   contact: {
     heading: "Lass uns verbinden",
@@ -117,7 +107,7 @@ export default {
   navlinks: {
     sitename: "Amanullah Manssur",
     about: { name: "Über", href: "/#about" },
-    projects: { name: "Projekte", href: "/#projects" },
+    projects: { name: "Portfolio", href: "/portfolio" },
     contact: { name: "Kontakt", href: "/#contact" },
     cv: { name: "Lebenslauf", href: "/cv" },
   },

@@ -21,13 +21,24 @@ export type TranslationSchema = {
     heading: string;
     paragraph: string;
     github: string;
-    explore: string;
-    items: {
-      id: number;
-      title: string;
-      bullets: string[];
-      alt: string;
-    }[];
+    viewAll: string;
+    empty: string;
+  };
+  work: {
+    metaTitle: string;
+    metaDescription: string;
+    heading: string;
+    tagline: string;
+    paragraph: string;
+    empty: string;
+    detail: {
+      label: string;
+      features: string;
+      tech: string;
+      live: string;
+      repo: string;
+      back: string;
+    };
   };
   contact: {
     heading: string;

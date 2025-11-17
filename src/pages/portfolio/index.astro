@@ -1,17 +1,24 @@
 ---
 export const prerender = false;
-import BaseLayout from '../layouts/BaseLayout.astro';
-import { resolveLang } from '../lib/lang';
-import type { Lang } from '../lib/i18n';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { resolveLang } from '../../lib/lang';
+import type { Lang } from '../../lib/i18n';
+import { translations } from '../../lib/i18n';
 import { getCollection } from 'astro:content';
 
 const lang =
   ((Astro.locals as Record<string, unknown>).lang as Lang | undefined) ??
   resolveLang({ cookies: Astro.cookies, acceptLanguage: Astro.request.headers.get('accept-language') });
-const page = 'home';
-
+const page = 'work';
 const projects = (await getCollection('projects'))
   .filter((project) => project.data.published)
   .sort((a, b) => a.data.title_en.localeCompare(b.data.title_en));
+const workMeta = translations[lang].work;
 ---
-<BaseLayout lang={lang} page={page} projects={projects} />
+<BaseLayout
+  lang={lang}
+  page={page}
+  projects={projects}
+  metaTitle={workMeta.metaTitle}
+  metaDescription={workMeta.metaDescription}
+/>

@@ -210,7 +210,7 @@
               class="w-full p-3 rounded bg-white text-gray-800 dark:bg-black/60 dark:text-gray-200"
               required
             >
-              <option value="" disabled selected hidden aria-hidden="true">{form.reason}</option>
+              <option value="" disabled selected hidden>{form.reason}</option>
               <option value="recruitment">{form.reasonRecruitment}</option>
               <option value="collaboration">{form.reasonCollaboration}</option>
               <option value="speaking">{form.reasonEvent}</option>

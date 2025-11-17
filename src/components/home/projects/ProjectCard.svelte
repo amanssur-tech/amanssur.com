@@ -1,13 +1,9 @@
 <script lang="ts">
-  import type { TranslationSchema } from '../../../lib/i18n';
+  export let title: string;
+  export let bullets: string[] = [];
+  export let alt: string;
 
-  type ProjectItem = TranslationSchema['projects']['items'][number];
-
-  export let title: ProjectItem['title'];
-  export let bullets: ProjectItem['bullets'] = [];
-  export let alt: ProjectItem['alt'];
-
-  export let explore: TranslationSchema['projects']['explore'];
+  export let explore: string;
 
   export let imageWebp: string;
   export let imageAvif: string;

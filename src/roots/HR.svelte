@@ -6,15 +6,20 @@
   import BL from '../layouts/BaseLayout.svelte';
   import type { Lang } from '../lib/i18n';
   import { detectLangFromNavigator, getLangCookie, setLangCookie } from '../lib/lang';
+  import type { CollectionEntry } from 'astro:content';
 
   export let lang: Lang = 'en';
   export let page: string = 'home';
+  export let projects: CollectionEntry<'projects'>[] = [];
+  export let projectEntry: CollectionEntry<'projects'> | null = null;
 
   const langStore: Writable<Lang> = writable(lang);
 
   // Make lang available to everything before any child renders
   setContext('lang', langStore);
   setContext('page', page);
+  setContext('projects', projects);
+  setContext('projectEntry', projectEntry);
 
   if (typeof document !== 'undefined') {
     const unsubscribe = langStore.subscribe((value) => {
@@ -49,5 +54,5 @@
 </script>
 
 <BL>
-  <svelte:component this={PageComp} />
+  <svelte:component this={PageComp} {projects} {projectEntry} />
 </BL>
