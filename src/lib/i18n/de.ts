@@ -25,7 +25,7 @@ export default {
       "Einige Beispiele für Systeme und Websites, die ich für KMUs geliefert habe, eine Kombination aus klarem Design, Automatisierung, Integrationen und geschäftsorientierten Ergebnissen. Für mehr, besuche ",
     github:
       "Ich veröffentliche auch Anleitungen, Code-Snippets und Automatisierungs-Demos auf ",
-    viewAll: "Alle Arbeiten ansehen",
+    viewAll: "Alle Projekte ansehen",
     empty: "Neue Projekte sind in Vorbereitung – bald mehr.",
   },
   work: {

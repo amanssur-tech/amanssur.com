@@ -24,7 +24,7 @@ export default {
     paragraph:
       "A few examples of systems and websites I’ve delivered for SMEs, combining clean design with automation, integrations, and business-focused outcomes. For more, visit ",
     github: "I also publish guides, code snippets, and automation demos on ",
-    viewAll: "See all work",
+    viewAll: "See all projects",
     empty: "New projects are on the way — stay tuned.",
   },
   work: {
@@ -42,7 +42,7 @@ export default {
       tech: "Tech Stack",
       live: "Launch live demo",
       repo: "View source on GitHub",
-      back: "← Back to all work",
+      back: "← Back to all projects",
     },
   },
   contact: {
