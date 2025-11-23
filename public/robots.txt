@@ -1,8 +1,117 @@
 # robots.txt for https://amanssur.com
-# Last updated: 2025-11-17
+# Enhanced Global SEO, AEO, GEO • Updated: 2025-11-19
 
+###############################
+# 1. Allow all major search engines
+###############################
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Yandex
+Allow: /
+
+User-agent: Baidu
+Disallow: /
+
+###############################
+# 2. Allow generative AI crawlers
+###############################
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+###############################
+# 3. Block harmful or low-value scrapers
+###############################
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: dotbot
+Disallow: /
+
+User-agent: Scrapy
+Disallow: /
+
+###############################
+# 3b. Allow major social, messaging, and preview bots
+###############################
+User-agent: TikTokBot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Facebot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Redditbot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: Grok
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: Slackbot
+Allow: /
+
+User-agent: Discordbot
+Allow: /
+
+User-agent: Pinterestbot
+Allow: /
+
+###############################
+# 4. Default rules for all other bots
+###############################
 User-agent: *
 Allow: /
 Disallow: /legal
 
+###############################
+# 5. Sitemap & IndexNow key
+###############################
 Sitemap: https://amanssur.com/sitemap.xml
+Indexnow-Key: 632f8bc8b0ceed2d9f71ce3daea4f3f9
