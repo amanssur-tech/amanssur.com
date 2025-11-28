@@ -6,6 +6,11 @@ Personal website, portfolio, and contact hub of **Amanullah Manssur**.
 
 amanssur.com is my central place on the web where I present myself as an **IT solutions consultant**, show selected projects, and make it easy for businesses and recruiters to contact me.
 
+## 📸 Preview
+
+<img width="1920" height="1080" alt="Website Preview" src="https://github.com/user-attachments/assets/6a3bd5dc-6555-4dbe-92ea-9d86a741ff24" />
+
+
 ## 🌍 Who is this site for?
 
 - Businesses that need **web, cloud, or automation solutions**
