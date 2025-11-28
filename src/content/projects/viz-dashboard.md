@@ -17,18 +17,16 @@ tech:
 features_en:
   - Modular React router with dashboard landing plus chart-specific routes.
   - Custom useD3 hook that keeps SVG rendering in sync with React’s lifecycle.
-  - Export pipeline for per-chart SVG/PNG downloads and “export all” batching.
   - Theme context with smooth light/dark toggles, gradients, and glassmorphism UI.
   - Bilingual copy powered by i18next and persistent language cookies.
 features_de:
   - Modularer React-Router mit Dashboard-Landingpage und chart-spezifischen Routen.
   - Eigener useD3-Hook, der die SVG-Ausgabe mit Reacts Lebenszyklus synchronisiert.
-  - Export-Pipeline für SVG/PNG-Downloads pro Chart inklusive „Export-all“-Batching.
   - Theme-Context mit sanften Hell/Dunkel-Wechseln, Farbverläufen und Glassmorphism-UI.
   - Zweisprachige Texte via i18next und persistiertem Sprachcookie.
 liveUrl: "https://viz.amanssur.com"
 repoUrl: "https://github.com/amanssur-tech/d3-visualizations"
-heroImage: "https://viz.amanssur.com/favicons/AM-Logo-D3-512.png"
+heroImage: "/portfolio/viz-dashboard.avif"
 published: true
 selected: true
 ---
@@ -39,11 +37,11 @@ I needed a portfolio-ready visualization system that goes beyond static screensh
 
 ## What the Project Does
 
-The dashboard ships with a hero overview page, two speciality routes for bar and line charts, and a responsive UI that feels native on mobile. Each chart loads curated JSON data, animates in with Framer Motion, displays live tooltips, and exposes quick actions for copying, downloading, or jumping to a deeper view. Light/dark theming, bilingual labels (EN/DE), and export buttons mimic real requirements I face with SME operations dashboards.
+The dashboard ships with a hero overview page and dedicated views for bar and line charts, and a responsive UI that feels native on mobile. Each chart loads curated JSON data, animates in with Framer Motion, displays live tooltips, and exposes quick actions for copying, downloading, or jumping to a deeper view. Light/dark theming, bilingual labels (EN/DE), and export buttons mimic real requirements I face with SME operations dashboards.
 
 ## Architecture
 
-- **React + Router** orchestrate the landing view plus `/exercise1` and `/exercise2` chart routes, while shared layout components (Navbar, Footer, Dashboard panels) keep UI consistent.
+- **React + Router** orchestrate the landing view and dedicated bar and line chart views, while shared layout components (Navbar, Footer, Dashboard panels) keep UI consistent.
 - **D3 Integration** happens through a reusable `useD3` hook that owns the SVG lifecycle so React and D3 never fight over the DOM. Chart components declaratively pass refs, scales, and handlers.
 - **Data Pipeline** is file-based for now (`/public/data/*.json`) to keep the repo portable. Utility helpers format tooltips, export SVG/PNG snapshots, and configure chart dimensions from a single spot.
 - **State & Theming** rely on a lightweight `ThemeContext`, Framer Motion transitions, and Tailwind utility classes for gradients, glass panels, and accessible color contrast.

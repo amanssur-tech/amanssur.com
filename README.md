@@ -69,12 +69,12 @@ They are **not** open for reuse. You may not copy, redistribute, or reuse them i
 
 The live version of this project is available at:
 
-👉 **https://amanssur.com**
+👉 **<https://amanssur.com>**
 
 ## 📬 Contact
 
 The easiest way to reach me is through the contact form on the site:
 
-👉 **https://amanssur.com/#contact**
+👉 **<https://amanssur.com/#contact>**
 
 You can also find my other links and contact channels directly on the homepage.

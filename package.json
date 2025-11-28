@@ -14,7 +14,12 @@
     "deploy:worker": "wrangler deploy workers/mail-queue/src/index.ts",
     "retry-pending": "tsx workers/retry-pending.ts",
     "digest:slack": "tsx workers/digest-slack.ts",
-    "push:notion": "tsx workers/push-notion.ts"
+    "push:notion": "tsx workers/push-notion.ts",
+    "contents": "scripts/project_contents.sh",
+    "lint": "npx eslint . --max-warnings=0",
+    "tsc": "npx tsc --noEmit --pretty false --strict --noUnusedLocals --noUnusedParameters --noFallthroughCasesInSwitch --noImplicitOverride --noImplicitReturns --exactOptionalPropertyTypes",
+    "prettier": "npx prettier . --write",
+    "check": "npm run tsc && npm run lint"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.5",
