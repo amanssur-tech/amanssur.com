@@ -2,9 +2,9 @@
 
 function maskToken(s: string | undefined): string {
   if (!s) return "";
-  if (s.length <= 2) return s.charAt(0) ?? "";
-  const first = s.charAt(0);
-  const last = s.charAt(s.length - 1);
+  if (s.length <= 2) return s.at(0) ?? "";
+  const first = s.at(0) ?? "";
+  const last = s.at(-1) ?? "";
   return first + "*".repeat(s.length - 2) + last;
 }
 
@@ -25,7 +25,7 @@ function summarizeMessage(msg: unknown, maxPreview = 0): string {
   if (typeof msg !== "string") return "";
   const len = msg.length;
   if (maxPreview <= 0) return `(message: ${len} chars)`;
-  const preview = msg.slice(0, maxPreview).replace(/\s+/g, " ").trim();
+  const preview = msg.slice(0, maxPreview).replaceAll(/\s+/g, " ").trim();
   return `${preview}${len > maxPreview ? `… (${len} chars)` : ""}`;
 }
 

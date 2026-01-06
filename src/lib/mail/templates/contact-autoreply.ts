@@ -77,7 +77,7 @@ export function buildAutoReply(p: AutoReplyParams) {
     <p style="margin:0 0 16px 0;">${t.lead}</p>
     <p style="margin:0 0 16px 0;">${t.yourMessage}<br>
       <blockquote style="margin:0; padding:10px 0 10px 10px; border-left:3px solid #ccc;">
-        <em class="dm-muted" style="color:#555;">“${escapeHtml(message).replace(/\n/g, "<br>")}”</em>
+        <em class="dm-muted" style="color:#555;">“${escapeHtml(message).replaceAll("\n", "<br>")}”</em>
       </blockquote>
     </p>
     <p style="margin:0 0 16px 0;">${t.closing}</p>

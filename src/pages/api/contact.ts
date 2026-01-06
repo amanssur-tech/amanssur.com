@@ -14,7 +14,7 @@ import {
 } from "@/lib/contact/transform";
 import { appendSubmission } from "@/lib/data/store.ts";
 import { buildAutoReply, buildContactNotif } from "@/lib/mail";
-import type { Reason, ContactFormSubmission } from "@/lib/mail/types";
+import type { ContactFormSubmission } from "@/lib/mail/types";
 import {
   parseAndValidate,
   checkRateLimit,
@@ -25,17 +25,22 @@ import { handleContactMailFlow } from "@/lib/mail/mailer";
 
 export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
   try {
+    const readEnv = (source: unknown): Record<string, string> => {
+      if (typeof source !== "object" || source === null) return {};
+      const record = source as Record<string, unknown>;
+      const out: Record<string, string> = {};
+      for (const [key, val] of Object.entries(record)) {
+        if (typeof val === "string") out[key] = val;
+      }
+      return out;
+    };
+    const localsEnv = locals as {
+      runtime?: { env?: unknown };
+      env?: unknown;
+    };
     const env: Record<string, string> = {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ...(typeof (locals as any)?.runtime?.env === "object"
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (locals as any).runtime.env
-        : {}),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      ...(typeof (locals as any)?.env === "object"
-        ? // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          (locals as any).env
-        : {}),
+      ...readEnv(localsEnv.runtime?.env),
+      ...readEnv(localsEnv.env),
     };
     const isProd = env.MODE === "production";
     const ip = clientAddress || "unknown";
@@ -44,8 +49,8 @@ export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
     // Validate data early to determine language for i18n errors
     const formData = await request.formData();
     const data = Object.fromEntries(formData) as Record<string, string>;
-    const parsedLang = data.lang === "de" ? "de" : "en";
-    const formI18n = getProps(parsedLang as Lang, "contact").form;
+    const parsedLang: Lang = data.lang === "de" ? "de" : "en";
+    const formI18n = getProps(parsedLang, "contact").form;
 
     // Rate limit check
     if (!checkRateLimit(ip)) {
@@ -63,10 +68,7 @@ export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
     let t2 = t1; // will be updated right after notification send succeeds
 
     // Allowlist bypass: if EMAIL_ALLOWLIST contains this exact email, skip disposable checks
-    const allowCsv =
-      typeof env.EMAIL_ALLOWLIST !== "undefined"
-        ? String(env.EMAIL_ALLOWLIST)
-        : "";
+    const allowCsv = env.EMAIL_ALLOWLIST ?? "";
     const allow = allowCsv
       .split(",")
       .map((s) => s.trim().toLowerCase())
@@ -98,18 +100,17 @@ export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
       reason,
       subjectOther,
     } = parsedData;
-    const lang = submittedLang === "de" ? "de" : "en";
+    const lang: Lang = submittedLang === "de" ? "de" : "en";
 
-    const langFull = langFullName(lang as Lang);
+    const langFull = langFullName(lang);
 
-    const reasonLabel =
-      mapReasonToLabel(lang as Lang, reason as Reason | undefined) || "";
+    const reasonLabel = mapReasonToLabel(lang, reason) || "";
 
     const websiteNorm = normalizeWebsite(website);
     const phoneNorm = normalizePhone(phone);
     const subjectEsc = sanitize(subjectOther) || "";
 
-    const msgPreview = message.replace(/\s+/g, " ").slice(0, 300);
+    const msgPreview = message.replaceAll(/\s+/g, " ").slice(0, 300);
     const slackCtx = `From: ${firstName} ${lastName} <${email}>\nReason: ${reason || "-"}${subjectEsc ? ` (${subjectEsc})` : ""}\nLang: ${lang} | IP: ${ip}\nMsg: ${msgPreview}`;
 
     // Log submission for daily digest (non-blocking)
@@ -153,7 +154,7 @@ export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
     });
     // Prebuild auto‑reply so we can enqueue it even if notif send fails in DEV
     const ar = buildAutoReply({
-      t: getProps(lang as Lang, "contact").autoreply,
+      t: getProps(lang, "contact").autoreply,
       firstName,
       message,
       reasonLabel,
@@ -186,33 +187,6 @@ export const POST: APIRoute = async ({ request, clientAddress, locals }) => {
         headers: { "Content-Type": "application/json" },
       });
     }
-
-    // --- Notion push (background) ---
-    /*
-    void (async () => {
-      try {
-        const notionConfigured = Boolean((env.NOTION_API_KEY) && (env.NOTION_DATABASE_ID));
-        if (!notionConfigured) return;
-        await pushLeadToNotion({
-          firstName,
-          lastName,
-          email,
-          message,
-          reason,
-          subjectOther: subjectOther || undefined,
-          company: company || undefined,
-          website: websiteNorm || undefined,
-          phone: phoneNorm || undefined,
-          lang,
-          ts: new Date().toISOString(),
-        });
-      } catch (e) {
-        try {
-          await sendSlackMessage(`[NOTION-FAIL] bg push failed\n${slackCtx}`, env);
-        } catch {}
-      }
-    })();
-    */
 
     const t3 = Date.now();
     if (!isProd) {

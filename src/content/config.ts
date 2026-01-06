@@ -14,6 +14,8 @@ const projects = defineCollection({
     liveUrl: z.string().url(),
     repoUrl: z.string().url(),
     heroImage: z.string(),
+    heroImageDark: z.string().optional(),
+    hideLiveUrl: z.boolean().optional(),
     published: z.boolean(),
     selected: z.boolean(),
   }),

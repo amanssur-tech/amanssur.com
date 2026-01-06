@@ -2,11 +2,11 @@
 // Posts a daily (or custom range) digest of form submissions to Slack.
 //
 // Usage examples:
-//   npm run digest:slack                      # last 24h, loads .env.production by default
-//   ENV_FILE=.env npm run digest:slack        # use .env instead
-//   ENV_FILE=.env.production npm run digest:slack -- --hours=48
-//   ENV_FILE=.env.production npm run digest:slack -- --since=2025-08-10T00:00:00Z
-//   ENV_FILE=.env.production npm run digest:slack -- --dry
+//   pnpm run digest:slack                      # last 24h, loads .env.production by default
+//   ENV_FILE=.env pnpm run digest:slack        # use .env instead
+//   ENV_FILE=.env.production pnpm run digest:slack -- --hours=48
+//   ENV_FILE=.env.production pnpm run digest:slack -- --since=2025-08-10T00:00:00Z
+//   ENV_FILE=.env.production pnpm run digest:slack -- --dry
 
 import { sendSlackMessage } from "../src/lib/slack.ts";
 
@@ -42,11 +42,13 @@ function parseArgsFromParams(
   const out: { hours?: number; since?: Date; dry?: boolean } = {};
   if (params instanceof URLSearchParams) {
     if (params.has("hours")) out.hours = Number(params.get("hours"));
-    if (params.has("since")) out.since = new Date(params.get("since")!);
+    const since = params.get("since");
+    if (since) out.since = new Date(since);
     if (params.has("dry") || params.has("dry-run")) out.dry = true;
   } else {
     if (params["hours"]) out.hours = Number(params["hours"]);
-    if (params["since"]) out.since = new Date(params["since"]!);
+    const since = params["since"];
+    if (since) out.since = new Date(since);
     if (params["dry"] === "true" || params["dry-run"] === "true")
       out.dry = true;
   }
@@ -91,7 +93,7 @@ function getSubmissionTime(s: Submission): Date | null {
   const t = s.ts || s.date;
   if (!t) return null;
   const d = new Date(t);
-  return isNaN(d.getTime()) ? null : d;
+  return Number.isNaN(d.getTime()) ? null : d;
 }
 
 function withinRange(s: Submission, since: Date): boolean {
@@ -136,11 +138,11 @@ function summarize(subs: Submission[], since: Date) {
     .map((s) => {
       const d = getSubmissionTime(s);
       const when = d
-        ? d.toISOString().replace("T", " ").replace("Z", " UTC")
+        ? d.toISOString().replaceAll("T", " ").replaceAll("Z", " UTC")
         : "(no time)";
       const name = formatName(s);
       const email = s.email || "(no email)";
-      const preview = truncate((s.message || "").replace(/\s+/g, " "), 160);
+      const preview = truncate((s.message || "").replaceAll(/\s+/g, " "), 160);
       return `• ${when} — ${name} <${email}> — ${preview}`;
     })
     .join("\n");

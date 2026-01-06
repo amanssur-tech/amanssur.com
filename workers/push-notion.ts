@@ -11,6 +11,7 @@ interface KVNamespace {
 }
 
 import { Client } from "@notionhq/client";
+import type { CreatePageParameters } from "@notionhq/client/build/src/api-endpoints";
 
 export interface Env {
   NOTION_API_KEY: string;
@@ -98,11 +99,11 @@ async function suggestNotesAndTags(
       (
         json as { choices?: Array<{ message?: { content?: string } }> }
       )?.choices?.[0]?.message?.content?.trim() || "";
-    const match = content.match(/\{[\s\S]*\}$/);
+    const match = /\{[\s\S]*\}$/.exec(content);
     const parsed = match ? JSON.parse(match[0]) : JSON.parse(content);
     const notes = typeof parsed?.notes === "string" ? parsed.notes : undefined;
     const tags = Array.isArray(parsed?.tags)
-      ? parsed.tags.map((t: unknown) => String(t)).slice(0, 6)
+      ? parsed.tags.map(String).slice(0, 6)
       : undefined;
     return { notes, tags };
   } catch {
@@ -110,46 +111,42 @@ async function suggestNotesAndTags(
   }
 }
 
+type NotionProperties = NonNullable<CreatePageParameters["properties"]>;
+type NotionProperty = NotionProperties[string];
+
 function buildProperties(
   sub: Submission,
   ai?: { notes?: string; tags?: string[] },
-) {
-  const props: Record<string, unknown> = {
+): NotionProperties {
+  const props: Record<string, NotionProperty> = {
     "Full Name": {
       title: [{ text: { content: makeTitle(sub.firstName, sub.lastName) } }],
     },
-    Subject: (() => {
-      const opt = mapReasonToNotionSubject(sub.reason);
-      return opt ? { select: { name: opt } } : undefined;
-    })(),
     "Contact Source": { select: { name: "amanssur.com" } },
     "Last Contact": { date: { start: sub.ts || new Date().toISOString() } },
-    "First Name": sub.firstName
-      ? { rich_text: [{ text: { content: sub.firstName } }] }
-      : undefined,
-    "Last Name": sub.lastName
-      ? { rich_text: [{ text: { content: sub.lastName } }] }
-      : undefined,
-    Email: sub.email ? { email: sub.email } : undefined,
-    Phone: sub.phone ? { phone: sub.phone } : undefined,
-    Website: sub.website ? { url: sub.website } : undefined,
-    Company: sub.company
-      ? { rich_text: [{ text: { content: sub.company } }] }
-      : undefined,
-    Message: sub.message
-      ? { rich_text: [{ text: { content: sub.message } }] }
-      : undefined,
-    "Subject-other": sub.subjectOther
-      ? { rich_text: [{ text: { content: sub.subjectOther } }] }
-      : undefined,
-    Notes: ai?.notes
-      ? { rich_text: [{ text: { content: ai.notes } }] }
-      : undefined,
-    Tags: ai?.tags?.length
-      ? { multi_select: ai.tags.map((t) => ({ name: t })) }
-      : undefined,
   };
-  Object.keys(props).forEach((k) => props[k] === undefined && delete props[k]);
+
+  const subject = mapReasonToNotionSubject(sub.reason);
+  if (subject) props.Subject = { select: { name: subject } };
+  if (sub.firstName)
+    props["First Name"] = { rich_text: [{ text: { content: sub.firstName } }] };
+  if (sub.lastName)
+    props["Last Name"] = { rich_text: [{ text: { content: sub.lastName } }] };
+  if (sub.email) props.Email = { email: sub.email };
+  if (sub.phone) props.Phone = { phone_number: sub.phone };
+  if (sub.website) props.Website = { url: sub.website };
+  if (sub.company)
+    props.Company = { rich_text: [{ text: { content: sub.company } }] };
+  if (sub.message)
+    props.Message = { rich_text: [{ text: { content: sub.message } }] };
+  if (sub.subjectOther)
+    props["Subject-other"] = {
+      rich_text: [{ text: { content: sub.subjectOther } }],
+    };
+  if (ai?.notes) props.Notes = { rich_text: [{ text: { content: ai.notes } }] };
+  if (ai?.tags?.length)
+    props.Tags = { multi_select: ai.tags.map((t) => ({ name: t })) };
+
   return props;
 }
 
@@ -171,8 +168,7 @@ export default async function main(env: Env) {
 
       await notion.pages.create({
         parent: { database_id: databaseId },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        properties: buildProperties(sub, ai) as any,
+        properties: buildProperties(sub, ai),
       });
       ok++;
     } catch (e) {

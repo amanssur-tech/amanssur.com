@@ -60,7 +60,7 @@ export function buildContactNotif(p: ContactNotifParams) {
         ${optionalRowsHtml}
         <p style="margin:0 0 8px 0;"><strong>Message:</strong></p>
         <blockquote style="margin:0 0 16px 0; padding:10px 0 10px 10px; border-left:3px solid #ccc;">
-          <em style="color: #555;">“${escapeHtml(p.message).replace(/\n/g, "<br>")}”</em>
+          <em style="color: #555;">“${escapeHtml(p.message).replaceAll("\n", "<br>")}”</em>
         </blockquote>
         <p style="margin:0 0 16px 0;"><strong>Received:</strong> ${receivedAt}</p>
         <p style="margin:0 0 16px 0;"><strong>Language:</strong> ${escapeHtml(p.langFull)}</p>

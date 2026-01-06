@@ -11,12 +11,12 @@
 
   let scrollX = 0;
   let hasAnimated = false;
-  let cardEl: HTMLElement | null = null;
 
   onMount(() => {
+    const cleanup = () => {};
     const isXL = window.matchMedia('(min-width: 1200px)').matches;
     console.log('isXL?', isXL, 'viewport', window.innerWidth); // debug
-    if (!isXL) return; // bail early for smaller screens
+    if (!isXL) return cleanup; // bail early for smaller screens
 
     hasAnimated = location.hash === '#about';
     const sectionEl = document.getElementById('about')!;
@@ -48,6 +48,8 @@
         window.removeEventListener('scroll', onScroll);
       };
     }
+
+    return cleanup;
   });
 </script>
 
@@ -56,7 +58,6 @@
          bg-linear-to-b from-white to-slate-100 
          dark:from-zinc-900 dark:to-gray-950">
   <div
-  bind:this={cardEl}
   class="bg-white dark:bg-zinc-900 mt-20 rounded-2xl shadow-md dark:shadow-zinc-400/20 mx-4 sm:mx-8 md:mx-12 lg:mx-24 xl:mx-36 2xl:mx-48 border border-gray-200/60 dark:border-zinc-600/25"
   style="transform: translateX({scrollX}px); transition: transform .1s linear;">
     <div class="mx-auto max-w-5xl px-5 py-10 md:py-12 lg:py-24 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 lg:gap-12 items-center">

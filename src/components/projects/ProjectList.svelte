@@ -12,6 +12,7 @@
     title: lang === 'de' ? project.data.title_de : project.data.title_en,
     description: lang === 'de' ? project.data.description_de : project.data.description_en,
     heroImage: project.data.heroImage,
+    heroImageDark: project.data.heroImageDark,
     tech: project.data.tech,
   }));
 

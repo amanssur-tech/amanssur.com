@@ -13,7 +13,7 @@ export function sanitize(input?: string | null): string | undefined {
 
 /** Escape minimal HTML entities for safe embedding in emails (if needed). */
 export function escapeHtml(str: string): string {
-  return str.replace(/[&<>"']/g, (ch) => {
+  return str.replaceAll(/[&<>"']/g, (ch) => {
     switch (ch) {
       case "&":
         return "&amp;";
@@ -50,11 +50,11 @@ export function normalizePhone(phone?: string | null): string | undefined {
   if (!s) return undefined;
   // Remove everything except digits, spaces, and plus.
   let cleaned = s
-    .replace(/[^0-9+\s]/g, " ")
-    .replace(/\s+/g, " ")
+    .replaceAll(/[^0-9+\s]/g, " ")
+    .replaceAll(/\s+/g, " ")
     .trim();
   // Collapse multiple leading plus signs to one.
-  cleaned = cleaned.replace(/^\++/, "+");
+  cleaned = cleaned.replaceAll(/^\++/g, "+");
   return cleaned || undefined;
 }
 
@@ -104,8 +104,11 @@ export function buildSubmissionRecord(input: {
   ip: string | undefined;
 }): Partial<ContactFormSubmission> & { ts: string; ip?: string | undefined } {
   const ts = new Date().toISOString();
+  const subjectOther = sanitize(input.subjectOther);
+  const company = sanitize(input.company);
   const phoneNorm = normalizePhone(input.phone);
   const websiteNorm = normalizeWebsite(input.website);
+  const ip = sanitize(input.ip);
 
   return {
     firstName: input.firstName,
@@ -114,15 +117,11 @@ export function buildSubmissionRecord(input: {
     message: input.message,
     lang: input.lang,
     reason: input.reason,
-    ...(sanitize(input.subjectOther) !== undefined
-      ? { subjectOther: sanitize(input.subjectOther) }
-      : {}),
-    ...(sanitize(input.company) !== undefined
-      ? { company: sanitize(input.company) }
-      : {}),
-    ...(phoneNorm !== undefined ? { phone: phoneNorm } : {}),
-    ...(websiteNorm !== undefined ? { website: websiteNorm } : {}),
-    ip: sanitize(input.ip),
+    ...(subjectOther ? { subjectOther } : {}),
+    ...(company ? { company } : {}),
+    ...(phoneNorm ? { phone: phoneNorm } : {}),
+    ...(websiteNorm ? { website: websiteNorm } : {}),
+    ip,
     ts,
   };
 }

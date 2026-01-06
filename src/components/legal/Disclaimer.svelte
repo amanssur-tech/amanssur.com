@@ -9,7 +9,7 @@
   import Legal_EN from '../../content/legal.md?raw';
   import Legal_DE from '../../content/legal-de.md?raw';
 
-  const md = new MarkdownIt({ html: true, linkify: false, breaks: false }).use(anchor, { slugify: s => s.toLowerCase().replace(/\s+/g, '-') });
+  const md = new MarkdownIt({ html: true, linkify: false, breaks: false }).use(anchor, { slugify: (s: string) => s.toLowerCase().replace(/\s+/g, '-') });
   let introHtml = md.render(Legal_EN as string);
 
   $: {

@@ -77,3 +77,10 @@ src/data/tmp/*.json
 
 # local project inspection dumps
 project_contents*.txt
+live.diff
+
+# local test CV copies
+src/content/test.md
+src/pages/test.astro
+src/wrappers/Test.svelte
+src/styles/test.css

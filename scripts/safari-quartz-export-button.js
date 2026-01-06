@@ -1,4 +1,3 @@
-/* eslint-env browser */
 /* global document */
 (function () {
   if (document.getElementById("cv-clean-btn")) return;

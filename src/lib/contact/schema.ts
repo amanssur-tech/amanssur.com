@@ -14,10 +14,8 @@ function env(key: string, cfEnv?: Record<string, string>): string | undefined {
 
 /** Extract domain from an email address; returns null if not parseable */
 export function parseDomain(addr: string): string | null {
-  const m = String(addr)
-    .trim()
-    .match(/@([^@>\s]+)$/);
-  return m?.[1]?.toLowerCase() ?? null;
+  const match = /@([^@>\s]+)$/.exec(String(addr).trim());
+  return match?.[1]?.toLowerCase() ?? null;
 }
 
 /** Allow list / block list logic can be extended later. For now: reject disposable domains. */
@@ -26,14 +24,13 @@ export function isDisposableDomainWithEnv(domain: string): boolean {
   // Base disposable list
   if (isDisposableDomain(domain)) return true;
   // Optional extra comma-separated list from env (e.g., "yopmail.com,trashmail.com")
-  const extra = env(
-    "DISPOSABLE_EXTRA",
-    typeof globalThis !== "undefined"
-      ? ((globalThis as Record<string, unknown>).env as
+  const runtimeEnv =
+    typeof globalThis === "undefined"
+      ? undefined
+      : ((globalThis as Record<string, unknown>).env as
           | Record<string, string>
-          | undefined)
-      : undefined,
-  );
+          | undefined);
+  const extra = env("DISPOSABLE_EXTRA", runtimeEnv);
   if (extra) {
     const set = new Set(
       extra

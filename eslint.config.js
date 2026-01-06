@@ -6,6 +6,7 @@ import svelteParser from "svelte-eslint-parser";
 import astroParser from "astro-eslint-parser";
 import astroPlugin from "eslint-plugin-astro";
 import globals from "globals";
+import unusedImports from "eslint-plugin-unused-imports";
 
 export default [
   {
@@ -43,6 +44,12 @@ export default [
       parserOptions: {
         project: "./tsconfig.json",
       },
+    },
+    plugins: {
+      "unused-imports": unusedImports,
+    },
+    rules: {
+      "unused-imports/no-unused-imports": "error",
     },
   },
 

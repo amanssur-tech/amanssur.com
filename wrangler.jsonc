@@ -3,9 +3,9 @@
  * https://developers.cloudflare.com/workers/wrangler/configuration/
  */
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
+  "$schema": "node_modules/.pnpm/wrangler@4.50.0_@cloudflare+workers-types@4.20260103.0/node_modules/wrangler/config-schema.json",
   "name": "amanssur-com",
-  "compatibility_date": "2025-10-04",
+  "compatibility_date": "2025-10-01",
   "pages_build_output_dir": "dist",
 
   // Enables logging, metrics, and better debugging in Cloudflare dashboard

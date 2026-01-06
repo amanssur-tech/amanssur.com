@@ -95,7 +95,7 @@ async function retryPendingMails() {
         q.payload.html ??
         `
         <p><strong>From:</strong> ${firstName} ${lastName} &lt;${email}&gt;</p>
-        <p>${message.replace(/\n/g, "<br>")}</p>
+        <p>${message.replaceAll("\n", "<br>")}</p>
       `;
 
       let sent = false;

@@ -10,7 +10,6 @@ amanssur.com is my central place on the web where I present myself as an **IT so
 
 <img width="1920" height="1080" alt="Website Preview" src="https://github.com/user-attachments/assets/6a3bd5dc-6555-4dbe-92ea-9d86a741ff24" />
 
-
 ## 🌍 Who is this site for?
 
 - Businesses that need **web, cloud, or automation solutions**
@@ -53,16 +52,14 @@ _(Some of these features are work in progress, the repository evolves together w
 
 ```bash
 # install dependencies
-npm install
+pnpm install
 
 # start dev server
-npm run dev
+pnpm run dev
 
 # build for production
-npm run build
+pnpm run build
 ```
-
-Adjust commands if you prefer `pnpm` or `yarn`.
 
 ## 🎨 Brand and assets
 

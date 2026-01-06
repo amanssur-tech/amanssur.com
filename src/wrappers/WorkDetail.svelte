@@ -19,6 +19,24 @@
   $: tech = projectEntry?.data.tech ?? [];
   $: bodyHtml = projectEntry ? md.render(projectEntry.body) : '';
   const fallbackImage = '/images/og-banner.jpg';
+  const heroImage = projectEntry?.data.heroImage || fallbackImage;
+  const heroImageDark = projectEntry?.data.heroImageDark || heroImage;
+
+  const buildImageSet = (src: string) => {
+    const match = src.match(/\.(avif|webp|jpe?g)$/i);
+    if (!match) {
+      return { avif: src, webp: src, jpg: src };
+    }
+    const base = src.slice(0, -match[0].length);
+    return {
+      avif: `${base}.avif`,
+      webp: `${base}.webp`,
+      jpg: `${base}.jpg`,
+    };
+  };
+
+  $: lightImage = buildImageSet(heroImage);
+  $: darkImage = buildImageSet(heroImageDark);
 </script>
 
 <section class="bg-linear-to-b from-white to-slate-100 pb-24 pt-16 dark:from-zinc-900 dark:to-zinc-950">
@@ -36,13 +54,20 @@
         <div class="mt-10 grid gap-8 lg:grid-cols-[2fr,1fr]">
           <div>
             <div class="overflow-hidden rounded-3xl border border-black/10 bg-slate-100 shadow-inner shadow-black/5 dark:border-white/10 dark:bg-zinc-800/70">
-              <img
-                src={projectEntry.data.heroImage || fallbackImage}
-                alt={`${title} hero`}
-                loading="lazy"
-                decoding="async"
-                class="w-full object-cover"
-              />
+              <picture>
+                <source media="(prefers-color-scheme: dark)" srcset={darkImage.avif} type="image/avif" />
+                <source media="(prefers-color-scheme: dark)" srcset={darkImage.webp} type="image/webp" />
+                <source media="(prefers-color-scheme: dark)" srcset={darkImage.jpg} type="image/jpeg" />
+                <source srcset={lightImage.avif} type="image/avif" />
+                <source srcset={lightImage.webp} type="image/webp" />
+                <img
+                  src={lightImage.jpg}
+                  alt={`${title} hero`}
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full object-cover"
+                />
+              </picture>
             </div>
           </div>
           <div class="space-y-6 rounded-3xl border border-black/5 bg-white/80 p-6 shadow-lg dark:border-white/10 dark:bg-zinc-900/80">
@@ -74,14 +99,16 @@
             {/if}
 
             <div class="flex flex-col gap-3">
-              <a
-                href={projectEntry.data.liveUrl}
-                target="_blank"
-                rel="noopener"
-                class="inline-flex items-center justify-center gap-2 rounded-2xl bg-black px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-black/90 dark:bg-white dark:text-black dark:shadow-white/20"
-              >
-                {workCopy.detail.live}
-              </a>
+              {#if !projectEntry.data.hideLiveUrl}
+                <a
+                  href={projectEntry.data.liveUrl}
+                  target="_blank"
+                  rel="noopener"
+                  class="inline-flex items-center justify-center gap-2 rounded-2xl bg-black px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-black/90 dark:bg-white dark:text-black dark:shadow-white/20"
+                >
+                  {workCopy.detail.live}
+                </a>
+              {/if}
               <a
                 href={projectEntry.data.repoUrl}
                 target="_blank"

@@ -3,9 +3,28 @@
   export let title: string;
   export let description: string;
   export let heroImage: string;
+  export let heroImageDark: string | undefined;
   export let tech: string[] = [];
 
-  const imageSrc = heroImage?.length ? heroImage : '/images/og-banner.jpg';
+  const fallbackImage = '/images/og-banner.jpg';
+  const imageSrc = heroImage?.length ? heroImage : fallbackImage;
+  const darkImageSrc = heroImageDark?.length ? heroImageDark : imageSrc;
+
+  const buildImageSet = (src: string) => {
+    const match = src.match(/\.(avif|webp|jpe?g)$/i);
+    if (!match) {
+      return { avif: src, webp: src, jpg: src };
+    }
+    const base = src.slice(0, -match[0].length);
+    return {
+      avif: `${base}.avif`,
+      webp: `${base}.webp`,
+      jpg: `${base}.jpg`,
+    };
+  };
+
+  const light = buildImageSet(imageSrc);
+  const dark = buildImageSet(darkImageSrc);
 </script>
 
 <a
@@ -15,10 +34,13 @@
 >
   <div class="relative overflow-hidden rounded-2xl bg-linear-to-br from-slate-100 to-white dark:from-zinc-800 dark:to-zinc-900">
     <picture>
-      <source srcset={imageSrc.replace('.avif', '.webp')} type="image/webp" />
-      <source srcset={imageSrc} type="image/avif" />
+      <source media="(prefers-color-scheme: dark)" srcset={dark.avif} type="image/avif" />
+      <source media="(prefers-color-scheme: dark)" srcset={dark.webp} type="image/webp" />
+      <source media="(prefers-color-scheme: dark)" srcset={dark.jpg} type="image/jpeg" />
+      <source srcset={light.avif} type="image/avif" />
+      <source srcset={light.webp} type="image/webp" />
       <img
-        src={imageSrc.replace('.avif', '.webp')}
+        src={light.jpg}
         alt={`${title} preview`}
         loading="lazy"
         decoding="async"

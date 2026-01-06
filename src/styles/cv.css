@@ -43,8 +43,9 @@
 
   .cv-container {
     @apply shadow-md shadow-gray-300/70 dark:shadow-gray-600 border border-gray-200/60 dark:border-zinc-600/25;
-    @apply w-[1055px] aspect-[1/1.4142857143] max-w-[97%] min-w-[50%] my-[2em] mx-auto px-[.5em] py-[3.6em];
+    @apply aspect-[1/1.4142857143] max-w-[97%] min-w-[50%] my-[2em] mx-auto px-[.5em] py-[3.6em];
     @apply flex flex-col justify-start overflow-x-auto;
+    width: 1055px;
     container-type: inline-size;
     container-name: cv;
   }
