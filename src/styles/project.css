@@ -1,0 +1,59 @@
+/* src/styles/project.css */
+
+/* ---------------------------
+   Portfolio project detail pages: images, captions and tables.
+   Headings, paragraphs and lists are styled in WorkDetail.svelte.
+--------------------------- */
+
+@layer components {
+  .article-body {
+    /* the article is a flex child with auto margins, so it sizes to its content;
+       a wide table would otherwise push the whole page sideways on mobile */
+    @apply w-full min-w-0;
+  }
+
+  .article-body img {
+    @apply mt-7 mb-3 w-full h-auto rounded-2xl border border-black/10 bg-zinc-100 dark:border-white/10 dark:bg-zinc-900;
+  }
+
+  /* portrait screenshots (forms) read badly at full column width */
+  .article-body img.form-shot {
+    @apply block w-full max-w-[440px] mx-auto;
+  }
+
+  /* captions: the italic line directly under an image */
+  .article-body img + em,
+  .article-body p > em:only-child {
+    @apply block mb-7 text-sm leading-normal not-italic text-zinc-500 dark:text-zinc-400;
+  }
+
+  .article-body table {
+    @apply block w-full max-w-full overflow-x-auto border-collapse my-6 text-[0.9375rem];
+  }
+
+  .article-body thead th {
+    @apply text-left font-semibold whitespace-nowrap px-3.5 py-2.5 border-b border-black/20 dark:border-white/20;
+  }
+
+  .article-body tbody td {
+    @apply px-3.5 py-2.5 align-top border-b border-black/[0.07] dark:border-white/[0.08];
+  }
+
+  .article-body tbody tr:last-child td {
+    @apply border-b-0;
+  }
+
+  @media (max-width: 640px) {
+    .article-body table {
+      @apply text-[0.8125rem];
+    }
+
+    .article-body thead th {
+      @apply whitespace-normal px-[0.45rem] py-2;
+    }
+
+    .article-body tbody td {
+      @apply px-[0.45rem] py-2 break-words;
+    }
+  }
+}

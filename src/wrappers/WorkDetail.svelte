@@ -109,14 +109,16 @@
                   {workCopy.detail.live}
                 </a>
               {/if}
-              <a
-                href={projectEntry.data.repoUrl}
-                target="_blank"
-                rel="noopener"
-                class="inline-flex items-center justify-center gap-2 rounded-2xl border border-black/10 px-4 py-3 text-sm font-semibold text-gray-900 transition hover:-translate-y-0.5 hover:bg-gray-50 dark:border-white/20 dark:text-white dark:hover:bg-white/10"
-              >
-                {workCopy.detail.repo}
-              </a>
+              {#if !projectEntry.data.hideRepoUrl}
+                <a
+                  href={projectEntry.data.repoUrl}
+                  target="_blank"
+                  rel="noopener"
+                  class="inline-flex items-center justify-center gap-2 rounded-2xl border border-black/10 px-4 py-3 text-sm font-semibold text-gray-900 transition hover:-translate-y-0.5 hover:bg-gray-50 dark:border-white/20 dark:text-white dark:hover:bg-white/10"
+                >
+                  {workCopy.detail.repo}
+                </a>
+              {/if}
             </div>
           </div>
         </div>
