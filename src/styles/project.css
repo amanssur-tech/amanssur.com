@@ -56,4 +56,29 @@
       @apply px-[0.45rem] py-2 break-words;
     }
   }
+
+  /* article images open in place, not in a new tab */
+  .article-body a img {
+    cursor: zoom-in;
+  }
+
+  .article-lightbox {
+    @apply fixed inset-0 z-[100] flex items-center justify-center p-6;
+    background: rgba(9, 9, 11, 0.93);
+    backdrop-filter: blur(3px);
+  }
+
+  .article-lightbox img {
+    @apply h-auto w-auto max-h-[88vh] max-w-[92vw] rounded-xl;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55);
+  }
+
+  .article-lightbox__close {
+    @apply absolute right-5 top-5 flex h-11 w-11 items-center justify-center rounded-full text-2xl leading-none text-white transition;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .article-lightbox__close:hover {
+    background: rgba(255, 255, 255, 0.22);
+  }
 }

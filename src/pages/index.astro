@@ -4,6 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { resolveLang } from '../lib/lang';
 import type { Lang } from '../lib/i18n';
 import { getCollection } from 'astro:content';
+import { getProjectMeta } from '../content/projects';
 
 const lang =
   ((Astro.locals as Record<string, unknown>).lang as Lang | undefined) ??
@@ -11,7 +12,9 @@ const lang =
 const page = 'home';
 
 const projects = (await getCollection('projects'))
-  .filter((project) => project.data.published)
-  .sort((a, b) => a.data.title_en.localeCompare(b.data.title_en));
+  .filter((project) => getProjectMeta(project.id)?.published)
+  .sort((a, b) =>
+    (getProjectMeta(a.id)?.copy.en.title ?? '').localeCompare(getProjectMeta(b.id)?.copy.en.title ?? ''),
+  );
 ---
 <BaseLayout lang={lang} page={page} projects={projects} />

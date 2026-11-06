@@ -1,34 +1,3 @@
----
-slug: case-intake-automation
-title_en: "Case Intake and Routing Automation"
-title_de: "Case-Intake und Routing-Automation"
-description_en: "A private case intake and routing system that turns inconsistent requests into structured cases with an owner, a priority and a written reason, then follows up on anything that stalls."
-description_de: "Ein privates Case-Intake- und Routing-System, das uneinheitliche Anfragen in strukturierte Cases mit Verantwortlichem, Priorität und schriftlicher Begründung überführt und stehengebliebenen Fällen nachfasst."
-tech:
-  - n8n
-  - Google Sheets
-  - Slack
-  - JavaScript
-  - Workflow Design
-features_en:
-  - Every request leaves intake with a case ID, an owner and a priority in about three seconds.
-  - Incomplete requests are flagged as Waiting for Info instead of entering the queue looking ready.
-  - Routing decisions carry a one line written reason, so the queue stays explainable.
-  - The follow-up sweep waits 24 hours between reminders and escalates on the third.
-features_de:
-  - Jede Anfrage verlässt den Intake in rund drei Sekunden mit Case-ID, Verantwortlichem und Priorität.
-  - Unvollständige Anfragen werden als „Waiting for Info“ markiert statt als bearbeitbar eingereiht.
-  - Jede Routing-Entscheidung trägt eine einzeilige Begründung, damit die Queue erklärbar bleibt.
-  - Der Follow-up-Lauf wartet 24 Stunden zwischen Erinnerungen und eskaliert beim dritten.
-liveUrl: "https://amanssur.com/portfolio/case-intake-automation"
-repoUrl: "https://github.com/amanssur-tech"
-heroImage: "/portfolio/case-intake-automation.avif"
-hideLiveUrl: true
-hideRepoUrl: true
-published: true
-selected: true
----
-
 ## The problem
 
 Requests come in through whatever channel is closest. A form, an email, a message in a team channel, a note someone passes on after a call. They arrive half finished, written in different ways, and with very different urgency. Then somebody has to read each one, work out what kind of request it is, decide who owns it, and remember to chase it.
@@ -43,7 +12,7 @@ A private n8n form is the only way in, so every request arrives in the same shap
 
 The path is always the same: capture, classify, route, store, notify, follow up.
 
-<a href="/portfolio/case-intake-form.webp" target="_blank" rel="noopener"><img src="/portfolio/case-intake-form.webp" alt="The private intake form: requester name, email, source, summary, details, requested-by date, category hint and attachment URL" class="form-shot" /></a>
+<a href="/portfolio/case-intake-form.webp"><img src="/portfolio/case-intake-form.webp" alt="The private intake form: requester name, email, source, summary, details, requested-by date, category hint and attachment URL" class="form-shot" /></a>
 
 *The intake form. Eight fields, four of them required. That was the minimum I needed to classify and route a request. Anything missing gets flagged instead of guessed.*
 

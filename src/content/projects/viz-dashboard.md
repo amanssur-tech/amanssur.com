@@ -1,36 +1,3 @@
----
-slug: viz-dashboard
-title_en: "D3 Visualizations Dashboard"
-title_de: "D3 Datenvisualisierungs-Dashboard"
-description_en: "A multi-view React dashboard that embeds rich D3 charts, export tooling, and bilingual UX for modern data storytelling."
-description_de: "Ein mehrseitiges React-Dashboard mit eingebetteten D3-Charts, Exportfunktionen und zweisprachigem UX für modernes Data Storytelling."
-tech:
-  - React
-  - Vite
-  - TypeScript
-  - D3.js
-  - Tailwind CSS
-  - Framer Motion
-  - React Router
-  - i18next
-  - Vercel
-features_en:
-  - Modular React router with dashboard landing plus chart-specific routes.
-  - Custom useD3 hook that keeps SVG rendering in sync with React’s lifecycle.
-  - Theme context with smooth light/dark toggles, gradients, and glassmorphism UI.
-  - Bilingual copy powered by i18next and persistent language cookies.
-features_de:
-  - Modularer React-Router mit Dashboard-Landingpage und chart-spezifischen Routen.
-  - Eigener useD3-Hook, der die SVG-Ausgabe mit Reacts Lebenszyklus synchronisiert.
-  - Theme-Context mit sanften Hell/Dunkel-Wechseln, Farbverläufen und Glassmorphism-UI.
-  - Zweisprachige Texte via i18next und persistiertem Sprachcookie.
-liveUrl: "https://viz.amanssur.com"
-repoUrl: "https://github.com/amanssur-tech/d3-visualizations"
-heroImage: "/portfolio/viz-dashboard.avif"
-published: true
-selected: true
----
-
 ## Problem Statement
 
 I needed a portfolio-ready visualization system that goes beyond static screenshots. The goal was to showcase how I approach modern web data products: strongly typed React code, D3-driven charts, bilingual copy, and a frictionless UX that feels like purpose-built SaaS. Existing samples were either academic or lacked polish, so I set out to build a cohesive dashboard that could be repurposed for consulting clients who demand speed, branding, and exportable insights.

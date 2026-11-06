@@ -2,19 +2,26 @@
   import type { CollectionEntry } from 'astro:content';
   import type { Lang } from '../../lib/i18n';
   import ProjectCard from './ProjectCard.svelte';
+  import { getProjectMeta, projectKey } from '../../content/projects';
 
   export let projects: CollectionEntry<'projects'>[] = [];
   export let lang: Lang = 'en';
   export let variant: 'full' | 'compact' = 'full';
 
-  $: localizedProjects = projects.map((project) => ({
-    slug: project.data.slug || project.slug,
-    title: lang === 'de' ? project.data.title_de : project.data.title_en,
-    description: lang === 'de' ? project.data.description_de : project.data.description_en,
-    heroImage: project.data.heroImage,
-    heroImageDark: project.data.heroImageDark,
-    tech: project.data.tech,
-  }));
+  $: localizedProjects = projects.flatMap((project) => {
+    const key = projectKey(project);
+    const meta = getProjectMeta(key);
+    if (!meta) return [];
+    const copy = meta.copy[lang];
+    return [{
+      slug: key,
+      title: copy.title,
+      description: copy.description,
+      heroImage: meta.heroImage,
+      heroImageDark: meta.heroImageDark,
+      tech: meta.tech,
+    }];
+  });
 
   $: gridClasses = variant === 'compact'
     ? 'mt-10 grid gap-6 md:grid-cols-2'

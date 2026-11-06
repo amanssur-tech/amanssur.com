@@ -4,13 +4,14 @@
   import { getProps, type Lang } from '../lib/i18n';
   import type { Writable } from 'svelte/store';
   import ProjectList from '../components/projects/ProjectList.svelte';
+  import { getProjectMeta } from '../content/projects';
 
   export let projects: CollectionEntry<'projects'>[] = [];
   const lang = getContext('lang') as Writable<Lang>;
 
   let workCopy = getProps('en', 'work');
   $: workCopy = getProps($lang, 'work');
-  $: publishedProjects = projects.filter((project) => project.data.published);
+  $: publishedProjects = projects.filter((project) => getProjectMeta(project.id)?.published);
 </script>
 
 <section class="bg-linear-to-b from-white via-slate-50 to-gray-100 pb-24 pt-16 dark:from-zinc-900 dark:via-zinc-900 dark:to-zinc-950">

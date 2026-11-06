@@ -4,6 +4,7 @@
   import type { Writable } from 'svelte/store';
   import type { CollectionEntry } from 'astro:content';
   import ProjectList from '../../projects/ProjectList.svelte';
+  import { getProjectMeta } from '../../../content/projects';
 
   const lang = getContext('lang') as Writable<Lang>;
   export let projects: CollectionEntry<'projects'>[] = [];
@@ -12,7 +13,10 @@
 
   $: projectContent = getProps($lang, 'projects');
   $: selectedProjects = projects
-    .filter((project) => project.data.published && project.data.selected)
+    .filter((project) => {
+      const meta = getProjectMeta(project.id);
+      return Boolean(meta?.published && meta?.selected);
+    })
     .slice(0, 4);
 </script>
 

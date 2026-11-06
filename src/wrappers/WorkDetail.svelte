@@ -4,8 +4,10 @@
   import type { CollectionEntry } from 'astro:content';
   import { getProps, type Lang } from '../lib/i18n';
   import type { Writable } from 'svelte/store';
+  import { getProjectMeta } from '../content/projects';
 
-  export let projectEntry: CollectionEntry<'projects'> | null = null;
+  type EntryWithDe = CollectionEntry<'projects'> & { bodyDe?: string };
+  export let projectEntry: EntryWithDe | null = null;
 
   const lang = getContext('lang') as Writable<Lang>;
   let workCopy = getProps('en', 'work');
@@ -13,14 +15,18 @@
 
   const md = new MarkdownIt({ html: true, linkify: true, breaks: true });
 
-  $: title = projectEntry ? ($lang === 'de' ? projectEntry.data.title_de : projectEntry.data.title_en) : '';
-  $: description = projectEntry ? ($lang === 'de' ? projectEntry.data.description_de : projectEntry.data.description_en) : '';
-  $: features = projectEntry ? ($lang === 'de' ? projectEntry.data.features_de : projectEntry.data.features_en) : [];
-  $: tech = projectEntry?.data.tech ?? [];
-  $: bodyHtml = projectEntry ? md.render(projectEntry.body) : '';
+  const entryMeta = projectEntry ? getProjectMeta(projectEntry.id) : undefined;
+
+  $: title = entryMeta ? entryMeta.copy[$lang].title : '';
+  $: description = entryMeta ? entryMeta.copy[$lang].description : '';
+  $: features = entryMeta ? entryMeta.copy[$lang].features : [];
+  $: tech = entryMeta?.tech ?? [];
+  $: bodyHtml = projectEntry
+    ? md.render($lang === 'de' && projectEntry.bodyDe ? projectEntry.bodyDe : projectEntry.body)
+    : '';
   const fallbackImage = '/images/og-banner.jpg';
-  const heroImage = projectEntry?.data.heroImage || fallbackImage;
-  const heroImageDark = projectEntry?.data.heroImageDark || heroImage;
+  const heroImage = entryMeta?.heroImage || fallbackImage;
+  const heroImageDark = entryMeta?.heroImageDark || heroImage;
 
   const buildImageSet = (src: string) => {
     const match = src.match(/\.(avif|webp|jpe?g)$/i);
@@ -99,9 +105,9 @@
             {/if}
 
             <div class="flex flex-col gap-3">
-              {#if !projectEntry.data.hideLiveUrl}
+              {#if entryMeta && !entryMeta.hideLiveUrl}
                 <a
-                  href={projectEntry.data.liveUrl}
+                  href={entryMeta.liveUrl}
                   target="_blank"
                   rel="noopener"
                   class="inline-flex items-center justify-center gap-2 rounded-2xl bg-black px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-black/90 dark:bg-white dark:text-black dark:shadow-white/20"
@@ -109,9 +115,9 @@
                   {workCopy.detail.live}
                 </a>
               {/if}
-              {#if !projectEntry.data.hideRepoUrl}
+              {#if entryMeta && !entryMeta.hideRepoUrl}
                 <a
-                  href={projectEntry.data.repoUrl}
+                  href={entryMeta.repoUrl}
                   target="_blank"
                   rel="noopener"
                   class="inline-flex items-center justify-center gap-2 rounded-2xl border border-black/10 px-4 py-3 text-sm font-semibold text-gray-900 transition hover:-translate-y-0.5 hover:bg-gray-50 dark:border-white/20 dark:text-white dark:hover:bg-white/10"

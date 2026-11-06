@@ -22,7 +22,7 @@ export default {
   projects: {
     heading: "Ausgewählte Projekte",
     paragraph:
-      "Einige Beispiele für Systeme und Websites, die ich für KMUs geliefert habe, eine Kombination aus klarem Design, Automatisierung, Integrationen und geschäftsorientierten Ergebnissen. Für mehr, besuche ",
+      "Ein Blick darauf, wie ich arbeite: das Problem, die Entscheidungen und die Kompromisse, nicht nur das fertige Ergebnis. Automatisierung, Datenvisualisierung und Werkzeuge für Entwickler, jeweils mit den Belegen dahinter. Kundenprojekte findest du bei ",
     github:
       "Ich veröffentliche auch Anleitungen, Code-Snippets und Automatisierungs-Demos auf ",
     viewAll: "Alle Projekte ansehen",

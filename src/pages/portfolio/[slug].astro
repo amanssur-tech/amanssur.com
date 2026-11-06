@@ -5,17 +5,20 @@ import { resolveLang } from '../../lib/lang';
 import type { Lang } from '../../lib/i18n';
 import { translations } from '../../lib/i18n';
 import { getCollection } from 'astro:content';
+import { getProjectMeta, projectKey } from '../../content/projects';
 
 const projects = await getCollection('projects');
+const projectsDe = await getCollection('projectsDe');
 const { slug } = Astro.params;
 
 if (!slug) {
   return Astro.redirect('/404', 404);
 }
 
-const project = projects.find((entry) => entry.data.slug === slug || entry.slug === slug);
+const project = projects.find((entry) => projectKey(entry) === slug);
+const meta = project ? getProjectMeta(project.id) : undefined;
 
-if (!project || !project.data.published) {
+if (!project || !meta || !meta.published) {
   return Astro.redirect('/404', 404);
 }
 
@@ -23,16 +26,82 @@ const lang =
   ((Astro.locals as Record<string, unknown>).lang as Lang | undefined) ??
   resolveLang({ cookies: Astro.cookies, acceptLanguage: Astro.request.headers.get('accept-language') });
 
-const localizedTitle = lang === 'de' ? project.data.title_de : project.data.title_en;
-const localizedDescription = lang === 'de' ? project.data.description_de : project.data.description_en;
+const german = projectsDe.find((entry) => projectKey(entry) === slug);
+const localizedEntry = { ...project, bodyDe: german?.body ?? '' };
+
+const localizedTitle = meta.copy[lang].title;
+const localizedDescription = meta.copy[lang].description;
 const workMeta = translations[lang].work;
 const metaTitle = `${localizedTitle} | ${workMeta.metaTitle}`;
 ---
 <BaseLayout
   lang={lang}
   page="workdetail"
-  projectEntry={project}
+  projectEntry={localizedEntry}
   metaTitle={metaTitle}
   metaDescription={localizedDescription}
-  ogImage={project.data.heroImage}
+  ogImage={meta.heroImage}
 />
+
+<script is:inline>
+  // Article images open in a lightbox. Delegated from document so it keeps
+  // working when Svelte swaps the article body on a language change.
+  (() => {
+    let overlay = null;
+    let lastFocus = null;
+
+    const close = () => {
+      if (!overlay) return;
+      overlay.remove();
+      overlay = null;
+      document.documentElement.style.overflow = '';
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    };
+
+    const open = (href, alt) => {
+      close();
+      lastFocus = document.activeElement;
+
+      overlay = document.createElement('div');
+      overlay.className = 'article-lightbox';
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-modal', 'true');
+      overlay.setAttribute('aria-label', alt || 'Enlarged image');
+
+      const img = document.createElement('img');
+      img.src = href;
+      img.alt = alt || '';
+
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'article-lightbox__close';
+      button.setAttribute('aria-label', 'Close image');
+      button.textContent = '\u00d7';
+
+      overlay.append(img, button);
+      overlay.addEventListener('click', (event) => {
+        if (event.target === overlay || event.target === button) close();
+      });
+
+      document.body.append(overlay);
+      document.documentElement.style.overflow = 'hidden';
+      button.focus();
+    };
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const link = target.closest('.article-body a[href]');
+      if (!link) return;
+      const href = link.getAttribute('href') || '';
+      if (!/\.(avif|webp|jpe?g|png)$/i.test(href)) return;
+      const img = link.querySelector('img');
+      event.preventDefault();
+      open(href, img ? img.alt : '');
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') close();
+    });
+  })();
+</script>

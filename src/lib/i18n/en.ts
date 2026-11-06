@@ -22,7 +22,7 @@ export default {
   projects: {
     heading: "Selected Work",
     paragraph:
-      "A few examples of systems and websites I’ve delivered for SMEs, combining clean design with automation, integrations, and business-focused outcomes. For more, visit ",
+      "A closer look at how I build: the problem, the decisions and the tradeoffs, rather than just the finished screens. Automation, data visualisation and developer tooling, each written up with the evidence behind it. Client work lives at ",
     github: "I also publish guides, code snippets, and automation demos on ",
     viewAll: "See all projects",
     empty: "New projects are on the way — stay tuned.",
