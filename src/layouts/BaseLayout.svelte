@@ -7,7 +7,7 @@
 
 <div class="min-h-screen">
   <NavBar />
-  <main class="min-h-screen">
+  <main class="min-h-screen [&>:last-child]:after:block [&>:last-child]:after:h-16">
     <slot />
   </main>
   <Footer />

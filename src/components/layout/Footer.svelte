@@ -11,7 +11,7 @@
   $: footer = getProps($lang, 'footer');
 </script>
 
-<footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200/70 dark:border-zinc-700/50 mt-16">
+<footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400 border-t border-gray-200/70 dark:border-zinc-700/50">
 
   <div class="font-medium grid grid-cols-1 sm:grid-cols-2 max-w-5xl px-6 mt-1 mx-auto text-sm justify-items-center sm:justify-items-stretch">
 
