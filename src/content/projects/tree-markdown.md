@@ -18,4 +18,4 @@ Markdown previews and exports often render directory trees inconsistently. This 
 - GitHub: https://github.com/amanssur-tech/tree-markdown-parser
 - VS Code extension source: https://github.com/amanssur-tech/tree-markdown-parser/tree/main/vscode
 - npm package: https://www.npmjs.com/package/tree-markdown-parser
-- Marketplace (placeholder): https://marketplace.visualstudio.com/items?itemName=TODO
+- Marketplace: https://marketplace.visualstudio.com/items?itemName=amanssur.vscode-tree-markdown

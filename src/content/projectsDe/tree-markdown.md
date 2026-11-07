@@ -18,4 +18,4 @@ Verzeichnisbäume sehen in Markdown-Vorschauen und in Exporten oft jedes Mal and
 - GitHub: https://github.com/amanssur-tech/tree-markdown-parser
 - Quellcode der VS-Code-Erweiterung: https://github.com/amanssur-tech/tree-markdown-parser/tree/main/vscode
 - npm-Paket: https://www.npmjs.com/package/tree-markdown-parser
-- Marketplace (Platzhalter): https://marketplace.visualstudio.com/items?itemName=TODO
+- Marketplace: https://marketplace.visualstudio.com/items?itemName=amanssur.vscode-tree-markdown
