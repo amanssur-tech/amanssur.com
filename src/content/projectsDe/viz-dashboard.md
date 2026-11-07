@@ -1,32 +1,43 @@
-## Ausgangslage
+## Das Problem
 
-Ich wollte ein Visualisierungssystem fürs Portfolio, das mehr kann als ein paar statische Screenshots. Es sollte zeigen, wie ich an moderne Datenprodukte im Web herangehe: durchgängig typisierter React-Code, Diagramme mit D3, zweisprachige Texte und eine Oberfläche, die sich anfühlt wie ein eigenes Produkt und nicht wie eine Demo. Die Beispiele, die ich kannte, waren entweder akademisch oder lieblos gemacht. Also habe ich ein durchgängiges Dashboard gebaut, das sich für Kunden wiederverwenden lässt, die Tempo, ein eigenes Erscheinungsbild und exportierbare Auswertungen erwarten.
+Daten nützen nur, wenn jemand sie lesen kann. Dieselben Zahlen lassen sich so zeigen, dass sie eine Frage auf einen Blick beantworten, oder so, dass es beeindruckend aussieht und nichts aussagt. Viele Dashboards scheitern an der zweiten Variante: Sie sind darauf gebaut, fertig auszusehen, nicht darauf, verstanden zu werden.
 
-## Was das Projekt macht
+Ich wollte einen Ort für die erste Variante. Jeder Datensatz, jede Frage, übersetzt in ein Diagramm, das die Antwort tatsächlich trägt, und lesbar auf dem Desktop wie auf dem Handy.
 
-Das Dashboard besteht aus einer Übersichtsseite und je einer eigenen Ansicht für Balken- und Liniendiagramme. Auf dem Handy verhält es sich wie eine native App. Jedes Diagramm lädt vorbereitete JSON-Daten, läuft mit Framer Motion ein, zeigt Tooltips direkt am Punkt und bietet Aktionen zum Kopieren, Herunterladen oder für einen genaueren Blick. Heller und dunkler Modus, Beschriftungen auf Deutsch und Englisch sowie Export-Schaltflächen bilden ab, was mir bei Dashboards für mittelständische Betriebe tatsächlich begegnet.
+## Was es macht
 
-## Architektur
+Das Dashboard ist eine wachsende Sammlung von Fallstudien. Jede ist eine eigenständige Seite mit eigenem Diagrammtyp und eigener Frage, und eine neue hinzuzufügen rührt die anderen nicht an.
 
-- **React und Router** übernehmen die Startseite und die beiden Diagrammseiten. Gemeinsame Bausteine wie Navigation, Fußzeile und Panels sorgen dafür, dass alles zusammenpasst.
-- **Die D3-Anbindung** steckt in einem wiederverwendbaren `useD3`-Hook. Er kümmert sich um den Lebenszyklus des SVG, damit React und D3 nicht um dasselbe Element streiten. Die Diagramm-Komponenten geben Referenzen, Skalen und Handler deklarativ weiter.
-- **Die Daten** kommen vorerst aus Dateien (`/public/data/*.json`), damit das Repository überall lauffähig bleibt. Hilfsfunktionen formatieren Tooltips, erzeugen SVG- und PNG-Exporte und legen die Diagrammgröße an einer einzigen Stelle fest.
-- **Zustand und Erscheinungsbild** hängen an einem schlanken `ThemeContext`, an den Übergängen von Framer Motion und an Tailwind-Klassen für Verläufe, glasartige Flächen und ausreichenden Kontrast.
-- **Die Zweisprachigkeit** übernimmt i18next zusammen mit Cookies, sodass das Dashboard die gewählte Sprache beim nächsten Besuch behält. So handhabe ich das auch bei Ergebnissen für Kunden.
+Die aktuelle Auswahl reicht vom Balkendiagramm, das Zahlen über Städte vergleicht, bis zum Parallelkoordinaten-Diagramm mit fünf Luftschadstoffen: Liniendiagramme über die Zeit, ein randomisiertes Balkendiagramm, das sich alle drei Sekunden neu zeichnet, eine Drei-Panel-Ansicht der Verkäufe nach Tageszeit und ein Dumbbell-Diagramm, das auf einen Bubble-Scatterplot umschaltet. Eine der Fallstudien stellt bewusst ein irreführendes Diagramm neben seine korrigierte Fassung: Wer weiß, warum ein Diagramm lügt, weiß auch, wie man eines zeichnet, das nicht lügt.
 
-## Herausforderungen
+Die Auswahl ist nicht fix, und das Thema auch nicht. Der Datensatz ist das, was die Frage braucht, der Diagrammtyp folgt der Frage, und der Anspruch bleibt gleich: die passende Kodierung wählen und sie bei 390 Pixeln genauso tragen wie bei 1440.
 
-- D3 arbeitet mit direkten Eingriffen ins DOM, React 19 und Framer Motion dagegen deklarativ. Damit beides im Takt bleibt, braucht es gründliches Aufräumen und eine kleine Verzögerung im `useD3`-Hook, damit nichts auseinanderreißt.
-- Saubere SVG- und PNG-Exporte brauchten eine Warteschlange, damit mehrere Downloads gleichzeitig die Oberfläche nicht blockieren. Dazu kamen gebündelte, entprellte Anfragen und eine Fortschrittsanzeige an der Hauptschaltfläche.
-- Die Zweisprachigkeit hat beim Wechsel zwischen den Seiten anfangs zu Abweichungen bei der Hydration geführt. Gelöst habe ich das, indem die Sprache in einem Cookie liegt und der i18n-Provider sie beim Aufbau übernimmt.
+Jede Seite trägt dieselbe Hülle: Deutsch und Englisch, hell und dunkel.
 
-## Was ich gelernt habe
+<a href="/portfolio/viz-case-studies.webp"><img src="/portfolio/viz-case-studies.webp" alt="Die Bibliothek der Fallstudien: ein Raster aus Karten, jede mit einer anderen Diagrammvorschau, Beschreibung und Schlagwörtern" /></a>
 
-Das Projekt hat gezeigt, wie weit man ein vermeintlich einfaches React-Dashboard treiben kann, wenn man die kleinen Zustände ernst nimmt: den Wechsel zwischen hellem und dunklem Modus, den Platzhalter, während ein Diagramm lädt, die Rückmeldung beim Export. Nebenbei ist ein Muster entstanden, mit dem ich D3-Komponenten in einer typisierten React- und Vite-Umgebung zusammensetze. Das nutze ich heute in Workshops mit Kunden.
+*Die Bibliothek. Jede Karte ist eine eigenständige Fallstudie mit eigenem Diagrammtyp und eigener Frage; die Sammlung wächst über eine neue Route, nicht über Änderungen an den anderen.*
 
-## Künftige Verbesserungen
+<a href="/portfolio/viz-line-chart.webp"><img src="/portfolio/viz-line-chart.webp" alt="Ein Liniendiagramm mit zwei Reihen über sechs Jahre, mit Legende, gemeinsamer y-Achse und einem Punkt pro Jahreswert" /></a>
 
-- Die Diagramme an eine echte Datenquelle anbinden (Supabase oder REST) und Änderungen sofort anzeigen.
-- Filter nach Region und Zeitraum ergänzen, die sich über URL-Parameter teilen lassen.
-- Den Export um PDF-Folien oder Notion-Einbettungen für die Übergabe an Entscheider erweitern.
-- Automatische visuelle Tests einbauen, damit Änderungen am Erscheinungsbild die Lesbarkeit der Diagramme nicht kaputt machen.
+*Eine der Fallstudien: ein Liniendiagramm über sechs Jahre, mit Legende, gemeinsamer y-Achse und einem Punkt pro Jahreswert.*
+
+## Wie es gebaut ist
+
+D3 zeichnet, React besitzt die Seite. Die Naht dazwischen ist ein Hook, `useD3`: Er nimmt eine Renderfunktion, gibt ihr das Containerelement und führt vor dem nächsten Durchlauf die Aufräumfunktion aus, die sie zurückgibt. Vor dem Zeichnen wartet er zehn Millisekunden, weil React 19 und Framer Motion das Layout in diesem Moment noch bewegen. Wer in einen Container zeichnet, der mitten in der Animation steckt, bekommt Diagramme in der falschen Größe.
+
+Darunter liegen neun Renderer in `src/charts`, jeder eine schlichte Funktion, die Container und Daten nimmt und ihr eigenes SVG besitzt. Ein neuer Diagrammtyp ist ein neuer Renderer plus eine Route; alles andere bleibt, wie es ist.
+
+Der Build trennt React, den Router, D3 und i18n in eigene Chunks. Der D3-Chunk kommt nur auf einer Seite an, die tatsächlich zeichnet. Die Startseite lädt den Diagramm-Code nie.
+
+## Entscheidungen und Kompromisse
+
+**Ein eigener Hook statt einer Diagramm-Bibliothek.** Recharts oder visx hätten die Arbeit am Lebenszyklus abgenommen. Sie hätten aber auch ihre eigene API zwischen mich und das SVG gelegt, und genau das SVG ist der Punkt dieser Arbeit. Der Preis ist real: Aufräumen, Größenänderung und die Verzögerung oben liegen bei mir, und jeder Renderer muss konsequent alles wieder entfernen, was er hinzugefügt hat.
+
+**Mitgelieferte JSON-Dateien statt Backend.** Die Datensätze sind kleine Dateien, die mit dem Build ausgeliefert werden. Damit lässt sich die Demo als statische Dateien ausliefern, und die Zahlen bleiben stabil genug für Screenshots. Es heißt aber auch: Nichts hier belegt, dass ich mit einer Live-Quelle, einem Cache oder einem Fehlerfall umgehen kann, weil es keinen gibt.
+
+**Eine Route pro Fallstudie statt einer langen Seite.** Eine einzige scrollende Seite wäre schneller gebaut und leichter zu teilen gewesen. Getrennte Routen halten jedes Diagramm für sich, sodass ein schweres Diagramm die anderen nicht mitzieht, und jede Fallstudie lässt sich direkt verlinken.
+
+## Was es nicht ist
+
+Es ist kein BI-Produkt. Es gibt keine Anmeldung, keine Persistenz, keine Live-Daten und keinen Server. Die Testsuite besteht aus zwei Playwright-Smoke-Tests: Das Dashboard lädt, und die Übersicht der Fallstudien ist erreichbar. Das fängt ein kaputtes Deployment ab und ist weit davon entfernt, die Diagramme als getestet zu bezeichnen. Wäre das ein Kundenprojekt, wären die nächsten drei Schritte eine Datenschicht mit Lade- und Fehlerzuständen, visuelle Regressionstests für die Diagramme selbst und ein Durchgang zur Barrierefreiheit bei Farbe und Kontrast.

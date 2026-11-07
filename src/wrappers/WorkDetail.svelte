@@ -107,7 +107,7 @@
                   rel="noopener"
                   class="inline-flex items-center justify-center gap-2 rounded-2xl bg-black px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-black/20 transition hover:-translate-y-0.5 hover:bg-black/90 dark:bg-white dark:text-black dark:shadow-white/20"
                 >
-                  {workCopy.detail.live}
+                  {entryMeta.liveLabel?.[$lang] ?? workCopy.detail.live}
                 </a>
               {/if}
               {#if entryMeta && !entryMeta.hideRepoUrl}

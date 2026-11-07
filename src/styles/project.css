@@ -57,6 +57,12 @@
     }
   }
 
+  /* inline links stay monochrome but readable; image links are excluded so no
+     rule is painted under a screenshot */
+  .article-body a:not(:has(img)) {
+    @apply underline decoration-black/25 underline-offset-4 transition hover:decoration-black/70 dark:decoration-white/30 dark:hover:decoration-white/80;
+  }
+
   /* article images open in place, not in a new tab */
   .article-body a img {
     cursor: zoom-in;
