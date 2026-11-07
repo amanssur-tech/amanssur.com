@@ -26,7 +26,6 @@
     : '';
   const fallbackImage = '/images/og-banner.jpg';
   const heroImage = entryMeta?.heroImage || fallbackImage;
-  const heroImageDark = entryMeta?.heroImageDark || heroImage;
 
   const buildImageSet = (src: string) => {
     const match = src.match(/\.(avif|webp|jpe?g)$/i);
@@ -42,7 +41,6 @@
   };
 
   $: lightImage = buildImageSet(heroImage);
-  $: darkImage = buildImageSet(heroImageDark);
 </script>
 
 <section class="bg-linear-to-b from-white to-slate-100 pb-24 pt-16 dark:from-zinc-900 dark:to-zinc-950">
@@ -61,9 +59,6 @@
           <div>
             <div class="overflow-hidden rounded-3xl border border-black/10 bg-slate-100 shadow-inner shadow-black/5 dark:border-white/10 dark:bg-zinc-800/70">
               <picture>
-                <source media="(prefers-color-scheme: dark)" srcset={darkImage.avif} type="image/avif" />
-                <source media="(prefers-color-scheme: dark)" srcset={darkImage.webp} type="image/webp" />
-                <source media="(prefers-color-scheme: dark)" srcset={darkImage.jpg} type="image/jpeg" />
                 <source srcset={lightImage.avif} type="image/avif" />
                 <source srcset={lightImage.webp} type="image/webp" />
                 <img

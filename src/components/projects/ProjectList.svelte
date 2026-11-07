@@ -18,7 +18,6 @@
       title: copy.title,
       description: copy.description,
       heroImage: meta.heroImage,
-      heroImageDark: meta.heroImageDark,
       tech: meta.tech,
     }];
   });
