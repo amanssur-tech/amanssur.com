@@ -1,7 +1,19 @@
 /* src/styles/cv.css */
 
+/* Syne draws U+007E as a ~1.5px speck, which in "~3M to ~170k" reads as a stray dot.
+   This one-glyph font (built by scripts/build-cv-tilde.py from Syne's own U+02DC, scaled
+   to Trebuchet MS's proportions) supplies that single codepoint, so the text layer stays
+   plain ASCII "~" and the mark renders the same on every machine. */
+@font-face {
+  font-family: 'CvTilde';
+  src: url('/fonts/cv-tilde.ttf') format('truetype');
+  unicode-range: U+007E;
+  font-weight: 100 900;
+  font-display: swap;
+}
+
 /* ---------------------------
-   Special print-only logic; some raw properties cannot be Tailwind-fied
+   Print
 --------------------------- */
 
 @media print {
@@ -19,6 +31,13 @@
     @apply hidden;
   }
 
+  /* Pin the wrapper to the sheet's native width so 100cqw resolves to 1055px and the type
+     scale comes out at 16px. Without this the clamp would size itself to the page box. */
+  body.cv .cv-scale-wrapper {
+    width: 1055px;
+    margin: 0;
+  }
+
   body.cv .cv-container {
     @apply block;
     width: 1055px; /* raw, no print:w-[...] support */
@@ -33,75 +52,74 @@
 
 @layer components {
   /* ---------------------------
-   CV container sizing
---------------------------- */
+     Sheet sizing
+     The wrapper is the query container and owns the width; the sheet fills it and derives
+     its em base from that width, so every inner value scales with the sheet.
+  --------------------------- */
 
-  /* New scale wrapper to handle scaling and centering */
   .cv-scale-wrapper {
     @apply flex justify-center;
+    width: clamp(50vw, 1055.61px, 97vw); /* 210mm at this display's density */
+    margin-inline: auto;
+    container-type: inline-size;
   }
 
   .cv-container {
     @apply shadow-md shadow-gray-300/70 dark:shadow-gray-600 border border-gray-200/60 dark:border-zinc-600/25;
     @apply aspect-[1/1.4142857143] max-w-[97%] min-w-[50%] my-[2em] mx-auto px-[.5em] py-[3.6em];
     @apply flex flex-col justify-start overflow-x-auto;
-    width: 1055px;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
     container-type: inline-size;
     container-name: cv;
+    font-size: calc(16 * 100cqw / 1055);
   }
 
-  /* Dynamically scale size for the container spacings and cv-inner elements */
-  /* IMPORTANT:
-     The font-size rule is intentionally duplicated here (Wrapper + Inner).
-     Because `.cv-container` uses `container-type: inline-size`, it breaks font-size inheritance.
-     Without redefining the base here, child elements lose the scaling and proportions explode.
-     Do NOT remove this duplication — both `.cv-scale-wrapper` and `.cv-inner` need the same font-size rule. */
+  /* Base em for everything inside the sheet. This is deliberately declared twice:
+     `.cv-container` is itself a query container, so `100cqw` inside it resolves against
+     the wrapper, while `.cv-inner` resolves against the container's content box
+     (1037.2px → 15.7363px). Dropping either one changes the whole type scale. */
   .cv-scale-wrapper,
   .cv-inner {
     font-size: calc(16 * 100cqw / 1055);
   }
 
+  /* the portrait, when shown, is positioned against this box */
+  .cv-inner {
+    position: relative;
+  }
+
   /* ---------------------------
-   CV-specific typography
---------------------------- */
+     Typography
+     One size for every text element. The old 1.03 / 1.035 / 1.0354 factors were compensating
+     for each element's inherited base, not expressing design decisions.
+     1.0365em on a 15.7363px base = 16.3106px = 9.20pt on a 210mm sheet.
+  --------------------------- */
 
   .cv-fonts {
     @apply hyphens-none text-cvgrey dark:text-cvgreylight;
-    font-family: "Syne", sans-serif;
+    font-family: 'CvTilde', Syne, sans-serif;
     transform: scaleX(0.9);
+
     h1 {
       @apply font-bold text-cvblue dark:text-cvbluelight text-[3.45em] leading-none mb-[-.1em];
     }
     h2 {
-      @apply uppercase font-bold text-[1.03em] my-[.625em];
+      @apply uppercase font-bold text-[1.0365em] my-[.625em];
     }
     h2:first-of-type {
       @apply mb-[.5em] mt-[.9em];
     }
     h2:has(+ h3) {
-      @apply relative mb-[.9em];
-    }
-    h2:has(+ h3) ~ *:not(h2):not(ul) {
-      @apply ml-[1.8em];
+      @apply mb-[.9em];
     }
     h3 {
-      @apply font-bold text-cvblue dark:text-cvbluelight text-[1.03em] relative mb-[.5em];
-    }
-
-    h3:first-of-type::after {
-      @apply absolute left-[-1.48em] top-[1em] bottom-[-26.39em] w-[.19em] z-1 bg-cvbar dark:bg-cvbardark;
-      content: "";
-      transform: var(--cv-fix-scale);
-    }
-
-    h3::before {
-      @apply bg-cvblue dark:bg-cvbluelight absolute left-[-1.7em] top-[.5em] w-[.63em] h-[.63em] rounded-full z-2;
-      content: "";
-      transform: var(--cv-fix-scale);
+      @apply font-bold text-cvblue dark:text-cvbluelight text-[1.0365em] mb-[.5em];
     }
 
     p {
-      @apply font-medium text-[1.035em] leading-[1.4];
+      @apply font-medium text-[1.0365em] leading-[1.4];
     }
 
     a {
@@ -112,13 +130,15 @@
       @apply uppercase font-bold;
     }
 
+    /* the list carries no size of its own, so bullets and chips inherit the shared value */
     ul {
       @apply list-none p-0 my-[.6em] mx-[-.45em] grid gap-[.7em];
       grid-template-columns: repeat(auto-fill, minmax(15.1em, 0.95fr));
+      font-size: inherit;
     }
 
     ul li {
-      @apply bg-cvlist dark:bg-zinc-800 font-medium px-[.41em] py-[.09em] leading-[1.6] rounded-[.25em] text-[1.03em] whitespace-nowrap;
+      @apply bg-cvlist dark:bg-zinc-800 font-medium px-[.41em] py-[.09em] leading-[1.6] rounded-[.25em] text-[1.0365em] whitespace-nowrap;
     }
 
     .cv-icon {
@@ -127,9 +147,17 @@
     }
   }
 
+  /* Palette for this CV. Overriding the theme tokens here keeps it local to the sheet:
+     cvblue #0042aa -> #0B50B0 (name, job titles), cvgrey #101828 -> #171717 (body,
+     company lines). */
+  .cv-fonts {
+    --color-cvblue: #0B50B0;
+    --color-cvgrey: #171717;
+  }
+
   /* ---------------------------
-   CV intro header (photo + H1 + top H2)
---------------------------- */
+     Intro header (name + headline)
+  --------------------------- */
 
   .cv-intro {
     @apply grid gap-y-[.4em] mb-[.5em];
@@ -141,27 +169,19 @@
     }
   }
 
-  .cv-intro:has(.cv-headshot) {
-    @apply grid-cols-[auto_1fr] gap-x-[3.3em] items-center -ml-[.45em] -mt-[.2em];
-  }
   .cv-intro-text {
     @apply flex flex-col justify-start gap-[.9em];
   }
 
-  .cv-headshot {
-    @apply w-[15em] h-[15em] rounded-full object-cover;
-    transform: var(--cv-fix-scale);
-    transform-origin: left center;
-  }
-
   /* ---------------------------
-   Column-specific layout
---------------------------- */
+     Column layout: content left, sidebar right
+  --------------------------- */
 
   .cv-grid {
-    @apply grid grid-cols-[24.2%_75.8%] gap-0;
+    @apply grid grid-cols-[71.2%_28.8%] gap-0;
   }
 
+  /* sidebar */
   .cv-left {
     p {
       @apply mb-[2.75em];
@@ -169,10 +189,20 @@
     h2:last-of-type {
       @apply mt-[2.25em];
     }
+    /* the chip grid's bottom margin collapses against the heading, closing the gap to ~10px;
+       every other sidebar section is separated by a paragraph's margin.
+       The :last-of-type branch is needed because the plain `h2:last-of-type` margin (2.25em)
+       otherwise outranks this rule on specificity and shaves 8px off the final section. */
+    ul + h2,
+    ul + h2:last-of-type {
+      @apply mt-[2.75em];
+    }
   }
 
+  /* main column */
   .cv-right {
-    @apply pl-[2em] pr-[.1em];
+    @apply pl-0 pr-[2em];
+
     p {
       @apply mb-[1em];
     }
@@ -192,10 +222,154 @@
       @apply mt-[.8em];
     }
 
-    /* word-spacing stays raw since Tailwind has no utility */
-    p em {
-      @apply float-right not-italic;
-      word-spacing: 0.1em;
+    /* Experience bullets. A two-column grid keeps marker and sentence aligned, and the
+       marker stays inside the text ("• …") so PDF extractors keep them in one run.
+       Wrapped lines align under the first character. */
+    ul {
+      list-style: none;
+      display: block;
+      grid-template-columns: none;
+      gap: 0;
+      font-size: inherit;
+      line-height: 1.4;
+      padding-left: 0;
+      margin: 0 0 1em;
     }
+    ul li {
+      display: grid;
+      grid-template-columns: 1.15em 1fr;
+      padding: 0;
+      margin: 0;
+      line-height: 1.4;
+      text-indent: 0;
+      background: none;
+      border-radius: 0;
+      white-space: normal;
+    }
+    ul li + li {
+      margin-top: 0.5em;
+    }
+    ul li .bdot {
+      text-indent: 0;
+    }
+    p:has(+ ul) {
+      margin-bottom: 0.5em;
+    }
+    p:has(+ ul):has(> em:last-child) {
+      margin-bottom: 0.5em;
+    }
+    /* a little more air before each company name, so one job reads as its own block */
+    ul + h3 {
+      margin-top: 1.5em;
+    }
+    /* the trailing margin would count in the page height even though nothing follows it */
+    > *:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Company + dates row. Flex, not a float: a floated em is painted in the float layer,
+       which extractors read before the body and would hoist every date to the top. */
+    .role-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      font-size: 1.0365em;
+      font-weight: 500;
+      line-height: 1.4;
+      height: 1.4em;
+      margin-bottom: 0.5em;
+    }
+    .role-head strong {
+      display: inline;
+      margin-bottom: 0;
+      color: inherit;
+      text-transform: none;
+    }
+    .role-head em {
+      float: none;
+      text-align: right;
+      padding-left: 1em;
+      font-style: normal;
+      word-spacing: 0.1em;
+      color: #525252; /* secondary: dates and locations */
+    }
+    /* the education label is the first strong in its paragraph, so it would otherwise
+       inherit the uppercase from the base strong rule */
+    .role-head--edu + p strong {
+      text-transform: none;
+      margin-right: 0.4em;
+    }
+
+    /* job titles take the blue, in title case */
+    h3 {
+      color: var(--color-cvblue);
+      text-transform: none;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .cv-right h3 {
+      color: var(--color-cvbluelight);
+    }
+  }
+
+  /* ---------------------------
+     Sidebar chips: cut to their text, flowing inline
+  --------------------------- */
+
+  .cv-fonts .cv-left ul {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.25em 0.25em;
+    grid-template-columns: none;
+    margin: 0.3em 0;
+  }
+
+  .cv-fonts .cv-left ul li {
+    padding-left: 0.3em;
+    padding-right: 0.3em;
+    width: auto;
+    line-height: 1.5;
+  }
+
+  /* ---------------------------
+     Portrait (rendered only when the toggle is on)
+     45mm of the 210mm sheet, centred on the sidebar column: .cv-fonts is scaled 0.9 about
+     its centre, so the visible sidebar spans 69.08%..95% of this box and its centre sits at
+     82.04%; minus half the photo (10.9%) the left edge lands at 71.14%.
+  --------------------------- */
+
+  .cv-photo {
+    position: absolute;
+    top: 0;
+    left: 71.14%;
+    width: 14.3745em;
+    aspect-ratio: 1;
+    object-fit: cover;
+    z-index: 3;
+    border-radius: 10%;
+  }
+
+  /* the portrait pushes the sidebar down; its rhythm tightens to compensate (1.8em paragraph
+     gaps, 1.9em above a heading that follows a chip list) so LANGUAGES lands level with the
+     main column's last line */
+  .cv-inner:has(.cv-photo) .cv-left {
+    padding-top: 8.884em;
+  }
+  .cv-inner:has(.cv-photo) .cv-left p {
+    margin-bottom: 1.8em;
+  }
+  .cv-inner:has(.cv-photo) .cv-left ul + h2 {
+    margin-top: 1.9em;
+  }
+  /* the contact icon box was inflating every line; the glyph is width-bound, so a shorter
+     box only removes dead space */
+  .cv-inner:has(.cv-photo) .cv-left .cv-icon {
+    height: 1.5em;
+  }
+  /* contact rows breathe like the experience bullets (22.7px line + 0.5em list margin) */
+  .cv-inner:has(.cv-photo) .cv-left p:has(.cv-icon) {
+    line-height: 1.87;
   }
 }

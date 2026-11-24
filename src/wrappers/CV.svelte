@@ -139,31 +139,35 @@
 <div class="cv-scale-wrapper">
   <div class="cv-container">
     <div class="cv-inner">
-      <div class="cv-fonts">
-       <div class="cv-intro">
-        {#if showPhoto}
+      {#if showPhoto}
         <picture>
           <source srcset="/images/cv-photo.avif" type="image/avif" />
           <source srcset="/images/cv-photo.webp" type="image/webp" />
-          <img src="/images/cv-photo.jpg" alt="Amanullah Manssur" class="cv-headshot" loading="lazy" decoding="async" />
+          <img
+            src="/images/cv-photo.jpg"
+            alt="Amanullah Manssur"
+            class="cv-photo"
+            loading="lazy"
+            decoding="async"
+          />
         </picture>
-        {/if}
+      {/if}
 
-        <!-- NEW wrapper so H1 + H2 are one flex column -->
-        <div class="cv-intro-text">
-          {@html introHtml}
+      <div class="cv-fonts">
+        <div class="cv-intro">
+          <div class="cv-intro-text">
+            {@html introHtml}
+          </div>
         </div>
-      </div>
 
         <div class="cv-grid">
-          <aside class="cv-left">
-            <!-- removed: <div class="cv-portrait"></div> -->
-            {@html leftHtml}
-          </aside>
-
           <section class="cv-right">
-            {@html rightHtml}
+            {@html leftHtml}
           </section>
+
+          <aside class="cv-left">
+            {@html rightHtml}
+          </aside>
         </div>
       </div>
     </div>

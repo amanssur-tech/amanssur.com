@@ -28,6 +28,7 @@ const {
 
 const defaultMeta = translations[lang].meta ?? { title: '', description: '' };
 const title = metaTitle ?? defaultMeta.title;
+const usesCvSheet = page === 'cv' || page.startsWith('test');
 const description = metaDescription ?? defaultMeta.description;
 const ogImageUrl = ogImage ?? 'https://amanssur.com/images/og-banner.jpg';
 ---
@@ -53,7 +54,7 @@ const ogImageUrl = ogImage ?? 'https://amanssur.com/images/og-banner.jpg';
     <meta name="theme-color" content="#18181B" media="(prefers-color-scheme: dark)">
     <meta name="color-scheme" content="light dark">
 
-    {(page === 'cv' || page === 'test') && (
+    {usesCvSheet && (
       <link rel="preload" href="/fonts/Syne-Variable.ttf" as="font" type="font/ttf" crossorigin />
     )}
     <link rel="preload" href="/images/hero-photo.avif" as="image" />
@@ -85,7 +86,7 @@ const ogImageUrl = ogImage ?? 'https://amanssur.com/images/og-banner.jpg';
     <style is:global>
       @import '../styles/global.css';
     </style>
-    {(page === 'cv' || page === 'test') && (
+    {usesCvSheet && (
       <link rel="stylesheet" href="/fonts/Syne.css" />
     )}
     <script is:inline type="application/ld+json">

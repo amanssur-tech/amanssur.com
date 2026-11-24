@@ -57,6 +57,16 @@
       });
     }
 
+    // Neutralise the layout's bottom spacer for the export only.
+    // BaseLayout adds a 4rem ::after block below <main>'s last child. Because it is a
+    // pseudo-element it cannot be removed from the DOM, and it adds 64px to the exported
+    // page, which breaks the A4 ratio (2101/1440 = 1.459 instead of 1.414). Hidden here,
+    // so the spacer keeps doing its job on every other page and in normal browsing.
+    const exportStyles = document.createElement("style");
+    exportStyles.textContent =
+      "main > :last-child::after { display: none !important; }";
+    document.head.appendChild(exportStyles);
+
     // Remove button so it won’t export
     btn.remove();
   };

@@ -1,0 +1,7 @@
+cv-tilde.ttf
+
+A one-glyph typeface used to render the ASCII tilde (U+007E) in the CV.
+The outline is derived from Syne (U+02DC) by Bonjour Monde, scaled to the proportions of
+Trebuchet MS's tilde. Syne is licensed under the SIL Open Font License 1.1, which permits
+modification and redistribution provided the font is not sold on its own and this licence
+accompanies it: https://openfontlicense.org

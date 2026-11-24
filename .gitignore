@@ -79,7 +79,7 @@ src/data/tmp/*.json
 project_contents*.txt
 *.diff
 
-# local test CV copies
-src/content/test.md
-src/pages/test.astro
-src/wrappers/Test.svelte
+# local test CV copies (kept on disk for future design work, never shipped)
+src/content/test-*.md
+src/pages/test-*.astro
+src/wrappers/Test-*.svelte
