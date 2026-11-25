@@ -18,7 +18,7 @@
   <div class="mx-auto max-w-5xl px-6 text-center">
     <p class="text-sm font-semibold uppercase tracking-[0.4em] text-gray-600 dark:text-gray-400">{workCopy.tagline}</p>
     <h1 class="mt-4 text-4xl font-bold text-gray-900 dark:text-white">{workCopy.heading}</h1>
-    <p class="mx-auto mt-4 max-w-3xl text-lg text-gray-700 dark:text-gray-300">
+    <p class="mx-auto mt-4 max-w-3xl text-lg text-gray-700 dark:text-gray-300 lg:hyphens-none">
       {workCopy.paragraph}
     </p>
 

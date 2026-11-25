@@ -1,28 +1,28 @@
 export default {
   meta: {
     title:
-      "Amanullah Manssur | IT Solutions Consultant · Web, Cloud & Automation",
+      "Amanullah Manssur | Solutions Engineer",
     description:
-      "IT consulting and web solutions — automation, cloud, and scalable systems. Portfolio, projects and contact info.",
+      "Solutions Engineer specializing in enterprise SaaS, technical pre-sales, systems integration and automation. Explore my portfolio, projects and CV.",
   },
   hero: {
     heading: "Hi, I’m Amanullah",
     subheading:
-      "I help businesses transform with web, cloud, and automation systems that work for people.",
+      "I help businesses solve technical challenges through software, systems integration and automation.",
     cta: "Let’s Connect",
   },
   about: {
     heading: "About Me",
     paragraphs: [
-      "I’m an IT solutions consultant with a focus on building and optimizing digital systems at the intersection of web, cloud, and automation. From custom websites to integrated business tools, I aim for solutions that are practical, scalable, and easy to use.",
-      "With a background in IT support, consulting, and solution design, I bring both technical depth and an eye for simplicity. My work blends hands-on engineering with consulting, helping businesses design and implement systems that work cleanly, clearly, and with purpose.",
+      "I’m a Solutions Engineer with a background in enterprise SaaS, technical consulting and software development. I combine technical pre-sales with hands-on engineering, helping businesses translate their requirements into practical integrations, data workflows and automation solutions.",
+      "I currently work as a Technical Consultant at Commanders Act, delivering technical consulting for clients across Europe. My background also includes independent web solutions consulting for SMEs, from developing tailored web applications to integrating business systems and automating workflows. Across my work, I focus on practical solutions, scalable systems and tangible results.",
     ],
     cta: "View my CV",
   },
   projects: {
     heading: "Selected Work",
     paragraph:
-      "A closer look at how I build: the problem, the decisions and the tradeoffs, rather than just the finished screens. Automation, data visualisation and developer tooling, each written up with the evidence behind it. Client work lives at ",
+      "A closer look at how I build: the problem, the decisions and the trade-offs, rather than just the finished screens. Automation, data visualization and developer tooling, each written up with the evidence behind it. Client work lives at ",
     github: "I also publish guides, code snippets, and automation demos on ",
     viewAll: "See all projects",
     empty: "New projects are on the way — stay tuned.",
@@ -30,11 +30,11 @@ export default {
   work: {
     metaTitle: "Portfolio | Amanullah Manssur",
     metaDescription:
-      "Bespoke web platforms, dashboards, and automation systems delivered for SMEs and partners.",
+      "Technical case studies in workflow automation, data visualization and developer tooling. Explore the problems, engineering decisions, implementations and results.",
     heading: "Portfolio",
     tagline: "Case Studies",
     paragraph:
-      "Every build blends consulting rigor with hands-on engineering. These case studies highlight the tools I deploy for fast iteration, automation, and multilingual delivery.",
+      "These case studies explore how I approach technical challenges, from understanding requirements and designing solutions to implementation and validation. Each documents the engineering decisions, trade-offs and results behind the project.",
     empty: "No published projects yet. Check back soon.",
     detail: {
       label: "Case Study",
@@ -48,7 +48,7 @@ export default {
   contact: {
     heading: "Let’s Connect",
     paragraph:
-      "Have a project in mind or just want to say hi? I’d love to hear from you!",
+      "Have a project in mind, a professional opportunity or simply want to connect? I’d love to hear from you!",
     form: {
       firstName: "Your First Name",
       lastName: "Your Last Name",
@@ -88,7 +88,7 @@ export default {
     },
   },
   footer: {
-    paragraph1: "© 2025 Amanullah Manssur. All rights reserved.",
+    paragraph1: "© 2026 Amanullah Manssur. All rights reserved.",
     paragraph2:
       "Digital solutions built with clarity, purpose, and reliability.",
     impressum: { name: "Impressum", href: "/legal#impressum" },

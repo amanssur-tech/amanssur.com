@@ -1,6 +1,7 @@
 ---
 import HR from '../roots/HR.svelte';
 import { translations } from '../lib/i18n';
+import { getProjectMeta } from '../content/projects';
 import type { CollectionEntry } from 'astro:content';
 
 type LangKey = keyof typeof translations;
@@ -31,6 +32,69 @@ const title = metaTitle ?? defaultMeta.title;
 const usesCvSheet = page === 'cv' || page.startsWith('test');
 const description = metaDescription ?? defaultMeta.description;
 const ogImageUrl = ogImage ?? 'https://amanssur.com/images/og-banner.jpg';
+
+// Breadcrumbs and the project ItemList are built here as real objects and
+// serialised, because expressions inside an is:inline <script> are emitted
+// verbatim rather than evaluated.
+type Crumb = { '@type': 'ListItem'; position: number; name: string; item: string };
+
+const pageLabel: Record<string, string> = {
+  work: 'Portfolio',
+  cv: 'CV',
+  legal: 'Legal',
+};
+
+const crumbs: Crumb[] = [
+  { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://amanssur.com/' },
+];
+
+if (pageLabel[page]) {
+  crumbs.push({
+    '@type': 'ListItem',
+    position: 2,
+    name: pageLabel[page],
+    item: `https://amanssur.com${Astro.url.pathname}`,
+  });
+}
+
+if (page === 'workdetail') {
+  crumbs.push(
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Portfolio',
+      item: 'https://amanssur.com/portfolio',
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: (projectEntry && getProjectMeta(projectEntry.id)?.copy[lang].title) ?? 'Case Study',
+      item: `https://amanssur.com${Astro.url.pathname}`,
+    },
+  );
+}
+
+// A single "Home" crumb tells search engines nothing, and 404/test pages carry
+// their own navigational rules, so only multi-level trails are emitted.
+const showBreadcrumb = crumbs.length > 1;
+const breadcrumbLd = { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: crumbs };
+
+const itemListLd =
+  page === 'work' && projects.length
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'ItemList',
+        name: 'Portfolio Projects',
+        description: 'Projects and case studies by Amanullah Manssur.',
+        url: 'https://amanssur.com/portfolio',
+        numberOfItems: projects.length,
+        itemListElement: projects.map((project, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          url: `https://amanssur.com/portfolio/${project.slug}`,
+        })),
+      }
+    : null;
 ---
 <!DOCTYPE html>
 <html lang={lang} class="scroll-smooth">
@@ -70,7 +134,7 @@ const ogImageUrl = ogImage ?? 'https://amanssur.com/images/og-banner.jpg';
     <meta property="og:url" content={`https://amanssur.com${Astro.url.pathname}`} />
     <meta property="og:site_name" content="Amanullah Manssur" />
     <meta property="og:image" content={ogImageUrl} />
-    <meta property="og:image:alt" content="Amanullah Manssur, IT Solutions Consultant" />
+    <meta property="og:image:alt" content="Amanullah Manssur, Solutions Engineer" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:locale" content={lang === 'de' ? 'de_DE' : 'en_US'} />
@@ -80,7 +144,7 @@ const ogImageUrl = ogImage ?? 'https://amanssur.com/images/og-banner.jpg';
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
-    <meta name="twitter:image:alt" content="Amanullah Manssur, IT Solutions Consultant" />
+    <meta name="twitter:image:alt" content="Amanullah Manssur, Solutions Engineer" />
     <meta name="twitter:site" content="@ManssurMedia" />
     <meta name="twitter:creator" content="@ManssurMedia" />
     <style is:global>
@@ -96,38 +160,42 @@ const ogImageUrl = ogImage ?? 'https://amanssur.com/images/og-banner.jpg';
         "name": "Amanullah Manssur",
         "url": "https://amanssur.com",
         "image": "https://amanssur.com/images/hero-photo.avif",
-        "jobTitle": "IT Solutions Consultant",
-        "worksFor": {
-          "@type": "Organization",
-          "name": "Manssur Media"
-        },
+        "jobTitle": "Solutions Engineer",
+        "worksFor": [
+          {
+            "@type": "Organization",
+            "name": "Manssur Media",
+            "url": "https://manssurmedia.com"
+          },
+          {
+            "@type": "Organization",
+            "name": "Commanders Act",
+            "url": "https://www.commandersact.com"
+          }
+        ],
         "sameAs": [
           "https://github.com/amanssur-tech",
           "https://linkedin.com/in/amanssur",
           "https://x.com/manssurmedia"
         ],
-        "description": "IT solutions consultant specializing in web, SaaS, and automation. Bilingual site, downloadable CVs, and project portfolio.",
+        "description": "Solutions Engineer specializing in enterprise SaaS, technical pre-sales, systems integration and automation. Portfolio, case studies and CV.",
         "knowsAbout": [
+          "Technical Pre-Sales",
+          "Enterprise SaaS",
+          "Systems Integration",
+          "Workflow Automation",
           "Web Development",
-          "SaaS",
-          "Automation",
-          "IT Consulting",
           "APIs",
-          "CRM"
+          "CRM",
+          "Consent Management"
         ],
         "alumniOf": {
           "@type": "CollegeOrUniversity",
           "name": "University of Cologne"
-        }
-        ,
+        },
         "knowsLanguage": ["English", "German", "Persian (Dari)"],
         "subjectOf": "https://amanssur.com/portfolio",
-        "about": "IT solutions consulting, portfolio case studies, automation systems, SaaS integrations",
-        "worksFor": {
-          "@type": "Organization",
-          "name": "Manssur Media",
-          "url": "https://manssurmedia.com"
-        }
+        "about": "Solutions engineering, technical pre-sales, systems integration, workflow automation and case studies"
       }
     </script>
 
@@ -154,42 +222,13 @@ const ogImageUrl = ogImage ?? 'https://amanssur.com/images/og-banner.jpg';
       }
     </script>
 
-    <script is:inline type="application/ld+json">
-      {{
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://amanssur.com/"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": page === "portfolio" ? "Portfolio" : page.charAt(0).toUpperCase() + page.slice(1),
-            "item": `https://amanssur.com/${page === "home" ? "" : page}`
-          }
-        ]
-      }}
-    </script>
+    {showBreadcrumb && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbLd)} />
+    )}
 
-    <script is:inline type="application/ld+json">
-      {{
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "name": "Portfolio Projects",
-        "description": "Projects and case studies by Amanullah Manssur.",
-        "url": "https://amanssur.com/portfolio",
-        "numberOfItems": {projects.length},
-        "itemListElement": projects.map((p, i) => ({
-          "@type": "ListItem",
-          "position": i + 1,
-          "url": "https://amanssur.com/portfolio/" + p.slug
-        }))
-      }}
-    </script>
+    {itemListLd && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(itemListLd)} />
+    )}
 
     <script is:inline type="application/ld+json">
       {
@@ -233,7 +272,7 @@ const ogImageUrl = ogImage ?? 'https://amanssur.com/images/og-banner.jpg';
       {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        "name": "Amanullah Manssur — IT Solutions Consultant",
+        "name": "Amanullah Manssur — Solutions Engineer",
         "url": "https://amanssur.com",
         "primaryEntity": {
           "@type": "Person",

@@ -126,7 +126,7 @@
       </div>
 
       {#if bodyHtml}
-        <article class="article-body mx-auto mt-12 max-w-4xl space-y-6 text-left text-gray-700 dark:text-gray-200">
+        <article class="article-body mx-auto mt-12 max-w-4xl space-y-6 text-left text-gray-700 dark:text-gray-200 lg:hyphens-none">
           {@html bodyHtml}
         </article>
       {/if}

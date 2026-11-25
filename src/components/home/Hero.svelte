@@ -31,12 +31,34 @@
       <picture>
         <source srcset="/images/hero-photo.avif" type="image/avif" />
         <img src="/images/hero-photo.webp" alt="Amanullah Manssur" 
-          class="w-[320px] h-auto transform md:-translate-y-6 drop-shadow-[0_10px_15px_rgba(0,0,0,0.25)] dark:opacity-85 dark:drop-shadow-[0_10px_15px_rgba(255,255,255,0.25)]"
-          style="-webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%); -webkit-mask-repeat: no-repeat; -webkit-mask-size: 100% 100%; 
-          mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 85%, rgba(0,0,0,0) 100%); mask-repeat: no-repeat; mask-size: 100% 100%;"
+          class="hero-photo w-[320px] h-auto transform md:-translate-y-6 drop-shadow-[0_10px_15px_rgba(0,0,0,0.25)] dark:opacity-85 dark:drop-shadow-[0_10px_15px_rgba(255,255,255,0.25)]"
           loading="eager" decoding="async"
         />
       </picture>
     </div>
   </div>
 </section>
+
+<style>
+  /* The portrait is cropped by its own frame at the bottom (torso) and on the
+     left (upper arm). Fade both edges into the page so neither ends in a hard
+     cut. The mask only carries alpha, so a single rule serves light and dark.
+
+     Both fades are the same length in pixels: 15% of the portrait's 427px
+     height is 64px, and 20% of its 320px width is also 64px. Keep the two
+     stops in sync if the rendered size ever changes. */
+  .hero-photo {
+    -webkit-mask-image:
+      linear-gradient(to bottom, rgba(0, 0, 0, 1) 85%, rgba(0, 0, 0, 0) 100%),
+      linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 20%);
+    -webkit-mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(to bottom, rgba(0, 0, 0, 1) 85%, rgba(0, 0, 0, 0) 100%),
+      linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 20%);
+    mask-repeat: no-repeat;
+    mask-size: 100% 100%;
+    mask-composite: intersect;
+  }
+</style>

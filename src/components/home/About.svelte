@@ -63,14 +63,20 @@
     <div class="mx-auto max-w-5xl px-5 py-10 md:py-12 lg:py-24 grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 lg:gap-12 items-center">
       <!-- Image -->
       <div class="relative flex justify-center lg:justify-start">
-        <div aria-hidden="true" role="presentation" class="relative w-60 md:w-70 aspect-square bg-linear-to-r from-black to-blue-600 dark:from-white dark:to-blue-400
-          [mask:url('/images/about.svg')] mask-no-repeat mask-contain mask-center">
-        </div>
+        <img
+          src="/images/about.svg"
+          alt=""
+          width="560"
+          height="420"
+          class="w-60 md:w-70 max-w-none h-auto lg:scale-[1.2] min-[1353px]:scale-[1.29]"
+          loading="lazy"
+          decoding="async"
+        />
       </div>
       <!-- Text Content -->
       <div class="text-center">
         <h2 id="about-heading" class="text-4xl font-bold mb-6">{about.heading}</h2>
-        {#each about.paragraphs as p} <p class="text-lg mt-4 dark:text-gray-300">{p}</p> {/each}
+        {#each about.paragraphs as p} <p class="text-lg mt-4 dark:text-gray-300 lg:hyphens-none">{p}</p> {/each}
         <a href="/cv" class="mt-8 inline-block px-6 py-3 rounded-xl font-medium shadow-sm transition-colors
         bg-black text-white hover:bg-black/80 active:bg-black/70 dark:bg-gray-700 dark:hover:bg-gray-600 dark:active:bg-gray-700/80">
           {about.cta}

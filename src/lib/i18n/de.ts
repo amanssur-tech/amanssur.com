@@ -1,21 +1,21 @@
 export default {
   meta: {
     title:
-      "Amanullah Manssur | IT Solutions Consultant · Web, Cloud & Automation",
+      "Amanullah Manssur | Solutions Engineer",
     description:
-      "IT-Beratung und Weblösungen — Automatisierung, Cloud und skalierbare Systeme. Portfolio, Projekte und Kontaktinformationen.",
+      "Solutions Engineer für Enterprise SaaS, Technical Pre-Sales, Systemintegration und Automatisierung. Portfolio, Projekte und Lebenslauf im Überblick.",
   },
   hero: {
     heading: "Hi, ich bin Amanullah",
     subheading:
-      "Ich helfe Unternehmen, sich mit zielgerichteten Web-, Cloud- und Automatisierungssystemen zu transformieren.",
+      "Ich helfe Unternehmen, technische Herausforderungen mit Software, Systemintegration und Automatisierung zu lösen.",
     cta: "Lass uns verbinden",
   },
   about: {
     heading: "Über mich",
     paragraphs: [
-      "Ich bin IT-Berater mit dem Schwerpunkt Aufbau und Optimierung digitaler Systeme an der Schnittstelle von Web, Cloud und Automatisierung. Von maßgeschneiderten Websites bis hin zu integrierten Geschäftstools strebe ich Lösungen an, die praktisch, skalierbar und benutzerfreundlich sind.",
-      "Mit einem Hintergrund in IT-Support, Beratung und Lösungsdesign bringe ich sowohl technisches Know-how als auch ein Auge für Einfachheit mit. Meine Arbeit verbindet praxisorientiertes Engineering mit Beratung, was dabei hilft, Systeme zu entwerfen und umzusetzen, die klar, übersichtlich und konsequent funktionieren.",
+      "Ich bin Solutions Engineer mit Erfahrung in Enterprise SaaS, technischer Beratung und Softwareentwicklung. Ich verbinde Technical Pre-Sales mit praktischer Entwicklungsarbeit und helfe Unternehmen, ihre Anforderungen in praktische Integrationen, Daten-Workflows und Automatisierungslösungen zu übersetzen.",
+      "Aktuell arbeite ich als Technical Consultant bei Commanders Act und berate Kunden in ganz Europa zu technischen Fragestellungen. Mein Hintergrund umfasst außerdem die unabhängige Beratung von KMU zu Weblösungen – von der Entwicklung maßgeschneiderter Webanwendungen über die Integration von Geschäftssystemen bis zur Automatisierung von Workflows. In meiner Arbeit setze ich auf praxisnahe Lösungen, skalierbare Systeme und konkrete Ergebnisse.",
     ],
     cta: "Lebenslauf ansehen",
   },
@@ -31,11 +31,11 @@ export default {
   work: {
     metaTitle: "Portfolio | Amanullah Manssur",
     metaDescription:
-      "Maßgeschneiderte Webplattformen, Dashboards und Automatisierungssysteme für KMUs und Partner.",
+      "Technische Fallstudien zu Workflow-Automatisierung, Datenvisualisierung und Entwicklerwerkzeugen: Problemstellung, technische Entscheidungen, Umsetzung und Ergebnisse.",
     heading: "Portfolio",
     tagline: "Fallstudien",
     paragraph:
-      "Jedes Projekt verbindet Beratungsdenken mit hands-on Engineering. Diese Fallstudien zeigen, welche Werkzeuge ich für schnelle Iterationen, Automatisierung und zweisprachige Auslieferung einsetze.",
+      "Diese Fallstudien zeigen, wie ich an technische Herausforderungen herangehe – von der Anforderungsanalyse über das Lösungsdesign bis hin zu Umsetzung und Validierung. Jede dokumentiert die technischen Entscheidungen, Kompromisse und Ergebnisse hinter dem jeweiligen Projekt.",
     empty: "Noch keine veröffentlichten Projekte. Schau bald wieder vorbei.",
     detail: {
       label: "Fallstudie",
@@ -49,7 +49,7 @@ export default {
   contact: {
     heading: "Lass uns verbinden",
     paragraph:
-      "Hast du ein Projekt im Kopf oder möchtest einfach nur Hallo sagen? Ich würde mich freuen, von dir zu hören!",
+      "Du hast ein Projekt im Kopf, eine berufliche Möglichkeit oder möchtest einfach in Kontakt treten? Ich freue mich, von dir zu hören!",
     form: {
       firstName: "Dein Vorname",
       lastName: "Dein Nachname",
@@ -90,7 +90,7 @@ export default {
     },
   },
   footer: {
-    paragraph1: "© 2025 Amanullah Manssur. Alle Rechte vorbehalten.",
+    paragraph1: "© 2026 Amanullah Manssur. Alle Rechte vorbehalten.",
     paragraph2: "Digitale Lösungen mit Klarheit, Fokus und Verlässlichkeit.",
     impressum: { name: "Impressum", href: "/legal#impressum" },
     disclaimer: {
